@@ -19,7 +19,13 @@ func IsValidJWT() gin.HandlerFunc {
 			return
 		}
 
-		jwt := strings.Split(headerToken, " ")[1]
+		splitRes := strings.Split(headerToken, " ")
+		if len(splitRes) != 2 {
+			utils.HandleError(c, response.UNAUTH_ERR("Token Tidak Valid"))
+			return
+		}
+
+		jwt := splitRes[1]
 		if jwt == "null" {
 			utils.HandleError(c, response.UNAUTH_ERR("Token Tidak Valid"))
 			return
