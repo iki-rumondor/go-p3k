@@ -46,3 +46,14 @@ type Product struct {
 	UpdatedAt int64  `json:"updated_at"`
 	Shop      *Shop  `json:"shop"`
 }
+
+type ProductTransaction struct {
+	Uuid       string   `json:"uuid"`
+	Quantity   int64    `json:"quantity"`
+	IsResponse bool     `json:"is_response"`
+	IsAccept   bool     `json:"is_accept"`
+	CreatedAt  int64    `json:"created_at"`
+	UpdatedAt  int64    `json:"updated_at"`
+	User       *User    `json:"user"`
+	Product    *Product `json:"product"`
+}

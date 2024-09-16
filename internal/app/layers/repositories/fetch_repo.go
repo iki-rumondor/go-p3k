@@ -106,3 +106,29 @@ func (r *FetchRepo) GetProductByUuid(userUuid, uuid string) (*models.Product, er
 	}
 	return &data, nil
 }
+
+func (r *FetchRepo) GetProductTransactions(userUuid string) (*[]models.ProductTransaction, error) {
+	var user models.User
+	if err := r.db.First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+
+	var data []models.ProductTransaction
+	if err := r.db.Preload("Product").Find(&data, "user_id = ?", user.ID).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
+func (r *FetchRepo) GetProductTransactionByUuid(userUuid, uuid string) (*models.ProductTransaction, error) {
+	var user models.User
+	if err := r.db.First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+
+	var data models.ProductTransaction
+	if err := r.db.Preload("Product").First(&data, "uuid = ? AND user_id = ?", uuid, user.ID).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}

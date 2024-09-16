@@ -30,6 +30,10 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 	user := router.Group("api").Use(IsValidJWT()).Use(SetUserUuid())
 	{
 		user.GET("/users/detail", handlers.AuthHandler.GetUserByUuid)
+
+		user.PATCH("/products/buy", handlers.TransactionHandler.BuyProduct)
+		user.GET("/transactions", handlers.FetchHandler.GetProductTransactions)
+		user.DELETE("/transactions/:uuid", handlers.TransactionHandler.DeleteProductTransaction)
 	}
 
 	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN"))

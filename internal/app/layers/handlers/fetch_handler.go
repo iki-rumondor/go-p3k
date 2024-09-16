@@ -131,3 +131,26 @@ func (h *FetchHandler) GetProductByUuid(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
+
+func (h *FetchHandler) GetProductTransactions(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	resp, err := h.Service.GetProductTransactions(userUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetProductTransactionByUuid(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	uuid := c.Param("uuid")
+	resp, err := h.Service.GetProductTransactionByUuid(userUuid, uuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}

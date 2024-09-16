@@ -8,9 +8,10 @@ import (
 )
 
 type Handlers struct {
-	AuthHandler       *handlers.AuthHandler
-	ManagementHandler *handlers.ManagementHandler
-	FetchHandler      *handlers.FetchHandler
+	AuthHandler        *handlers.AuthHandler
+	ManagementHandler  *handlers.ManagementHandler
+	FetchHandler       *handlers.FetchHandler
+	TransactionHandler *handlers.TransactionHandler
 }
 
 func GetAppHandlers(db *gorm.DB) *Handlers {
@@ -27,9 +28,14 @@ func GetAppHandlers(db *gorm.DB) *Handlers {
 	fetch_service := services.NewFetchService(fetch_repo)
 	fetch_handler := handlers.NewFetchHandler(fetch_service)
 
+	transaction_repo := repositories.NewTransactionInterface(db)
+	transaction_service := services.NewTransactionService(transaction_repo)
+	transaction_handler := handlers.NewTransactionHandler(transaction_service)
+
 	return &Handlers{
-		AuthHandler:       auth_handler,
-		ManagementHandler: management_handler,
-		FetchHandler:      fetch_handler,
+		AuthHandler:        auth_handler,
+		ManagementHandler:  management_handler,
+		FetchHandler:       fetch_handler,
+		TransactionHandler: transaction_handler,
 	}
 }
