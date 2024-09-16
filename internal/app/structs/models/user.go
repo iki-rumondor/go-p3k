@@ -18,6 +18,7 @@ type User struct {
 	CreatedAt int64  `gorm:"autoCreateTime:milli"`
 	UpdatedAt int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
 	Role      *Role
+	Shop      *Shop
 }
 
 func (m *User) BeforeSave(tx *gorm.DB) error {

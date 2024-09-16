@@ -10,5 +10,9 @@ func GetAllModels() []Model {
 	return []Model{
 		{Model: models.Role{}},
 		{Model: models.User{}},
+		{Model: models.Guest{}},
+		{Model: models.Category{}},
+		{Model: models.Shop{}},
+		{Model: models.Product{}},
 	}
 }

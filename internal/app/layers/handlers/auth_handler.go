@@ -21,8 +21,8 @@ func NewAuthHandler(service *services.AuthService) *AuthHandler {
 	}
 }
 
-func (h *AuthHandler) RegisterUser(c *gin.Context) {
-	var body request.SignIn
+func (h *AuthHandler) RegisterGuest(c *gin.Context) {
+	var body request.RegisterGuest
 	if err := c.BindJSON(&body); err != nil {
 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
 		return
@@ -33,13 +33,12 @@ func (h *AuthHandler) RegisterUser(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.Service.VerifyUser(&body)
-	if err != nil {
+	if err := h.Service.CreateGuest(&body); err != nil {
 		utils.HandleError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.DATA_RES(resp))
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Pengunjung berhasil ditambahkan"))
 }
 
 func (h *AuthHandler) VerifyUser(c *gin.Context) {
@@ -61,4 +60,37 @@ func (h *AuthHandler) VerifyUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *AuthHandler) GetUserByUuid(c *gin.Context) {
+
+	uuid := c.GetString("uuid")
+	if uuid == "" {
+		utils.HandleError(c, response.HANDLER_INTERR)
+		return
+	}
+
+	resp, err := h.Service.GetUserByUuid(uuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *AuthHandler) ActivationUser(c *gin.Context) {
+	var body request.Activation
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	uuid := c.Param("uuid")
+	if err := h.Service.ActivationUser(uuid, body.Status); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Status aktivasi berhasil diperbarui"))
 }

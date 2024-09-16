@@ -1,0 +1,19 @@
+package interfaces
+
+import "github.com/iki-rumondor/go-p3k/internal/app/structs/models"
+
+type FetchInterface interface {
+	GetGuests() (*[]models.Guest, error)
+	GetGuestByUuid(uuid string) (*models.Guest, error)
+
+	GetCategories() (*[]models.Category, error)
+	GetCategoryByUuid(uuid string) (*models.Category, error)
+
+	GetShops() (*[]models.Shop, error)
+	GetShopByUuid(uuid string) (*models.Shop, error)
+
+	GetAllProducts() (*[]models.Product, error)
+	GetPublicProductByUuid(uuid string) (*models.Product, error)
+	GetProducts(userUuid string) (*[]models.Product, error)
+	GetProductByUuid(userUuid, uuid string) (*models.Product, error)
+}

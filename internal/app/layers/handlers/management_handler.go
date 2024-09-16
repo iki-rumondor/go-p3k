@@ -1,0 +1,158 @@
+package handlers
+
+import (
+	"net/http"
+
+	"github.com/asaskevich/govalidator"
+	"github.com/gin-gonic/gin"
+	"github.com/iki-rumondor/go-p3k/internal/app/layers/services"
+	"github.com/iki-rumondor/go-p3k/internal/app/structs/request"
+	"github.com/iki-rumondor/go-p3k/internal/app/structs/response"
+	"github.com/iki-rumondor/go-p3k/internal/utils"
+)
+
+type ManagementHandler struct {
+	Service *services.ManagementService
+}
+
+func NewManagementHandler(service *services.ManagementService) *ManagementHandler {
+	return &ManagementHandler{
+		Service: service,
+	}
+}
+
+func (h *ManagementHandler) CreateCategory(c *gin.Context) {
+	var body request.Category
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if err := h.Service.CreateCategory(&body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.SUCCESS_RES("Kategori Berhasil Ditambahkan"))
+}
+
+func (h *ManagementHandler) UpdateCategory(c *gin.Context) {
+	var body request.Category
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	uuid := c.Param("uuid")
+	if err := h.Service.UpdateCategory(uuid, &body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Kategori Berhasil Diperbarui"))
+}
+
+func (h *ManagementHandler) CreateShop(c *gin.Context) {
+	var body request.Shop
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if err := h.Service.CreateShop(&body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.SUCCESS_RES("Umkm Berhasil Ditambahkan"))
+}
+
+func (h *ManagementHandler) UpdateShop(c *gin.Context) {
+	var body request.Shop
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	uuid := c.Param("uuid")
+	if err := h.Service.UpdateShop(uuid, &body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Umkm Berhasil Diperbarui"))
+}
+
+func (h *ManagementHandler) CreateProduct(c *gin.Context) {
+	var body request.Product
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	userUuid := c.GetString("uuid")
+	if err := h.Service.CreateProduct(userUuid, &body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.SUCCESS_RES("Produk Berhasil Ditambahkan"))
+}
+
+func (h *ManagementHandler) UpdateProduct(c *gin.Context) {
+	var body request.Product
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	userUuid := c.GetString("uuid")
+	uuid := c.Param("uuid")
+	if err := h.Service.UpdateProduct(userUuid, uuid, &body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Produk Berhasil Diperbarui"))
+}
+
+// func (h *ManagementHandler) DeleteMajor(c *gin.Context) {
+
+// 	uuid := c.Param("uuid")
+// 	if err := h.Service.DeleteMajor(uuid); err != nil {
+// 		utils.HandleError(c, err)
+// 		return
+// 	}
+
+// 	c.JSON(http.StatusOK, response.SUCCESS_RES("Jurusan Berhasil Dihapus"))
+// }

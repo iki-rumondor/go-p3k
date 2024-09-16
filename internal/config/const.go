@@ -2,7 +2,7 @@ package config
 
 import "github.com/iki-rumondor/go-p3k/internal/app/structs/models"
 
-var SYSTEM_ROLES = []string{"ADMIN", "DEPARTMENT"}
+var SYSTEM_ROLES = []string{"ADMIN", "MEMBER", "UMKM", "GUEST"}
 var ADMIN_USER = models.User{
 	Name:     "Administrator",
 	Username: "admin",

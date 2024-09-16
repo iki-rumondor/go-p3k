@@ -22,6 +22,40 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 	public := router.Group("api")
 	{
 		public.POST("/verify-user", handlers.AuthHandler.VerifyUser)
+		public.POST("/register/guest", handlers.AuthHandler.RegisterGuest)
+		public.GET("/public/products", handlers.FetchHandler.GetAllProducts)
+		public.GET("/public/products/:uuid", handlers.FetchHandler.GetPublicProductByUuid)
+	}
+
+	user := router.Group("api").Use(IsValidJWT()).Use(SetUserUuid())
+	{
+		user.GET("/users/detail", handlers.AuthHandler.GetUserByUuid)
+	}
+
+	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN"))
+	{
+		admin.GET("/guests", handlers.FetchHandler.GetGuests)
+		admin.GET("/guests/:uuid", handlers.FetchHandler.GetGuestByUuid)
+		admin.PATCH("/users/activation/:uuid", handlers.AuthHandler.ActivationUser)
+
+		admin.GET("/categories", handlers.FetchHandler.GetCategories)
+		admin.GET("/categories/:uuid", handlers.FetchHandler.GetCategoryByUuid)
+		admin.POST("/categories", handlers.ManagementHandler.CreateCategory)
+		admin.PUT("/categories/:uuid", handlers.ManagementHandler.UpdateCategory)
+
+		admin.GET("/shops", handlers.FetchHandler.GetShops)
+		admin.GET("/shops/:uuid", handlers.FetchHandler.GetShopByUuid)
+		admin.POST("/shops", handlers.ManagementHandler.CreateShop)
+		admin.PUT("/shops/:uuid", handlers.ManagementHandler.UpdateShop)
+
+	}
+
+	umkm := router.Group("api").Use(IsValidJWT()).Use(IsRole("UMKM")).Use(SetUserUuid())
+	{
+		umkm.GET("/products", handlers.FetchHandler.GetProducts)
+		umkm.GET("/products/:uuid", handlers.FetchHandler.GetProductByUuid)
+		umkm.POST("/products", handlers.ManagementHandler.CreateProduct)
+		umkm.PUT("/products/:uuid", handlers.ManagementHandler.UpdateProduct)
 	}
 
 	return router
