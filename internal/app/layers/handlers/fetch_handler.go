@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 	"github.com/iki-rumondor/go-p3k/internal/app/layers/services"
@@ -164,4 +165,11 @@ func (h *FetchHandler) GetProductTransactionsByShop(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetProductImage(c *gin.Context) {
+	filename := c.Param("filename")
+	folder := "internal/files/products"
+	pathFile := filepath.Join(folder, filename)
+	c.File(pathFile)
 }

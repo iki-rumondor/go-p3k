@@ -43,6 +43,7 @@ type Product struct {
 	Name      string `json:"name"`
 	Price     int64  `json:"price"`
 	Stock     int64  `json:"stock"`
+	ImageName string `json:"image_name"`
 	CreatedAt int64  `json:"created_at"`
 	UpdatedAt int64  `json:"updated_at"`
 	Shop      *Shop  `json:"shop"`

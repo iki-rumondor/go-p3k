@@ -220,6 +220,7 @@ func (s *FetchService) GetProducts(userUuid string) (*[]response.Product, error)
 			Name:      item.Name,
 			Price:     item.Price,
 			Stock:     item.Stock,
+			ImageName: item.Image,
 			CreatedAt: item.CreatedAt,
 			UpdatedAt: item.UpdatedAt,
 		})

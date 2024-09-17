@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"strconv"
 
 	"github.com/iki-rumondor/go-p3k/internal/app/layers/interfaces"
 	"github.com/iki-rumondor/go-p3k/internal/app/structs/models"
@@ -92,12 +93,22 @@ func (s *ManagementService) UpdateShop(uuid string, req *request.Shop) error {
 	return nil
 }
 
-func (s *ManagementService) CreateProduct(userUuid string, req *request.Product) error {
+func (s *ManagementService) CreateProduct(userUuid, imageName string, req *request.Product) error {
+	price, err := strconv.Atoi(req.Price)
+	if err != nil {
+		return response.BADREQ_ERR("Harga yang dimasukkan tidak valid")
+	}
+
+	stock, err := strconv.Atoi(req.Stock)
+	if err != nil {
+		return response.BADREQ_ERR("Stok yang dimasukkan tidak valid")
+	}
 
 	model := models.Product{
 		Name:  req.Name,
-		Price: req.Price,
-		Stock: req.Stock,
+		Price: int64(price),
+		Stock: int64(stock),
+		Image: imageName,
 	}
 
 	if err := s.Repo.CreateProduct(userUuid, &model); err != nil {
@@ -108,11 +119,20 @@ func (s *ManagementService) CreateProduct(userUuid string, req *request.Product)
 }
 
 func (s *ManagementService) UpdateProduct(userUuid, uuid string, req *request.Product) error {
+	price, err := strconv.Atoi(req.Price)
+	if err != nil {
+		return response.BADREQ_ERR("Harga yang dimasukkan tidak valid")
+	}
+
+	stock, err := strconv.Atoi(req.Stock)
+	if err != nil {
+		return response.BADREQ_ERR("Stok yang dimasukkan tidak valid")
+	}
 
 	model := models.Product{
 		Name:  req.Name,
-		Price: req.Price,
-		Stock: req.Stock,
+		Price: int64(price),
+		Stock: int64(stock),
 	}
 
 	if err := s.Repo.UpdateProduct(userUuid, uuid, &model); err != nil {

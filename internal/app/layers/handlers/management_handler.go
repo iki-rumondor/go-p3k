@@ -1,7 +1,10 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
@@ -105,7 +108,7 @@ func (h *ManagementHandler) UpdateShop(c *gin.Context) {
 
 func (h *ManagementHandler) CreateProduct(c *gin.Context) {
 	var body request.Product
-	if err := c.BindJSON(&body); err != nil {
+	if err := c.Bind(&body); err != nil {
 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
 		return
 	}
@@ -115,8 +118,39 @@ func (h *ManagementHandler) CreateProduct(c *gin.Context) {
 		return
 	}
 
+	file, err := c.FormFile("file")
+	if err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if status := utils.CheckTypeFile(file, []string{"jpg", "png", "jpeg"}); !status {
+		utils.HandleError(c, response.BADREQ_ERR("Tipe file tidak valid, gunakan tipe jpg, png, atau jpeg"))
+		return
+	}
+
+	if moreThan := utils.CheckFileSize(file, 1); moreThan {
+		utils.HandleError(c, response.BADREQ_ERR("File yang diupload lebih dari 1MB"))
+		return
+	}
+
+	productsFolder := "internal/files/products"
+	filename := utils.RandomFileName(file)
+	pathFile := filepath.Join(productsFolder, filename)
+
+	if err := utils.SaveUploadedFile(file, pathFile); err != nil {
+		if err := os.Remove(pathFile); err != nil {
+			log.Println(err.Error())
+		}
+		utils.HandleError(c, response.HANDLER_INTERR)
+		return
+	}
+
 	userUuid := c.GetString("uuid")
-	if err := h.Service.CreateProduct(userUuid, &body); err != nil {
+	if err := h.Service.CreateProduct(userUuid, filename, &body); err != nil {
+		if err := os.Remove(pathFile); err != nil {
+			log.Println(err.Error())
+		}
 		utils.HandleError(c, err)
 		return
 	}

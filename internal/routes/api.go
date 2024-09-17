@@ -25,6 +25,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		public.POST("/register/guest", handlers.AuthHandler.RegisterGuest)
 		public.GET("/public/products", handlers.FetchHandler.GetAllProducts)
 		public.GET("/public/products/:uuid", handlers.FetchHandler.GetPublicProductByUuid)
+
+		public.GET("/files/products/:filename", handlers.FetchHandler.GetProductImage)
 	}
 
 	user := router.Group("api").Use(IsValidJWT()).Use(SetUserUuid())

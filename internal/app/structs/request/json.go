@@ -30,11 +30,6 @@ type Shop struct {
 	PhoneNumber  string `json:"phone_number" valid:"required~field nomor handphone tidak ditemukan"`
 }
 
-type Product struct {
-	Name  string `json:"name" valid:"required~field nama tidak ditemukan"`
-	Price int64  `json:"price" valid:"required~field harga tidak ditemukan"`
-	Stock int64  `json:"stock" valid:"required~field stok tidak ditemukan"`
-}
 
 type BuyProduct struct {
 	ProductUuid string `json:"product_uuid" valid:"required~field Uuid produk tidak ditemukan"`

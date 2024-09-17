@@ -3,9 +3,7 @@ package utils
 import (
 	"mime/multipart"
 	"strings"
-
 )
-
 
 func CheckTypeFile(file *multipart.FileHeader, extensions []string) (status bool) {
 	for _, item := range extensions {
@@ -24,4 +22,9 @@ func CheckContainsInt(slice []int, value int) bool {
 		}
 	}
 	return false
+}
+
+func CheckFileSize(file *multipart.FileHeader, maxSizeMB int64) bool {
+	const bytesInMB = 1024 * 1024
+	return file.Size > maxSizeMB*bytesInMB
 }

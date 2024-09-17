@@ -11,6 +11,7 @@ type Product struct {
 	Name      string `gorm:"not_null;size:128"`
 	Price     int64  `gorm:"not_null"`
 	Stock     int64  `gorm:"not_null"`
+	Image     string `gorm:"not_null;"`
 	CreatedAt int64  `gorm:"autoCreateTime:milli"`
 	UpdatedAt int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
 	ShopID    uint   `gorm:"not_null"`
