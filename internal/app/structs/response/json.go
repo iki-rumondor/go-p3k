@@ -1,11 +1,12 @@
 package response
 
 type User struct {
-	Uuid     string `json:"uuid"`
-	Name     string `json:"name"`
-	Username string `json:"username"`
-	RoleName string `json:"role_name"`
-	IsActive bool   `json:"is_active"`
+	Uuid        string `json:"uuid"`
+	Name        string `json:"name"`
+	Username    string `json:"username"`
+	RoleName    string `json:"role_name"`
+	PhoneNumber string `json:"phone_number"`
+	IsActive    bool   `json:"is_active"`
 }
 
 type Guest struct {

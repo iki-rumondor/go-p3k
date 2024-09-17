@@ -132,7 +132,7 @@ func (r *FetchRepo) GetProductTransactionByUuid(userUuid, uuid string) (*models.
 	}
 
 	var data models.ProductTransaction
-	if err := r.db.Preload("Product").First(&data, "uuid = ? AND product_id IN (?)", uuid, productIDs).Error; err != nil {
+	if err := r.db.Preload("Product").Preload("User.Role").Preload("User.Guest").First(&data, "uuid = ? AND product_id IN (?)", uuid, productIDs).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil

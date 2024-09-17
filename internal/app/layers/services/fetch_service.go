@@ -276,6 +276,16 @@ func (s *FetchService) GetProductTransactionByUuid(userUuid, uuid string) (*resp
 		return nil, response.SERVICE_INTERR
 	}
 
+	var phoneNumber string
+
+	if item.User.Role.Name == "GUEST" {
+		phoneNumber = item.User.Guest.PhoneNumber
+	}
+
+	if item.User.Role.Name == "CITIZEN" {
+		phoneNumber = "123"
+	}
+
 	var resp = response.ProductTransaction{
 		Uuid:       item.Uuid,
 		Quantity:   item.Quantity,
@@ -284,7 +294,15 @@ func (s *FetchService) GetProductTransactionByUuid(userUuid, uuid string) (*resp
 		CreatedAt:  item.CreatedAt,
 		UpdatedAt:  item.UpdatedAt,
 		Product: &response.Product{
-			Name: item.Product.Name,
+			Name:      item.Product.Name,
+			Stock:     item.Product.Stock,
+			Price:     item.Product.Price,
+			CreatedAt: item.Product.CreatedAt,
+		},
+		User: &response.User{
+			Name:        item.User.Name,
+			RoleName:    item.User.Role.Name,
+			PhoneNumber: phoneNumber,
 		},
 	}
 
