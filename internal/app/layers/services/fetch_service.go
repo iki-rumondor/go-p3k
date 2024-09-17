@@ -290,3 +290,30 @@ func (s *FetchService) GetProductTransactionByUuid(userUuid, uuid string) (*resp
 
 	return &resp, nil
 }
+
+func (s *FetchService) GetProductTransactionsByShop(userUuid string) (*[]response.ProductTransaction, error) {
+	data, err := s.Repo.GetProductTransactionsByShop(userUuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var resp []response.ProductTransaction
+	for _, item := range *data {
+		resp = append(resp, response.ProductTransaction{
+			Uuid:       item.Uuid,
+			Quantity:   item.Quantity,
+			IsResponse: item.IsResponse,
+			IsAccept:   item.IsAccept,
+			CreatedAt:  item.CreatedAt,
+			UpdatedAt:  item.UpdatedAt,
+			Product: &response.Product{
+				Name: item.Product.Name,
+			},
+			User: &response.User{
+				Name: item.User.Name,
+			},
+		})
+	}
+
+	return &resp, nil
+}

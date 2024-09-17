@@ -60,6 +60,9 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		umkm.GET("/products/:uuid", handlers.FetchHandler.GetProductByUuid)
 		umkm.POST("/products", handlers.ManagementHandler.CreateProduct)
 		umkm.PUT("/products/:uuid", handlers.ManagementHandler.UpdateProduct)
+
+		umkm.GET("/shops/transactions", handlers.FetchHandler.GetProductTransactionsByShop)
+		umkm.GET("/transactions/:uuid", handlers.FetchHandler.GetProductTransactionByUuid)
 	}
 
 	return router

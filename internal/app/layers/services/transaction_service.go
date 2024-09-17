@@ -30,6 +30,15 @@ func (s *TransactionService) BuyProduct(userUuid string, req *request.BuyProduct
 		return response.SERVICE_INTERR
 	}
 
+	user, err := s.Repo.GetUserByUuid(userUuid)
+	if err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	if user.Role.Name != "GUEST" && user.Role.Name != "CITIZEN" {
+		return response.BADREQ_ERR("Silahkan gunakan akun pembeli atau akun masyarakat untuk transaksi produk")
+	}
+
 	if product.Stock < req.Quantity {
 		return response.BADREQ_ERR("Jumlah pembelian melebihi stok produk")
 	}

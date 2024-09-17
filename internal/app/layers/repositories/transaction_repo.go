@@ -29,6 +29,16 @@ func (r *TransactionRepo) GetProductByUuid(productUuid string) (*models.Product,
 	}
 
 	return &product, nil
+
+}
+func (r *TransactionRepo) GetUserByUuid(userUuid string) (*models.User, error) {
+
+	var user models.User
+	if err := r.db.Preload("Role").First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 func (r *TransactionRepo) BuyProduct(userUuid string, model *models.ProductTransaction) error {

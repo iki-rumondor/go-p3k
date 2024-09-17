@@ -122,12 +122,35 @@ func (r *FetchRepo) GetProductTransactions(userUuid string) (*[]models.ProductTr
 
 func (r *FetchRepo) GetProductTransactionByUuid(userUuid, uuid string) (*models.ProductTransaction, error) {
 	var user models.User
-	if err := r.db.First(&user, "uuid = ?", userUuid).Error; err != nil {
+	if err := r.db.Preload("Shop").First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+
+	var productIDs []uint
+	if err := r.db.Model(&models.Product{}).Where("shop_id = ?", user.Shop.ID).Pluck("id", &productIDs).Error; err != nil {
 		return nil, err
 	}
 
 	var data models.ProductTransaction
-	if err := r.db.Preload("Product").First(&data, "uuid = ? AND user_id = ?", uuid, user.ID).Error; err != nil {
+	if err := r.db.Preload("Product").First(&data, "uuid = ? AND product_id IN (?)", uuid, productIDs).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
+func (r *FetchRepo) GetProductTransactionsByShop(userUuid string) (*[]models.ProductTransaction, error) {
+	var user models.User
+	if err := r.db.Preload("Shop").First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+
+	var productIDs []uint
+	if err := r.db.Model(&models.Product{}).Where("shop_id = ?", user.Shop.ID).Pluck("id", &productIDs).Error; err != nil {
+		return nil, err
+	}
+
+	var data []models.ProductTransaction
+	if err := r.db.Preload("Product").Preload("User").Find(&data, "product_id IN (?)", productIDs).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil

@@ -19,4 +19,5 @@ type FetchInterface interface {
 
 	GetProductTransactions(userUuid string) (*[]models.ProductTransaction, error)
 	GetProductTransactionByUuid(userUuid, uuid string) (*models.ProductTransaction, error)
+	GetProductTransactionsByShop(userUuid string) (*[]models.ProductTransaction, error)
 }
