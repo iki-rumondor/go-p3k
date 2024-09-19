@@ -207,3 +207,42 @@ func (s *ManagementService) UpdateCitizen(uuid string, req *request.Citizen) err
 
 	return nil
 }
+
+func (s *ManagementService) CreateMember(req *request.Member) error {
+	var username = utils.GenerateRandomString(8)
+
+	model := models.Member{
+		Name:  req.Name,
+		Group: req.Group,
+		User: &models.User{
+			Name:     req.Name,
+			Username: username,
+			Password: username,
+			RoleID:   2,
+			Active:   true,
+		},
+	}
+
+	if err := s.Repo.CreateModel(&model); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *ManagementService) UpdateMember(uuid string, req *request.Member) error {
+
+	model := models.Member{
+		Name:  req.Name,
+		Group: req.Group,
+	}
+
+	if err := s.Repo.UpdateMember(uuid, &model); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Anggota tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}

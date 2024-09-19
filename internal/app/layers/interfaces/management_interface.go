@@ -8,6 +8,7 @@ type ManagementInterface interface {
 
 	UpdateCategory(uuid string, model *models.Category) error
 	UpdateCitizen(uuid string, model *models.Citizen) error
+	UpdateMember(uuid string, model *models.Member) error
 
 	CreateShop(categoryUuid string, model *models.Shop) error
 	UpdateShop(uuid string, categoryUuid string, model *models.Shop) error

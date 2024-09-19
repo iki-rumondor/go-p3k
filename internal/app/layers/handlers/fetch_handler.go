@@ -188,6 +188,29 @@ func (h *FetchHandler) GetProductTransactionsByShop(c *gin.Context) {
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
 
+func (h *FetchHandler) GetMembers(c *gin.Context) {
+
+	resp, err := h.Service.GetMembers()
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetMemberByUuid(c *gin.Context) {
+
+	uuid := c.Param("uuid")
+	resp, err := h.Service.GetMemberByUuid(uuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
 func (h *FetchHandler) GetProductImage(c *gin.Context) {
 	filename := c.Param("filename")
 	folder := "internal/files/products"

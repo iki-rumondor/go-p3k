@@ -70,3 +70,12 @@ type Citizen struct {
 	UpdatedAt   int64  `json:"updated_at"`
 	User        *User  `json:"user"`
 }
+
+type Member struct {
+	Uuid      string `json:"uuid"`
+	Name      string `json:"name"`
+	Group     string `json:"group"`
+	CreatedAt int64  `json:"created_at"`
+	UpdatedAt int64  `json:"updated_at"`
+	User      *User  `json:"user"`
+}

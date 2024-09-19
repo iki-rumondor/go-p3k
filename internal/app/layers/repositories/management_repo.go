@@ -57,6 +57,16 @@ func (r *ManagementRepo) UpdateCitizen(uuid string, model *models.Citizen) error
 	return r.db.Updates(model).Error
 }
 
+func (r *ManagementRepo) UpdateMember(uuid string, model *models.Member) error {
+	var dataDB models.Member
+	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
+		return err
+	}
+
+	model.ID = dataDB.ID
+	return r.db.Updates(model).Error
+}
+
 func (r *ManagementRepo) CreateShop(categoryUuid string, model *models.Shop) error {
 	var category models.Category
 	if err := r.db.First(&category, "uuid = ?", categoryUuid).Error; err != nil {

@@ -388,3 +388,48 @@ func (s *FetchService) GetProductTransactionsByShop(userUuid string) (*[]respons
 
 	return &resp, nil
 }
+
+func (s *FetchService) GetMembers() (*[]response.Member, error) {
+	data, err := s.Repo.GetMembers()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var resp []response.Member
+	for _, item := range *data {
+		resp = append(resp, response.Member{
+			Uuid:      item.Uuid,
+			Name:      item.Name,
+			Group:     item.Group,
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
+			User: &response.User{
+				Uuid:     item.User.Uuid,
+				Username: item.User.Username,
+			},
+		})
+	}
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetMemberByUuid(uuid string) (*response.Member, error) {
+	item, err := s.Repo.GetMemberByUuid(uuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var resp = response.Member{
+		Uuid:      item.Uuid,
+		Name:      item.Name,
+		Group:     item.Group,
+		CreatedAt: item.CreatedAt,
+		UpdatedAt: item.UpdatedAt,
+		User: &response.User{
+			Uuid:     item.User.Uuid,
+			Username: item.User.Username,
+		},
+	}
+
+	return &resp, nil
+}

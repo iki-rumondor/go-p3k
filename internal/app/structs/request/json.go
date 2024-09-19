@@ -41,3 +41,8 @@ type Citizen struct {
 	Address     string `json:"address" valid:"required~field alamat tidak ditemukan"`
 	PhoneNumber string `json:"phone_number" valid:"required~field nomor handphone tidak ditemukan"`
 }
+
+type Member struct {
+	Name  string `json:"name" valid:"required~field nama tidak ditemukan"`
+	Group string `json:"group" valid:"required~field pokja tidak ditemukan"`
+}

@@ -16,5 +16,6 @@ func GetAllModels() []Model {
 		{Model: models.Product{}},
 		{Model: models.ProductTransaction{}},
 		{Model: models.Citizen{}},
+		{Model: models.Member{}},
 	}
 }

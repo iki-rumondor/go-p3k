@@ -245,3 +245,44 @@ func (h *ManagementHandler) UpdateCitizen(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Data Masyarakat Berhasil Diperbarui"))
 }
+
+func (h *ManagementHandler) CreateMember(c *gin.Context) {
+	var body request.Member
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if err := h.Service.CreateMember(&body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.SUCCESS_RES("Anggota Berhasil Ditambahkan"))
+}
+
+func (h *ManagementHandler) UpdateMember(c *gin.Context) {
+	var body request.Member
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	uuid := c.Param("uuid")
+	if err := h.Service.UpdateMember(uuid, &body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Data Anggota Berhasil Diperbarui"))
+}

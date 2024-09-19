@@ -171,3 +171,19 @@ func (r *FetchRepo) GetCitizenByUuid(uuid string) (*models.Citizen, error) {
 	}
 	return &data, nil
 }
+
+func (r *FetchRepo) GetMembers() (*[]models.Member, error) {
+	var data []models.Member
+	if err := r.db.Preload("User").Find(&data).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
+func (r *FetchRepo) GetMemberByUuid(uuid string) (*models.Member, error) {
+	var data models.Member
+	if err := r.db.Preload("User").First(&data, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
