@@ -160,7 +160,7 @@ func (h *ManagementHandler) CreateProduct(c *gin.Context) {
 
 func (h *ManagementHandler) UpdateProduct(c *gin.Context) {
 	var body request.Product
-	if err := c.BindJSON(&body); err != nil {
+	if err := c.Bind(&body); err != nil {
 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
 		return
 	}
@@ -169,10 +169,35 @@ func (h *ManagementHandler) UpdateProduct(c *gin.Context) {
 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
 		return
 	}
+	var filename string
+	file, _ := c.FormFile("file")
+	if file != nil {
+		if status := utils.CheckTypeFile(file, []string{"jpg", "png", "jpeg"}); !status {
+			utils.HandleError(c, response.BADREQ_ERR("Tipe file tidak valid, gunakan tipe jpg, png, atau jpeg"))
+			return
+		}
+
+		if moreThan := utils.CheckFileSize(file, 1); moreThan {
+			utils.HandleError(c, response.BADREQ_ERR("File yang diupload lebih dari 1MB"))
+			return
+		}
+
+		productsFolder := "internal/files/products"
+		filename = utils.RandomFileName(file)
+		pathFile := filepath.Join(productsFolder, filename)
+
+		if err := utils.SaveUploadedFile(file, pathFile); err != nil {
+			if err := os.Remove(pathFile); err != nil {
+				log.Println(err.Error())
+			}
+			utils.HandleError(c, response.HANDLER_INTERR)
+			return
+		}
+	}
 
 	userUuid := c.GetString("uuid")
 	uuid := c.Param("uuid")
-	if err := h.Service.UpdateProduct(userUuid, uuid, &body); err != nil {
+	if err := h.Service.UpdateProduct(userUuid, uuid, filename, &body); err != nil {
 		utils.HandleError(c, err)
 		return
 	}

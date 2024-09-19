@@ -171,6 +171,7 @@ func (s *FetchService) GetAllProducts() (*[]response.Product, error) {
 			Name:      item.Name,
 			Price:     item.Price,
 			Stock:     item.Stock,
+			ImageName: item.Image,
 			CreatedAt: item.CreatedAt,
 			UpdatedAt: item.UpdatedAt,
 			Shop: &response.Shop{
@@ -240,6 +241,7 @@ func (s *FetchService) GetProductByUuid(userUuid, uuid string) (*response.Produc
 		Name:      item.Name,
 		Price:     item.Price,
 		Stock:     item.Stock,
+		ImageName: item.Image,
 		CreatedAt: item.CreatedAt,
 		UpdatedAt: item.UpdatedAt,
 	}
@@ -298,6 +300,7 @@ func (s *FetchService) GetProductTransactionByUuid(userUuid, uuid string) (*resp
 			Name:      item.Product.Name,
 			Stock:     item.Product.Stock,
 			Price:     item.Product.Price,
+			ImageName: item.Product.Image,
 			CreatedAt: item.Product.CreatedAt,
 		},
 		User: &response.User{

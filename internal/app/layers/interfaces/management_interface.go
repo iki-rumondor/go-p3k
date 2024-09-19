@@ -11,7 +11,7 @@ type ManagementInterface interface {
 	UpdateShop(uuid string, categoryUuid string, model *models.Shop) error
 
 	CreateProduct(userUuid string, model *models.Product) error
-	UpdateProduct(userUuid string, uuid string, model *models.Product) error
+	UpdateProduct(userUuid string, uuid string, model *models.Product) (string, error)
 
 	// DeleteMajor(uuid string) error
 }

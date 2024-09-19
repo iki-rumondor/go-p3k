@@ -67,17 +67,21 @@ func (r *ManagementRepo) CreateProduct(userUuid string, model *models.Product) e
 	return r.db.Create(model).Error
 }
 
-func (r *ManagementRepo) UpdateProduct(userUuid string, uuid string, model *models.Product) error {
+func (r *ManagementRepo) UpdateProduct(userUuid string, uuid string, model *models.Product) (string, error) {
 	var user models.User
 	if err := r.db.Preload("Shop").First(&user, "uuid = ?", userUuid).Error; err != nil {
-		return err
+		return "", err
 	}
 
 	var dataDB models.Product
 	if err := r.db.First(&dataDB, "uuid = ? AND shop_id = ?", uuid, user.Shop.ID).Error; err != nil {
-		return err
+		return "", err
 	}
 
 	model.ID = dataDB.ID
-	return r.db.Updates(model).Error
+	if err := r.db.Updates(model).Error; err != nil {
+		return "", err
+	}
+
+	return dataDB.Image, nil
 }

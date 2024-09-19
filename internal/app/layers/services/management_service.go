@@ -2,6 +2,9 @@ package services
 
 import (
 	"errors"
+	"log"
+	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/iki-rumondor/go-p3k/internal/app/layers/interfaces"
@@ -118,7 +121,7 @@ func (s *ManagementService) CreateProduct(userUuid, imageName string, req *reque
 	return nil
 }
 
-func (s *ManagementService) UpdateProduct(userUuid, uuid string, req *request.Product) error {
+func (s *ManagementService) UpdateProduct(userUuid, uuid, imageName string, req *request.Product) error {
 	price, err := strconv.Atoi(req.Price)
 	if err != nil {
 		return response.BADREQ_ERR("Harga yang dimasukkan tidak valid")
@@ -133,13 +136,24 @@ func (s *ManagementService) UpdateProduct(userUuid, uuid string, req *request.Pr
 		Name:  req.Name,
 		Price: int64(price),
 		Stock: int64(stock),
+		Image: imageName,
 	}
 
-	if err := s.Repo.UpdateProduct(userUuid, uuid, &model); err != nil {
+	oldImage, err := s.Repo.UpdateProduct(userUuid, uuid, &model)
+	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return response.NOTFOUND_ERR("Produk tidak ditemukan")
 		}
 		return response.SERVICE_INTERR
+	}
+
+	productsFolder := "internal/files/products"
+	pathFile := filepath.Join(productsFolder, oldImage)
+
+	if imageName != "" {
+		if err := os.Remove(pathFile); err != nil {
+			log.Println(err.Error())
+		}
 	}
 
 	return nil
