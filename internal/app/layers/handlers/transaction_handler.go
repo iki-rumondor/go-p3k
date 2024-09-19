@@ -53,3 +53,27 @@ func (h *TransactionHandler) DeleteProductTransaction(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Transaksi produk berhasil dihapus"))
 }
+
+func (h *TransactionHandler) AcceptProductTransaction(c *gin.Context) {
+
+	userUuid := c.GetString("uuid")
+	transactionUuid := c.Param("transactionUuid")
+	if err := h.Service.AcceptProductTransaction(userUuid, transactionUuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Transaksi produk berhasil diselesaikan"))
+}
+
+func (h *TransactionHandler) UnacceptProductTransaction(c *gin.Context) {
+
+	userUuid := c.GetString("uuid")
+	transactionUuid := c.Param("transactionUuid")
+	if err := h.Service.UnacceptProductTransaction(userUuid, transactionUuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Transaksi produk berhasil ditolak"))
+}

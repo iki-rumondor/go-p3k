@@ -155,3 +155,19 @@ func (r *FetchRepo) GetProductTransactionsByShop(userUuid string) (*[]models.Pro
 	}
 	return &data, nil
 }
+
+func (r *FetchRepo) GetCitizens() (*[]models.Citizen, error) {
+	var data []models.Citizen
+	if err := r.db.Preload("User").Find(&data).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
+func (r *FetchRepo) GetCitizenByUuid(uuid string) (*models.Citizen, error) {
+	var data models.Citizen
+	if err := r.db.Preload("User").First(&data, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}

@@ -15,6 +15,55 @@ func NewFetchService(repo interfaces.FetchInterface) *FetchService {
 	}
 }
 
+func (s *FetchService) GetCitizens() (*[]response.Citizen, error) {
+	data, err := s.Repo.GetCitizens()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var resp []response.Citizen
+	for _, item := range *data {
+		resp = append(resp, response.Citizen{
+			Uuid:        item.Uuid,
+			Name:        item.Name,
+			Address:     item.Address,
+			PhoneNumber: item.PhoneNumber,
+			Nik:         item.Nik,
+			CreatedAt:   item.CreatedAt,
+			UpdatedAt:   item.UpdatedAt,
+			User: &response.User{
+				Uuid:     item.User.Uuid,
+				Username: item.User.Username,
+			},
+		})
+	}
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetCitizenByUuid(uuid string) (*response.Citizen, error) {
+	item, err := s.Repo.GetCitizenByUuid(uuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var resp = response.Citizen{
+		Uuid:        item.Uuid,
+		Name:        item.Name,
+		Address:     item.Address,
+		PhoneNumber: item.PhoneNumber,
+		Nik:         item.Nik,
+		CreatedAt:   item.CreatedAt,
+		UpdatedAt:   item.UpdatedAt,
+		User: &response.User{
+			Uuid:     item.User.Uuid,
+			Username: item.User.Username,
+		},
+	}
+
+	return &resp, nil
+}
+
 func (s *FetchService) GetGuests() (*[]response.Guest, error) {
 	data, err := s.Repo.GetGuests()
 	if err != nil {

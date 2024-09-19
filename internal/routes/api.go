@@ -44,6 +44,11 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.GET("/guests/:uuid", handlers.FetchHandler.GetGuestByUuid)
 		admin.PATCH("/users/activation/:uuid", handlers.AuthHandler.ActivationUser)
 
+		admin.GET("/citizens", handlers.FetchHandler.GetCitizens)
+		admin.GET("/citizens/:uuid", handlers.FetchHandler.GetCitizenByUuid)
+		admin.POST("/citizens", handlers.ManagementHandler.CreateCitizen)
+		admin.PUT("/citizens/:uuid", handlers.ManagementHandler.UpdateCitizen)
+
 		admin.GET("/categories", handlers.FetchHandler.GetCategories)
 		admin.GET("/categories/:uuid", handlers.FetchHandler.GetCategoryByUuid)
 		admin.POST("/categories", handlers.ManagementHandler.CreateCategory)
@@ -65,6 +70,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 		umkm.GET("/shops/transactions", handlers.FetchHandler.GetProductTransactionsByShop)
 		umkm.GET("/transactions/:uuid", handlers.FetchHandler.GetProductTransactionByUuid)
+		umkm.PATCH("/transactions/:transactionUuid/accept", handlers.TransactionHandler.AcceptProductTransaction)
+		umkm.PATCH("/transactions/:transactionUuid/unaccept", handlers.TransactionHandler.UnacceptProductTransaction)
 	}
 
 	return router

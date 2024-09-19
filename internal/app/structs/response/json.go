@@ -59,3 +59,14 @@ type ProductTransaction struct {
 	User       *User    `json:"user"`
 	Product    *Product `json:"product"`
 }
+
+type Citizen struct {
+	Uuid        string `json:"uuid"`
+	Name        string `json:"name"`
+	Nik         string `json:"nik"`
+	Address     string `json:"address"`
+	PhoneNumber string `json:"phone_number"`
+	CreatedAt   int64  `json:"created_at"`
+	UpdatedAt   int64  `json:"updated_at"`
+	User        *User  `json:"user"`
+}

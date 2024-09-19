@@ -70,3 +70,58 @@ func (s *TransactionService) DeleteProductTransaction(userUuid, transactionUuid 
 
 	return nil
 }
+
+func (s *TransactionService) AcceptProductTransaction(userUuid, transactionUuid string) error {
+
+	transaction, err := s.Repo.GetOwnerProductTransactionByUuid(userUuid, transactionUuid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Transaksi tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	if transaction.IsResponse {
+		return response.NOTFOUND_ERR("Transaksi sudah direspon sebelumnya")
+	}
+
+	model := models.ProductTransaction{
+		ID:         transaction.ID,
+		ProductID:  transaction.ProductID,
+		Quantity:   transaction.Quantity,
+		IsResponse: true,
+		IsAccept:   true,
+	}
+
+	if err := s.Repo.AcceptProductTransaction(&model); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *TransactionService) UnacceptProductTransaction(userUuid, transactionUuid string) error {
+
+	transaction, err := s.Repo.GetOwnerProductTransactionByUuid(userUuid, transactionUuid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Transaksi tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	if transaction.IsResponse {
+		return response.NOTFOUND_ERR("Transaksi sudah direspon sebelumnya")
+	}
+
+	model := models.ProductTransaction{
+		ID:         transaction.ID,
+		IsResponse: true,
+	}
+
+	if err := s.Repo.UpdateModel(&model); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}

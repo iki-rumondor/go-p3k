@@ -6,6 +6,9 @@ type FetchInterface interface {
 	GetGuests() (*[]models.Guest, error)
 	GetGuestByUuid(uuid string) (*models.Guest, error)
 
+	GetCitizens() (*[]models.Citizen, error)
+	GetCitizenByUuid(uuid string) (*models.Citizen, error)
+
 	GetCategories() (*[]models.Category, error)
 	GetCategoryByUuid(uuid string) (*models.Category, error)
 

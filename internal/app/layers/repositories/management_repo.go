@@ -3,6 +3,7 @@ package repositories
 import (
 	"github.com/iki-rumondor/go-p3k/internal/app/layers/interfaces"
 	"github.com/iki-rumondor/go-p3k/internal/app/structs/models"
+	"github.com/iki-rumondor/go-p3k/internal/app/structs/response"
 	"gorm.io/gorm"
 )
 
@@ -16,6 +17,11 @@ func NewManagementInterface(db *gorm.DB) interfaces.ManagementInterface {
 	}
 }
 
+func (r *ManagementRepo) CheckUniqueNik(nik string) bool {
+	rows := r.db.First(&models.Citizen{}, "nik = ?", nik).RowsAffected
+	return rows == 0
+}
+
 func (r *ManagementRepo) CreateModel(modelPointer interface{}) error {
 	return r.db.Create(modelPointer).Error
 }
@@ -24,6 +30,27 @@ func (r *ManagementRepo) UpdateCategory(uuid string, model *models.Category) err
 	var dataDB models.Category
 	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
 		return err
+	}
+
+	model.ID = dataDB.ID
+	return r.db.Updates(model).Error
+}
+
+func (r *ManagementRepo) UpdateCitizen(uuid string, model *models.Citizen) error {
+	var dataDB models.Citizen
+	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
+		return err
+	}
+
+	if dataDB.Nik != model.Nik {
+		if rows := r.db.First(&models.Citizen{}, "nik = ? AND id != ?", model.Nik, dataDB.ID).RowsAffected; rows == 1 {
+			return response.BADREQ_ERR("Nik yang digunakan sudah terdaftar")
+		}
+
+		model.User = &models.User{
+			Username: model.Nik,
+			Password: model.Nik,
+		}
 	}
 
 	model.ID = dataDB.ID

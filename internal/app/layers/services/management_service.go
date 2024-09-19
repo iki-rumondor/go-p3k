@@ -159,14 +159,51 @@ func (s *ManagementService) UpdateProduct(userUuid, uuid, imageName string, req 
 	return nil
 }
 
-// func (s *ManagementService) DeleteMajor(uuid string) error {
+func (s *ManagementService) CreateCitizen(req *request.Citizen) error {
+	if unique := s.Repo.CheckUniqueNik(req.Nik); !unique {
+		return response.BADREQ_ERR("Nik yang digunakan sudah terdafatar")
+	}
+	model := models.Citizen{
+		Name:        req.Name,
+		Nik:         req.Nik,
+		Address:     req.Address,
+		PhoneNumber: req.PhoneNumber,
+		User: &models.User{
+			Name:     req.Name,
+			Username: req.Nik,
+			Password: req.Nik,
+			RoleID:   5,
+			Active:   true,
+		},
+	}
 
-// 	if err := s.Repo.DeleteMajor(uuid); err != nil {
-// 		if errors.Is(err, gorm.ErrRecordNotFound) {
-// 			return response.NOTFOUND_ERR("Jurusan tidak ditemukan")
-// 		}
-// 		return response.SERVICE_INTERR
-// 	}
+	if err := s.Repo.CreateModel(&model); err != nil {
+		log.Println(err)
+		if utils.IsErrorType(err) {
+			return err
+		}
+		return response.SERVICE_INTERR
+	}
 
-// 	return nil
-// }
+	return nil
+}
+
+func (s *ManagementService) UpdateCitizen(uuid string, req *request.Citizen) error {
+
+	model := models.Citizen{
+		Name:        req.Name,
+		Nik:         req.Nik,
+		Address:     req.Address,
+		PhoneNumber: req.PhoneNumber,
+	}
+
+	if err := s.Repo.UpdateCitizen(uuid, &model); err != nil {
+		log.Println(err)
+		if utils.IsErrorType(err) {
+			return err
+		}
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}

@@ -205,13 +205,43 @@ func (h *ManagementHandler) UpdateProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Produk Berhasil Diperbarui"))
 }
 
-// func (h *ManagementHandler) DeleteMajor(c *gin.Context) {
+func (h *ManagementHandler) CreateCitizen(c *gin.Context) {
+	var body request.Citizen
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
 
-// 	uuid := c.Param("uuid")
-// 	if err := h.Service.DeleteMajor(uuid); err != nil {
-// 		utils.HandleError(c, err)
-// 		return
-// 	}
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
 
-// 	c.JSON(http.StatusOK, response.SUCCESS_RES("Jurusan Berhasil Dihapus"))
-// }
+	if err := h.Service.CreateCitizen(&body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.SUCCESS_RES("Data Masyarakat Berhasil Ditambahkan"))
+}
+
+func (h *ManagementHandler) UpdateCitizen(c *gin.Context) {
+	var body request.Citizen
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	uuid := c.Param("uuid")
+	if err := h.Service.UpdateCitizen(uuid, &body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Data Masyarakat Berhasil Diperbarui"))
+}

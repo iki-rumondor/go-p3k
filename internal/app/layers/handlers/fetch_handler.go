@@ -43,6 +43,27 @@ func (h *FetchHandler) GetGuestByUuid(c *gin.Context) {
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
 
+func (h *FetchHandler) GetCitizens(c *gin.Context) {
+	resp, err := h.Service.GetCitizens()
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetCitizenByUuid(c *gin.Context) {
+	uuid := c.Param("uuid")
+	resp, err := h.Service.GetCitizenByUuid(uuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
 func (h *FetchHandler) GetCategories(c *gin.Context) {
 
 	resp, err := h.Service.GetCategories()
