@@ -246,3 +246,75 @@ func (s *ManagementService) UpdateMember(uuid string, req *request.Member) error
 
 	return nil
 }
+
+func (s *ManagementService) CreateActivity(userUuid, imageName string, req *request.Activity) error {
+	model := models.Activity{
+		Title:       req.Title,
+		Description: req.Description,
+		ImageName:   imageName,
+	}
+
+	if err := s.Repo.CreateActivity(userUuid, &model); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *ManagementService) UpdateActivity(userUuid, uuid, imageName string, req *request.Activity) error {
+
+	model := models.Activity{
+		Title:       req.Title,
+		Description: req.Description,
+		ImageName:   imageName,
+	}
+
+	oldImage, err := s.Repo.UpdateActivity(userUuid, uuid, &model)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Kegiatan tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	activitiesFolder := "internal/files/activities"
+	pathFile := filepath.Join(activitiesFolder, oldImage)
+
+	if imageName != "" {
+		if err := os.Remove(pathFile); err != nil {
+			log.Println(err.Error())
+		}
+	}
+
+	return nil
+}
+
+func (s *ManagementService) DeleteActivity(userUuid, uuid string) error {
+	user, err := s.Repo.GetUserByUuid(userUuid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("User tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+	if user.RoleID != 1 && user.RoleID != 2 {
+		return response.UNAUTH_ERR("Akses dibatasi")
+	}
+
+	imageName, err := s.Repo.DeleteActivity(uuid)
+	if err != nil {
+		log.Println(err.Error())
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Kegiatan tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	activitiesFolder := "internal/files/activities"
+	pathFile := filepath.Join(activitiesFolder, imageName)
+	if err := os.Remove(pathFile); err != nil {
+		log.Println(err.Error())
+	}
+
+	return nil
+}

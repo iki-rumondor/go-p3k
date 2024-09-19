@@ -122,3 +122,56 @@ func (r *ManagementRepo) UpdateProduct(userUuid string, uuid string, model *mode
 
 	return dataDB.Image, nil
 }
+
+func (r *ManagementRepo) CreateActivity(userUuid string, model *models.Activity) error {
+	var user models.User
+	if err := r.db.First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return err
+	}
+
+	model.CreatedUserID = user.ID
+	model.UpdatedUserID = user.ID
+	return r.db.Create(model).Error
+}
+
+func (r *ManagementRepo) UpdateActivity(userUuid string, uuid string, model *models.Activity) (string, error) {
+	var user models.User
+	if err := r.db.First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return "", err
+	}
+
+	var dataDB models.Activity
+	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
+		return "", err
+	}
+
+	model.ID = dataDB.ID
+	model.UpdatedUserID = user.ID
+	if err := r.db.Updates(model).Error; err != nil {
+		return "", err
+	}
+
+	return dataDB.ImageName, nil
+}
+
+func (r *ManagementRepo) DeleteActivity(uuid string) (string, error) {
+	var dataDB models.Activity
+	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
+		return "", err
+	}
+
+	if err := r.db.Delete(&dataDB).Error; err != nil {
+		return "", err
+	}
+
+	return dataDB.ImageName, nil
+}
+
+func (r *ManagementRepo) GetUserByUuid(userUuid string) (*models.User, error) {
+	var user models.User
+	if err := r.db.First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}

@@ -433,3 +433,54 @@ func (s *FetchService) GetMemberByUuid(uuid string) (*response.Member, error) {
 
 	return &resp, nil
 }
+
+func (s *FetchService) GetActivities() (*[]response.Activity, error) {
+	data, err := s.Repo.GetActivities()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var resp []response.Activity
+	for _, item := range *data {
+		resp = append(resp, response.Activity{
+			Uuid:        item.Uuid,
+			Title:       item.Title,
+			Description: item.Description,
+			ImageName:   item.ImageName,
+			CreatedAt:   item.CreatedAt,
+			UpdatedAt:   item.UpdatedAt,
+			CreatedUser: &response.User{
+				Name: item.CreatedUser.Name,
+			},
+			UpdatedUser: &response.User{
+				Name: item.UpdatedUser.Name,
+			},
+		})
+	}
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetActivityByUuid(uuid string) (*response.Activity, error) {
+	item, err := s.Repo.GetActivityByUuid(uuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var resp = response.Activity{
+		Uuid:        item.Uuid,
+		Title:       item.Title,
+		Description: item.Description,
+		ImageName:   item.ImageName,
+		CreatedAt:   item.CreatedAt,
+		UpdatedAt:   item.UpdatedAt,
+		CreatedUser: &response.User{
+			Name: item.CreatedUser.Name,
+		},
+		UpdatedUser: &response.User{
+			Name: item.UpdatedUser.Name,
+		},
+	}
+
+	return &resp, nil
+}

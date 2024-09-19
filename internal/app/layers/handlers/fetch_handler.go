@@ -211,9 +211,39 @@ func (h *FetchHandler) GetMemberByUuid(c *gin.Context) {
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
 
+func (h *FetchHandler) GetActivities(c *gin.Context) {
+
+	resp, err := h.Service.GetActivities()
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetActivityByUuid(c *gin.Context) {
+
+	uuid := c.Param("uuid")
+	resp, err := h.Service.GetActivityByUuid(uuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
 func (h *FetchHandler) GetProductImage(c *gin.Context) {
 	filename := c.Param("filename")
 	folder := "internal/files/products"
+	pathFile := filepath.Join(folder, filename)
+	c.File(pathFile)
+}
+
+func (h *FetchHandler) GetActivityImage(c *gin.Context) {
+	filename := c.Param("filename")
+	folder := "internal/files/activities"
 	pathFile := filepath.Join(folder, filename)
 	c.File(pathFile)
 }

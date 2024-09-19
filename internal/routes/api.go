@@ -27,6 +27,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		public.GET("/public/products/:uuid", handlers.FetchHandler.GetPublicProductByUuid)
 
 		public.GET("/files/products/:filename", handlers.FetchHandler.GetProductImage)
+		public.GET("/files/activities/:filename", handlers.FetchHandler.GetActivityImage)
 	}
 
 	user := router.Group("api").Use(IsValidJWT()).Use(SetUserUuid())
@@ -36,6 +37,12 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		user.PATCH("/products/buy", handlers.TransactionHandler.BuyProduct)
 		user.GET("/transactions", handlers.FetchHandler.GetProductTransactions)
 		user.DELETE("/transactions/:uuid", handlers.TransactionHandler.DeleteProductTransaction)
+
+		user.GET("/activities", handlers.FetchHandler.GetActivities)
+		user.GET("/activities/:uuid", handlers.FetchHandler.GetActivityByUuid)
+		user.POST("/activities", handlers.ManagementHandler.CreateActivity)
+		user.PUT("/activities/:uuid", handlers.ManagementHandler.UpdateActivity)
+		user.DELETE("/activities/:uuid", handlers.ManagementHandler.DeleteActivity)
 	}
 
 	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN"))

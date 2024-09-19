@@ -187,3 +187,19 @@ func (r *FetchRepo) GetMemberByUuid(uuid string) (*models.Member, error) {
 	}
 	return &data, nil
 }
+
+func (r *FetchRepo) GetActivities() (*[]models.Activity, error) {
+	var data []models.Activity
+	if err := r.db.Preload("CreatedUser").Preload("UpdatedUser").Find(&data).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
+func (r *FetchRepo) GetActivityByUuid(uuid string) (*models.Activity, error) {
+	var data models.Activity
+	if err := r.db.Preload("CreatedUser").Preload("UpdatedUser").First(&data, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}

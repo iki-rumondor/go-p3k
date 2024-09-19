@@ -5,3 +5,8 @@ type Product struct {
 	Price string `form:"price" valid:"required~field harga tidak ditemukan"`
 	Stock string `form:"stock" valid:"required~field stok tidak ditemukan"`
 }
+
+type Activity struct {
+	Title       string `form:"title" valid:"required~field judul tidak ditemukan"`
+	Description string `form:"description" valid:"required~field deskripsi tidak ditemukan"`
+}

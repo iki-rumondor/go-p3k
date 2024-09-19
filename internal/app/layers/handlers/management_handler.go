@@ -286,3 +286,113 @@ func (h *ManagementHandler) UpdateMember(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Data Anggota Berhasil Diperbarui"))
 }
+
+func (h *ManagementHandler) CreateActivity(c *gin.Context) {
+	var body request.Activity
+	if err := c.Bind(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if status := utils.CheckTypeFile(file, []string{"jpg", "png", "jpeg"}); !status {
+		utils.HandleError(c, response.BADREQ_ERR("Tipe file tidak valid, gunakan tipe jpg, png, atau jpeg"))
+		return
+	}
+
+	if moreThan := utils.CheckFileSize(file, 1); moreThan {
+		utils.HandleError(c, response.BADREQ_ERR("File yang diupload lebih dari 1MB"))
+		return
+	}
+
+	activitiesFolder := "internal/files/activities"
+	filename := utils.RandomFileName(file)
+	pathFile := filepath.Join(activitiesFolder, filename)
+
+	if err := utils.SaveUploadedFile(file, pathFile); err != nil {
+		if err := os.Remove(pathFile); err != nil {
+			log.Println(err.Error())
+		}
+		utils.HandleError(c, response.HANDLER_INTERR)
+		return
+	}
+
+	userUuid := c.GetString("uuid")
+	if err := h.Service.CreateActivity(userUuid, filename, &body); err != nil {
+		if err := os.Remove(pathFile); err != nil {
+			log.Println(err.Error())
+		}
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.SUCCESS_RES("Kegiatan Berhasil Ditambahkan"))
+}
+
+func (h *ManagementHandler) UpdateActivity(c *gin.Context) {
+	var body request.Activity
+	if err := c.Bind(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+	var filename string
+	file, _ := c.FormFile("file")
+	if file != nil {
+		if status := utils.CheckTypeFile(file, []string{"jpg", "png", "jpeg"}); !status {
+			utils.HandleError(c, response.BADREQ_ERR("Tipe file tidak valid, gunakan tipe jpg, png, atau jpeg"))
+			return
+		}
+
+		if moreThan := utils.CheckFileSize(file, 1); moreThan {
+			utils.HandleError(c, response.BADREQ_ERR("File yang diupload lebih dari 1MB"))
+			return
+		}
+
+		activitiesFolder := "internal/files/activities"
+		filename = utils.RandomFileName(file)
+		pathFile := filepath.Join(activitiesFolder, filename)
+
+		if err := utils.SaveUploadedFile(file, pathFile); err != nil {
+			if err := os.Remove(pathFile); err != nil {
+				log.Println(err.Error())
+			}
+			utils.HandleError(c, response.HANDLER_INTERR)
+			return
+		}
+	}
+
+	userUuid := c.GetString("uuid")
+	uuid := c.Param("uuid")
+	if err := h.Service.UpdateActivity(userUuid, uuid, filename, &body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Kegiatan Berhasil Diperbarui"))
+}
+
+func (h *ManagementHandler) DeleteActivity(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	uuid := c.Param("uuid")
+	if err := h.Service.DeleteActivity(userUuid, uuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Kegiatan Berhasil Dihapus"))
+}
