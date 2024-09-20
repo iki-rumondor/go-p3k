@@ -198,8 +198,33 @@ func (r *FetchRepo) GetActivities() (*[]models.Activity, error) {
 
 func (r *FetchRepo) GetActivityByUuid(uuid string) (*models.Activity, error) {
 	var data models.Activity
-	if err := r.db.Preload("CreatedUser").Preload("UpdatedUser").First(&data, "uuid = ?", uuid).Error; err != nil {
+	if err := r.db.Preload("CreatedUser").Preload("UpdatedUser").Preload("Members.Member").First(&data, "uuid = ?", uuid).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
+}
+
+func (r *FetchRepo) GetMembersNotInActivity(activityUuid string) (*[]models.Member, error) {
+	var activity models.Activity
+	if err := r.db.First(&activity, "uuid = ?", activityUuid).Error; err != nil {
+		return nil, err
+	}
+
+	var memberIDs []uint
+	if err := r.db.Model(&models.MemberActivity{}).Where("activity_id = ?", activity.ID).Pluck("member_id", &memberIDs).Error; err != nil {
+		return nil, err
+	}
+
+	var resp []models.Member
+	if len(memberIDs) == 0 {
+		if err := r.db.Find(&resp).Error; err != nil {
+			return nil, err
+		}
+		return &resp, nil
+	}
+
+	if err := r.db.Find(&resp, "id NOT IN (?)", memberIDs).Error; err != nil {
+		return nil, err
+	}
+	return &resp, nil
 }

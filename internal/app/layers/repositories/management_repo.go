@@ -175,3 +175,58 @@ func (r *ManagementRepo) GetUserByUuid(userUuid string) (*models.User, error) {
 
 	return &user, nil
 }
+
+func (r *ManagementRepo) CheckExistMemberActivity(memberUuid, activityUuid string) (bool, error) {
+	var member models.Member
+	if err := r.db.First(&member, "uuid = ?", memberUuid).Error; err != nil {
+		return false, err
+	}
+
+	var activity models.Activity
+	if err := r.db.First(&activity, "uuid = ?", activityUuid).Error; err != nil {
+		return false, err
+	}
+
+	rows := r.db.First(&models.MemberActivity{}, "member_id = ? AND activity_id = ?", member.ID, activity.ID).RowsAffected
+
+	return rows == 1, nil
+}
+
+func (r *ManagementRepo) CreateMemberActivity(userID uint, memberUuid, activityUuid string) error {
+	var member models.Member
+	if err := r.db.First(&member, "uuid = ?", memberUuid).Error; err != nil {
+		return err
+	}
+
+	var activity models.Activity
+	if err := r.db.First(&activity, "uuid = ?", activityUuid).Error; err != nil {
+		return err
+	}
+
+	model := models.MemberActivity{
+		MemberID:      member.ID,
+		ActivityID:    activity.ID,
+		CreatedUserID: userID,
+	}
+
+	return r.db.Create(&model).Error
+}
+
+func (r *ManagementRepo) DeleteMemberActivity(memberUuid, activityUuid string) error {
+	var member models.Member
+	if err := r.db.First(&member, "uuid = ?", memberUuid).Error; err != nil {
+		return err
+	}
+
+	var activity models.Activity
+	if err := r.db.First(&activity, "uuid = ?", activityUuid).Error; err != nil {
+		return err
+	}
+
+	var model models.MemberActivity
+	if err := r.db.First(&model, "member_id = ? AND activity_id = ?", member.ID, activity.ID).Error; err != nil {
+		return err
+	}
+
+	return r.db.Delete(&model).Error
+}

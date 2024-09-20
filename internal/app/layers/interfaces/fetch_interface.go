@@ -29,4 +29,6 @@ type FetchInterface interface {
 
 	GetActivities() (*[]models.Activity, error)
 	GetActivityByUuid(uuid string) (*models.Activity, error)
+
+	GetMembersNotInActivity(activityUuid string) (*[]models.Member, error)
 }

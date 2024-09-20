@@ -43,6 +43,11 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		user.POST("/activities", handlers.ManagementHandler.CreateActivity)
 		user.PUT("/activities/:uuid", handlers.ManagementHandler.UpdateActivity)
 		user.DELETE("/activities/:uuid", handlers.ManagementHandler.DeleteActivity)
+
+		user.GET("/members", handlers.FetchHandler.GetMembers)
+		user.GET("/members/not/activities/:activityUuid", handlers.FetchHandler.GetMembersNotInActivity)
+		user.POST("/members/activities", handlers.ManagementHandler.CreateMemberActivity)
+		user.DELETE("/members/:memberUuid/activities/:activityUuid", handlers.ManagementHandler.DeleteMemberActivity)
 	}
 
 	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN"))
@@ -66,7 +71,6 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.POST("/shops", handlers.ManagementHandler.CreateShop)
 		admin.PUT("/shops/:uuid", handlers.ManagementHandler.UpdateShop)
 
-		admin.GET("/members", handlers.FetchHandler.GetMembers)
 		admin.GET("/members/:uuid", handlers.FetchHandler.GetMemberByUuid)
 		admin.POST("/members", handlers.ManagementHandler.CreateMember)
 		admin.PUT("/members/:uuid", handlers.ManagementHandler.UpdateMember)

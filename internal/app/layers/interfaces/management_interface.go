@@ -5,7 +5,6 @@ import "github.com/iki-rumondor/go-p3k/internal/app/structs/models"
 type ManagementInterface interface {
 	CheckUniqueNik(nik string) bool
 	CreateModel(pointerModel interface{}) error
-	GetUserByUuid(uuid string) (*models.User, error)
 
 	UpdateCategory(uuid string, model *models.Category) error
 	UpdateCitizen(uuid string, model *models.Citizen) error
@@ -20,4 +19,10 @@ type ManagementInterface interface {
 	CreateActivity(userUuid string, model *models.Activity) error
 	UpdateActivity(userUuid string, uuid string, model *models.Activity) (string, error)
 	DeleteActivity(uuid string) (string, error)
+
+	GetUserByUuid(uuid string) (*models.User, error)
+	CheckExistMemberActivity(memberUuid, activityUuid string) (bool, error)
+
+	CreateMemberActivity(userID uint, memberUuid, activityUuid string) error
+	DeleteMemberActivity(memberUuid, activityUuid string) error
 }

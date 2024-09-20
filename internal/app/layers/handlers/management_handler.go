@@ -396,3 +396,36 @@ func (h *ManagementHandler) DeleteActivity(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Kegiatan Berhasil Dihapus"))
 }
+
+func (h *ManagementHandler) CreateMemberActivity(c *gin.Context) {
+	var body request.MemberActivity
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	userUuid := c.GetString("uuid")
+	if err := h.Service.CreateMemberActivity(userUuid, &body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Anggota Kegiatan Berhasil Ditambahkan"))
+}
+
+func (h *ManagementHandler) DeleteMemberActivity(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	memberUuid := c.Param("memberUuid")
+	activityUuid := c.Param("activityUuid")
+	if err := h.Service.DeleteMemberActivity(userUuid, memberUuid, activityUuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Anggota Kegiatan Berhasil Dihapus"))
+}

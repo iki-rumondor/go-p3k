@@ -248,6 +248,17 @@ func (s *ManagementService) UpdateMember(uuid string, req *request.Member) error
 }
 
 func (s *ManagementService) CreateActivity(userUuid, imageName string, req *request.Activity) error {
+	user, err := s.Repo.GetUserByUuid(userUuid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("User tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+	if user.RoleID != 1 && user.RoleID != 2 {
+		return response.UNAUTH_ERR("Akses dibatasi")
+	}
+
 	model := models.Activity{
 		Title:       req.Title,
 		Description: req.Description,
@@ -262,6 +273,16 @@ func (s *ManagementService) CreateActivity(userUuid, imageName string, req *requ
 }
 
 func (s *ManagementService) UpdateActivity(userUuid, uuid, imageName string, req *request.Activity) error {
+	user, err := s.Repo.GetUserByUuid(userUuid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("User tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+	if user.RoleID != 1 && user.RoleID != 2 {
+		return response.UNAUTH_ERR("Akses dibatasi")
+	}
 
 	model := models.Activity{
 		Title:       req.Title,
@@ -314,6 +335,59 @@ func (s *ManagementService) DeleteActivity(userUuid, uuid string) error {
 	pathFile := filepath.Join(activitiesFolder, imageName)
 	if err := os.Remove(pathFile); err != nil {
 		log.Println(err.Error())
+	}
+
+	return nil
+}
+
+func (s *ManagementService) CreateMemberActivity(userUuid string, req *request.MemberActivity) error {
+	user, err := s.Repo.GetUserByUuid(userUuid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("User tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+	if user.RoleID != 1 && user.RoleID != 2 {
+		return response.UNAUTH_ERR("Akses dibatasi")
+	}
+
+	exist, err := s.Repo.CheckExistMemberActivity(req.MemberUuid, req.ActivityUuid)
+	if err != nil {
+		log.Println(err.Error())
+		return response.SERVICE_INTERR
+	}
+
+	if exist {
+		return response.BADREQ_ERR("Anggota telah ditambahkan")
+	}
+
+	if err := s.Repo.CreateMemberActivity(user.ID, req.MemberUuid, req.ActivityUuid); err != nil {
+		log.Println(err.Error())
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *ManagementService) DeleteMemberActivity(userUuid, memberUuid, activityUuid string) error {
+	user, err := s.Repo.GetUserByUuid(userUuid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("User tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+	if user.RoleID != 1 && user.RoleID != 2 {
+		return response.UNAUTH_ERR("Akses dibatasi")
+	}
+
+	if err := s.Repo.DeleteMemberActivity(memberUuid, activityUuid); err != nil {
+		log.Println(err.Error())
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Anggota kegiatan tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
 	}
 
 	return nil

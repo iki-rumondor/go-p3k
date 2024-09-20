@@ -46,3 +46,8 @@ type Member struct {
 	Name  string `json:"name" valid:"required~field nama tidak ditemukan"`
 	Group string `json:"group" valid:"required~field pokja tidak ditemukan"`
 }
+
+type MemberActivity struct {
+	ActivityUuid string `json:"activity_uuid" valid:"required~field uuid kegiatan tidak ditemukan"`
+	MemberUuid   string `json:"member_uuid" valid:"required~field uuid anggota tidak ditemukan"`
+}

@@ -467,6 +467,13 @@ func (s *FetchService) GetActivityByUuid(uuid string) (*response.Activity, error
 		return nil, response.SERVICE_INTERR
 	}
 
+	var members = []response.Member{}
+	for _, i := range *item.Members {
+		members = append(members, response.Member{
+			Uuid: i.Member.Uuid,
+			Name: i.Member.Name,
+		})
+	}
 	var resp = response.Activity{
 		Uuid:        item.Uuid,
 		Title:       item.Title,
@@ -480,6 +487,24 @@ func (s *FetchService) GetActivityByUuid(uuid string) (*response.Activity, error
 		UpdatedUser: &response.User{
 			Name: item.UpdatedUser.Name,
 		},
+		Members: &members,
+	}
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetMembersNotInActivity(activityUuid string) (*[]response.Member, error) {
+	data, err := s.Repo.GetMembersNotInActivity(activityUuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var resp []response.Member
+	for _, item := range *data {
+		resp = append(resp, response.Member{
+			Uuid: item.Uuid,
+			Name: item.Name,
+		})
 	}
 
 	return &resp, nil

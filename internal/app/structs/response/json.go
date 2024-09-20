@@ -81,12 +81,13 @@ type Member struct {
 }
 
 type Activity struct {
-	Uuid        string `json:"uuid"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	ImageName   string `json:"image_name"`
-	CreatedAt   int64  `json:"created_at"`
-	UpdatedAt   int64  `json:"updated_at"`
-	CreatedUser *User  `json:"created_user"`
-	UpdatedUser *User  `json:"updated_user"`
+	Uuid        string    `json:"uuid"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	ImageName   string    `json:"image_name"`
+	CreatedAt   int64     `json:"created_at"`
+	UpdatedAt   int64     `json:"updated_at"`
+	CreatedUser *User     `json:"created_user"`
+	UpdatedUser *User     `json:"updated_user"`
+	Members     *[]Member `json:"members"`
 }

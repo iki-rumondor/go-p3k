@@ -234,6 +234,17 @@ func (h *FetchHandler) GetActivityByUuid(c *gin.Context) {
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
 
+func (h *FetchHandler) GetMembersNotInActivity(c *gin.Context) {
+	activityUuid := c.Param("activityUuid")
+	resp, err := h.Service.GetMembersNotInActivity(activityUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
 func (h *FetchHandler) GetProductImage(c *gin.Context) {
 	filename := c.Param("filename")
 	folder := "internal/files/products"
