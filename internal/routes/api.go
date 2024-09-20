@@ -23,8 +23,12 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 	{
 		public.POST("/verify-user", handlers.AuthHandler.VerifyUser)
 		public.POST("/register/guest", handlers.AuthHandler.RegisterGuest)
+
 		public.GET("/public/products", handlers.FetchHandler.GetAllProducts)
 		public.GET("/public/products/:uuid", handlers.FetchHandler.GetPublicProductByUuid)
+
+		public.GET("/activities", handlers.FetchHandler.GetActivities)
+		public.GET("/activities/:uuid", handlers.FetchHandler.GetActivityByUuid)
 
 		public.GET("/files/products/:filename", handlers.FetchHandler.GetProductImage)
 		public.GET("/files/activities/:filename", handlers.FetchHandler.GetActivityImage)
@@ -38,8 +42,6 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		user.GET("/transactions", handlers.FetchHandler.GetProductTransactions)
 		user.DELETE("/transactions/:uuid", handlers.TransactionHandler.DeleteProductTransaction)
 
-		user.GET("/activities", handlers.FetchHandler.GetActivities)
-		user.GET("/activities/:uuid", handlers.FetchHandler.GetActivityByUuid)
 		user.POST("/activities", handlers.ManagementHandler.CreateActivity)
 		user.PUT("/activities/:uuid", handlers.ManagementHandler.UpdateActivity)
 		user.DELETE("/activities/:uuid", handlers.ManagementHandler.DeleteActivity)

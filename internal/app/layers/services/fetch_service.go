@@ -470,8 +470,9 @@ func (s *FetchService) GetActivityByUuid(uuid string) (*response.Activity, error
 	var members = []response.Member{}
 	for _, i := range *item.Members {
 		members = append(members, response.Member{
-			Uuid: i.Member.Uuid,
-			Name: i.Member.Name,
+			Uuid:  i.Member.Uuid,
+			Name:  i.Member.Name,
+			Group: i.Member.Group,
 		})
 	}
 	var resp = response.Activity{
