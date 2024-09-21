@@ -1,6 +1,8 @@
 package services
 
 import (
+	"strconv"
+
 	"github.com/iki-rumondor/go-p3k/internal/app/layers/interfaces"
 	"github.com/iki-rumondor/go-p3k/internal/app/structs/response"
 )
@@ -207,8 +209,16 @@ func (s *FetchService) GetShopByUuid(uuid string) (*response.Shop, error) {
 	return &resp, nil
 }
 
-func (s *FetchService) GetAllProducts() (*[]response.Product, error) {
-	data, err := s.Repo.GetAllProducts()
+func (s *FetchService) GetAllProducts(limit string) (*[]response.Product, error) {
+	var limitNumber = -1
+	if limit != "" {
+		result, err := strconv.Atoi(limit)
+		if err == nil {
+			limitNumber = result
+		}
+	}
+
+	data, err := s.Repo.GetAllProducts(limitNumber)
 	if err != nil {
 		return nil, response.SERVICE_INTERR
 	}
@@ -434,8 +444,16 @@ func (s *FetchService) GetMemberByUuid(uuid string) (*response.Member, error) {
 	return &resp, nil
 }
 
-func (s *FetchService) GetActivities() (*[]response.Activity, error) {
-	data, err := s.Repo.GetActivities()
+func (s *FetchService) GetActivities(limit string) (*[]response.Activity, error) {
+	var limitNumber = -1
+	if limit != "" {
+		result, err := strconv.Atoi(limit)
+		if err == nil {
+			limitNumber = result
+		}
+	}
+
+	data, err := s.Repo.GetActivities(limitNumber)
 	if err != nil {
 		return nil, response.SERVICE_INTERR
 	}

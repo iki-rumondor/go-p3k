@@ -15,7 +15,7 @@ type FetchInterface interface {
 	GetShops() (*[]models.Shop, error)
 	GetShopByUuid(uuid string) (*models.Shop, error)
 
-	GetAllProducts() (*[]models.Product, error)
+	GetAllProducts(limit int) (*[]models.Product, error)
 	GetPublicProductByUuid(uuid string) (*models.Product, error)
 	GetProducts(userUuid string) (*[]models.Product, error)
 	GetProductByUuid(userUuid, uuid string) (*models.Product, error)
@@ -27,7 +27,7 @@ type FetchInterface interface {
 	GetMembers() (*[]models.Member, error)
 	GetMemberByUuid(uuid string) (*models.Member, error)
 
-	GetActivities() (*[]models.Activity, error)
+	GetActivities(limit int) (*[]models.Activity, error)
 	GetActivityByUuid(uuid string) (*models.Activity, error)
 
 	GetMembersNotInActivity(activityUuid string) (*[]models.Member, error)

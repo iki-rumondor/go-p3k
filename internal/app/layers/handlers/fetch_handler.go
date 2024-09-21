@@ -111,7 +111,8 @@ func (h *FetchHandler) GetShopByUuid(c *gin.Context) {
 }
 
 func (h *FetchHandler) GetAllProducts(c *gin.Context) {
-	resp, err := h.Service.GetAllProducts()
+	limit := c.Query("limit")
+	resp, err := h.Service.GetAllProducts(limit)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
@@ -212,8 +213,8 @@ func (h *FetchHandler) GetMemberByUuid(c *gin.Context) {
 }
 
 func (h *FetchHandler) GetActivities(c *gin.Context) {
-
-	resp, err := h.Service.GetActivities()
+	limit := c.Query("limit")
+	resp, err := h.Service.GetActivities(limit)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
