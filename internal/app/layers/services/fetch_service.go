@@ -252,10 +252,11 @@ func (s *FetchService) GetPublicProductByUuid(uuid string) (*response.Product, e
 	}
 
 	var resp = response.Product{
-		Uuid:  item.Uuid,
-		Name:  item.Name,
-		Price: item.Price,
-		Stock: item.Stock,
+		Uuid:      item.Uuid,
+		Name:      item.Name,
+		Price:     item.Price,
+		Stock:     item.Stock,
+		ImageName: item.Image,
 		Shop: &response.Shop{
 			Name: item.Shop.Name,
 			Category: &response.Category{
