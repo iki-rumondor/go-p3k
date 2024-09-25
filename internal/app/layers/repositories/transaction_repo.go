@@ -44,7 +44,7 @@ func (r *TransactionRepo) GetOwnerProductTransactionByUuid(userUuid, transaction
 	}
 
 	var transaction models.ProductTransaction
-	if err := r.db.First(&transaction, "uuid = ? AND product_id IN (?)", transactionUuid, productIDs).Error; err != nil {
+	if err := r.db.Preload("Product").First(&transaction, "uuid = ? AND product_id IN (?)", transactionUuid, productIDs).Error; err != nil {
 		return nil, err
 	}
 
@@ -94,11 +94,10 @@ func (r *TransactionRepo) AcceptProductTransaction(model *models.ProductTransact
 
 	return r.db.Transaction(func(tx *gorm.DB) error {
 		updatedProduct := models.Product{
-			ID:    product.ID,
-			Stock: product.Stock - model.Quantity,
+			ID: product.ID,
 		}
 
-		if err := tx.Updates(&updatedProduct).Error; err != nil {
+		if err := tx.Model(&updatedProduct).Update("stock", product.Stock-model.Quantity).Error; err != nil {
 			return err
 		}
 

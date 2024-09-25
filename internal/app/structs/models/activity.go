@@ -8,6 +8,7 @@ import (
 type Activity struct {
 	ID            uint   `gorm:"primaryKey"`
 	Uuid          string `gorm:"not_null;unique;size:64"`
+	Group         uint   `gorm:"not_null"`
 	Title         string `gorm:"not_null"`
 	Description   string `gorm:"not_null"`
 	ImageName     string `gorm:"not_null;"`

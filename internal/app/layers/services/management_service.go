@@ -212,8 +212,9 @@ func (s *ManagementService) CreateMember(req *request.Member) error {
 	var username = utils.GenerateRandomString(8)
 
 	model := models.Member{
-		Name:  req.Name,
-		Group: req.Group,
+		Name:     req.Name,
+		Group:    req.Group,
+		Position: req.Position,
 		User: &models.User{
 			Name:     req.Name,
 			Username: username,
@@ -233,8 +234,9 @@ func (s *ManagementService) CreateMember(req *request.Member) error {
 func (s *ManagementService) UpdateMember(uuid string, req *request.Member) error {
 
 	model := models.Member{
-		Name:  req.Name,
-		Group: req.Group,
+		Name:     req.Name,
+		Group:    req.Group,
+		Position: req.Position,
 	}
 
 	if err := s.Repo.UpdateMember(uuid, &model); err != nil {
@@ -262,6 +264,7 @@ func (s *ManagementService) CreateActivity(userUuid, imageName string, req *requ
 	model := models.Activity{
 		Title:       req.Title,
 		Description: req.Description,
+		Group:       req.Group,
 		ImageName:   imageName,
 	}
 
@@ -287,6 +290,7 @@ func (s *ManagementService) UpdateActivity(userUuid, uuid, imageName string, req
 	model := models.Activity{
 		Title:       req.Title,
 		Description: req.Description,
+		Group:       req.Group,
 		ImageName:   imageName,
 	}
 

@@ -434,6 +434,7 @@ func (s *FetchService) GetMemberByUuid(uuid string) (*response.Member, error) {
 		Uuid:      item.Uuid,
 		Name:      item.Name,
 		Group:     item.Group,
+		Position:  item.Position,
 		CreatedAt: item.CreatedAt,
 		UpdatedAt: item.UpdatedAt,
 		User: &response.User{
@@ -497,6 +498,7 @@ func (s *FetchService) GetActivityByUuid(uuid string) (*response.Activity, error
 	var resp = response.Activity{
 		Uuid:        item.Uuid,
 		Title:       item.Title,
+		Group:       item.Group,
 		Description: item.Description,
 		ImageName:   item.ImageName,
 		CreatedAt:   item.CreatedAt,

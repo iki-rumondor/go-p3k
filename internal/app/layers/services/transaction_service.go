@@ -85,6 +85,10 @@ func (s *TransactionService) AcceptProductTransaction(userUuid, transactionUuid 
 		return response.NOTFOUND_ERR("Transaksi sudah direspon sebelumnya")
 	}
 
+	if transaction.Quantity > transaction.Product.Stock {
+		return response.BADREQ_ERR("Stok tidak mencukupi")
+	}
+
 	model := models.ProductTransaction{
 		ID:         transaction.ID,
 		ProductID:  transaction.ProductID,
