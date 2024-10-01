@@ -65,46 +65,46 @@ func (h *ManagementHandler) UpdateCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Kategori Berhasil Diperbarui"))
 }
 
-func (h *ManagementHandler) CreateShop(c *gin.Context) {
-	var body request.Shop
-	if err := c.BindJSON(&body); err != nil {
-		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
-		return
-	}
+// func (h *ManagementHandler) CreateShop(c *gin.Context) {
+// 	var body request.Shop
+// 	if err := c.BindJSON(&body); err != nil {
+// 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+// 		return
+// 	}
 
-	if _, err := govalidator.ValidateStruct(&body); err != nil {
-		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
-		return
-	}
+// 	if _, err := govalidator.ValidateStruct(&body); err != nil {
+// 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+// 		return
+// 	}
 
-	if err := h.Service.CreateShop(&body); err != nil {
-		utils.HandleError(c, err)
-		return
-	}
+// 	if err := h.Service.CreateShop(&body); err != nil {
+// 		utils.HandleError(c, err)
+// 		return
+// 	}
 
-	c.JSON(http.StatusCreated, response.SUCCESS_RES("Umkm Berhasil Ditambahkan"))
-}
+// 	c.JSON(http.StatusCreated, response.SUCCESS_RES("Umkm Berhasil Ditambahkan"))
+// }
 
-func (h *ManagementHandler) UpdateShop(c *gin.Context) {
-	var body request.Shop
-	if err := c.BindJSON(&body); err != nil {
-		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
-		return
-	}
+// func (h *ManagementHandler) UpdateShop(c *gin.Context) {
+// 	var body request.Shop
+// 	if err := c.BindJSON(&body); err != nil {
+// 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+// 		return
+// 	}
 
-	if _, err := govalidator.ValidateStruct(&body); err != nil {
-		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
-		return
-	}
+// 	if _, err := govalidator.ValidateStruct(&body); err != nil {
+// 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+// 		return
+// 	}
 
-	uuid := c.Param("uuid")
-	if err := h.Service.UpdateShop(uuid, &body); err != nil {
-		utils.HandleError(c, err)
-		return
-	}
+// 	uuid := c.Param("uuid")
+// 	if err := h.Service.UpdateShop(uuid, &body); err != nil {
+// 		utils.HandleError(c, err)
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, response.SUCCESS_RES("Umkm Berhasil Diperbarui"))
-}
+// 	c.JSON(http.StatusOK, response.SUCCESS_RES("Umkm Berhasil Diperbarui"))
+// }
 
 func (h *ManagementHandler) CreateProduct(c *gin.Context) {
 	var body request.Product

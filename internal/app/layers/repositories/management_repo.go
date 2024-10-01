@@ -67,32 +67,32 @@ func (r *ManagementRepo) UpdateMember(uuid string, model *models.Member) error {
 	return r.db.Updates(model).Error
 }
 
-func (r *ManagementRepo) CreateShop(categoryUuid string, model *models.Shop) error {
-	var category models.Category
-	if err := r.db.First(&category, "uuid = ?", categoryUuid).Error; err != nil {
-		return err
-	}
+// func (r *ManagementRepo) CreateShop(categoryUuid string, model *models.Shop) error {
+// 	var category models.Category
+// 	if err := r.db.First(&category, "uuid = ?", categoryUuid).Error; err != nil {
+// 		return err
+// 	}
 
-	model.CategoryID = category.ID
+// 	model.CategoryID = category.ID
 
-	return r.db.Create(model).Error
-}
+// 	return r.db.Create(model).Error
+// }
 
-func (r *ManagementRepo) UpdateShop(uuid string, categoryUuid string, model *models.Shop) error {
-	var category models.Category
-	if err := r.db.First(&category, "uuid = ?", categoryUuid).Error; err != nil {
-		return err
-	}
+// func (r *ManagementRepo) UpdateShop(uuid string, categoryUuid string, model *models.Shop) error {
+// 	var category models.Category
+// 	if err := r.db.First(&category, "uuid = ?", categoryUuid).Error; err != nil {
+// 		return err
+// 	}
 
-	var dataDB models.Shop
-	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
-		return err
-	}
+// 	var dataDB models.Shop
+// 	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
+// 		return err
+// 	}
 
-	model.ID = dataDB.ID
-	model.CategoryID = category.ID
-	return r.db.Updates(model).Error
-}
+// 	model.ID = dataDB.ID
+// 	model.CategoryID = category.ID
+// 	return r.db.Updates(model).Error
+// }
 
 func (r *ManagementRepo) CreateProduct(userUuid string, model *models.Product) error {
 	var user models.User

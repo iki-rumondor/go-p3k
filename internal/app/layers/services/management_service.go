@@ -53,48 +53,48 @@ func (s *ManagementService) UpdateCategory(uuid string, req *request.Category) e
 	return nil
 }
 
-func (s *ManagementService) CreateShop(req *request.Shop) error {
-	var username = utils.GenerateRandomString(8)
+// func (s *ManagementService) CreateShop(req *request.Shop) error {
+// 	var username = utils.GenerateRandomString(8)
 
-	model := models.Shop{
-		Name:        req.Name,
-		Owner:       req.Owner,
-		Address:     req.Address,
-		PhoneNumber: req.PhoneNumber,
-		User: &models.User{
-			Name:     req.Owner,
-			Username: username,
-			Password: username,
-			RoleID:   3,
-			Active:   true,
-		},
-	}
+// 	model := models.Shop{
+// 		Name:        req.Name,
+// 		Owner:       req.Owner,
+// 		Address:     req.Address,
+// 		PhoneNumber: req.PhoneNumber,
+// 		User: &models.User{
+// 			Name:     req.Owner,
+// 			Username: username,
+// 			Password: username,
+// 			RoleID:   3,
+// 			Active:   true,
+// 		},
+// 	}
 
-	if err := s.Repo.CreateShop(req.CategoryUuid, &model); err != nil {
-		return response.SERVICE_INTERR
-	}
+// 	if err := s.Repo.CreateShop(req.CategoryUuid, &model); err != nil {
+// 		return response.SERVICE_INTERR
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
-func (s *ManagementService) UpdateShop(uuid string, req *request.Shop) error {
+// func (s *ManagementService) UpdateShop(uuid string, req *request.Shop) error {
 
-	model := models.Shop{
-		Name:        req.Name,
-		Owner:       req.Owner,
-		Address:     req.Address,
-		PhoneNumber: req.PhoneNumber,
-	}
+// 	model := models.Shop{
+// 		Name:        req.Name,
+// 		Owner:       req.Owner,
+// 		Address:     req.Address,
+// 		PhoneNumber: req.PhoneNumber,
+// 	}
 
-	if err := s.Repo.UpdateShop(uuid, req.CategoryUuid, &model); err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return response.NOTFOUND_ERR("Umkm tidak ditemukan")
-		}
-		return response.SERVICE_INTERR
-	}
+// 	if err := s.Repo.UpdateShop(uuid, req.CategoryUuid, &model); err != nil {
+// 		if errors.Is(err, gorm.ErrRecordNotFound) {
+// 			return response.NOTFOUND_ERR("Umkm tidak ditemukan")
+// 		}
+// 		return response.SERVICE_INTERR
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
 func (s *ManagementService) CreateProduct(userUuid, imageName string, req *request.Product) error {
 	price, err := strconv.Atoi(req.Price)

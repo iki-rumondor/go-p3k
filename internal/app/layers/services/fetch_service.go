@@ -171,10 +171,6 @@ func (s *FetchService) GetShops() (*[]response.Shop, error) {
 				IsActive: item.User.Active,
 				Username: item.User.Username,
 			},
-			Category: &response.Category{
-				Uuid: item.Category.Uuid,
-				Name: item.Category.Name,
-			},
 		})
 	}
 
@@ -199,10 +195,6 @@ func (s *FetchService) GetShopByUuid(uuid string) (*response.Shop, error) {
 			Uuid:     item.User.Uuid,
 			IsActive: item.User.Active,
 			Username: item.User.Username,
-		},
-		Category: &response.Category{
-			Uuid: item.Category.Uuid,
-			Name: item.Category.Name,
 		},
 	}
 
@@ -235,9 +227,6 @@ func (s *FetchService) GetAllProducts(limit string) (*[]response.Product, error)
 			UpdatedAt: item.UpdatedAt,
 			Shop: &response.Shop{
 				Name: item.Shop.Name,
-				Category: &response.Category{
-					Name: item.Shop.Category.Name,
-				},
 			},
 		})
 	}
@@ -259,9 +248,6 @@ func (s *FetchService) GetPublicProductByUuid(uuid string) (*response.Product, e
 		ImageName: item.Image,
 		Shop: &response.Shop{
 			Name: item.Shop.Name,
-			Category: &response.Category{
-				Name: item.Shop.Category.Name,
-			},
 		},
 	}
 
@@ -465,6 +451,7 @@ func (s *FetchService) GetActivities(limit string) (*[]response.Activity, error)
 		resp = append(resp, response.Activity{
 			Uuid:        item.Uuid,
 			Title:       item.Title,
+			Group:       item.Group,
 			Description: item.Description,
 			ImageName:   item.ImageName,
 			CreatedAt:   item.CreatedAt,

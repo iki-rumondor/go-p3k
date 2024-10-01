@@ -27,15 +27,14 @@ type Category struct {
 }
 
 type Shop struct {
-	Uuid        string    `json:"uuid"`
-	Name        string    `json:"name"`
-	Owner       string    `json:"owner"`
-	Address     string    `json:"address"`
-	PhoneNumber string    `json:"phone_number"`
-	CreatedAt   int64     `json:"created_at"`
-	UpdatedAt   int64     `json:"updated_at"`
-	User        *User     `json:"user"`
-	Category    *Category `json:"category"`
+	Uuid        string `json:"uuid"`
+	Name        string `json:"name"`
+	Owner       string `json:"owner"`
+	Address     string `json:"address"`
+	PhoneNumber string `json:"phone_number"`
+	CreatedAt   int64  `json:"created_at"`
+	UpdatedAt   int64  `json:"updated_at"`
+	User        *User  `json:"user"`
 }
 
 type Product struct {

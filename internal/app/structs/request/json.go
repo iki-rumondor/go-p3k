@@ -6,6 +6,7 @@ type SignIn struct {
 }
 
 type RegisterGuest struct {
+	RoleID          uint   `json:"role_id" valid:"required~field role pengguna tidak ditemukan"`
 	Fullname        string `json:"fullname" valid:"required~field nama lengkap tidak ditemukan"`
 	Address         string `json:"address" valid:"required~field alamat tidak ditemukan"`
 	PhoneNumber     string `json:"phone_number" valid:"required~field nomor handphone tidak ditemukan"`

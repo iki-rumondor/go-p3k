@@ -23,6 +23,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 	{
 		public.POST("/verify-user", handlers.AuthHandler.VerifyUser)
 		public.POST("/register/guest", handlers.AuthHandler.RegisterGuest)
+		public.POST("/register/shop", handlers.AuthHandler.RegisterShop)
 
 		public.GET("/public/products", handlers.FetchHandler.GetAllProducts)
 		public.GET("/public/products/:uuid", handlers.FetchHandler.GetPublicProductByUuid)
@@ -70,8 +71,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 		admin.GET("/shops", handlers.FetchHandler.GetShops)
 		admin.GET("/shops/:uuid", handlers.FetchHandler.GetShopByUuid)
-		admin.POST("/shops", handlers.ManagementHandler.CreateShop)
-		admin.PUT("/shops/:uuid", handlers.ManagementHandler.UpdateShop)
+		// admin.POST("/shops", handlers.ManagementHandler.CreateShop)
+		// admin.PUT("/shops/:uuid", handlers.ManagementHandler.UpdateShop)
 
 		admin.GET("/members/:uuid", handlers.FetchHandler.GetMemberByUuid)
 		admin.POST("/members", handlers.ManagementHandler.CreateMember)

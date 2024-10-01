@@ -11,3 +11,14 @@ type Activity struct {
 	Title       string `form:"title" valid:"required~field judul tidak ditemukan"`
 	Description string `form:"description" valid:"required~field deskripsi tidak ditemukan"`
 }
+
+type RegisterShop struct {
+	RoleID          uint   `form:"role_id" valid:"required~field role pengguna tidak ditemukan"`
+	ShopName        string `form:"shop_name" valid:"required~field nama toko tidak ditemukan"`
+	Owner           string `form:"owner_name" valid:"required~field nama pemilik tidak ditemukan"`
+	Address         string `form:"address" valid:"required~field alamat tidak ditemukan"`
+	PhoneNumber     string `form:"phone_number" valid:"required~field nomor handphone tidak ditemukan"`
+	Username        string `form:"username" valid:"required~field username tidak ditemukan"`
+	Password        string `form:"password" valid:"required~field password tidak ditemukan"`
+	ConfirmPassword string `form:"confirm_password" valid:"required~field konfirmasi password tidak ditemukan"`
+}

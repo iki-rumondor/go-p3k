@@ -22,9 +22,13 @@ func NewAuthService(repo interfaces.AuthInterface) *AuthService {
 	}
 }
 
-func (s *AuthService) CreateGuest(req *request.RegisterGuest) error {
+func (s *AuthService) RegisterGuest(req *request.RegisterGuest) error {
 	if req.Password != req.ConfirmPassword {
 		return response.BADREQ_ERR("Konfirmasi password tidak sama dengan password")
+	}
+
+	if req.RoleID != 4 {
+		return response.BADREQ_ERR("Role user tidak valid")
 	}
 
 	model := models.Guest{
@@ -36,7 +40,7 @@ func (s *AuthService) CreateGuest(req *request.RegisterGuest) error {
 			Username: req.Username,
 			Password: req.Password,
 			Active:   false,
-			RoleID:   4,
+			RoleID:   req.RoleID,
 		},
 	}
 
@@ -51,6 +55,44 @@ func (s *AuthService) CreateGuest(req *request.RegisterGuest) error {
 	return nil
 
 }
+
+func (s *AuthService) RegisterShop(shopFile, identityFile string, req *request.RegisterShop) error {
+	if req.Password != req.ConfirmPassword {
+		return response.BADREQ_ERR("Konfirmasi password tidak sama dengan password")
+	}
+
+	if req.RoleID != 3 {
+		return response.BADREQ_ERR("Role user tidak valid")
+	}
+
+	model := models.Shop{
+		Name:          req.ShopName,
+		Address:       req.Address,
+		PhoneNumber:   req.PhoneNumber,
+		Owner:         req.Owner,
+		ShopImage:     shopFile,
+		IdentityImage: identityFile,
+		User: &models.User{
+			Name:     req.Owner,
+			Username: req.Username,
+			Password: req.Password,
+			Active:   false,
+			RoleID:   req.RoleID,
+		},
+	}
+
+	if err := s.Repo.CreateModel(&model); err != nil {
+		log.Println(err.Error())
+		if utils.IsErrorType(err) {
+			return err
+		}
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+
+}
+
 func (s *AuthService) VerifyUser(req *request.SignIn) (map[string]string, error) {
 	user, err := s.Repo.FirstUserByUsername(req.Username)
 	if err != nil {
