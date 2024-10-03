@@ -50,7 +50,7 @@ func (r *FetchRepo) GetCategoryByUuid(uuid string) (*models.Category, error) {
 
 func (r *FetchRepo) GetShops() (*[]models.Shop, error) {
 	var data []models.Shop
-	if err := r.db.Preload("User").Preload("Category").Find(&data).Error; err != nil {
+	if err := r.db.Preload("User").Find(&data).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
@@ -58,7 +58,7 @@ func (r *FetchRepo) GetShops() (*[]models.Shop, error) {
 
 func (r *FetchRepo) GetShopByUuid(uuid string) (*models.Shop, error) {
 	var data models.Shop
-	if err := r.db.Preload("User").Preload("Category").First(&data, "uuid = ?", uuid).Error; err != nil {
+	if err := r.db.Preload("User").First(&data, "uuid = ?", uuid).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
@@ -66,7 +66,7 @@ func (r *FetchRepo) GetShopByUuid(uuid string) (*models.Shop, error) {
 
 func (r *FetchRepo) GetAllProducts(limit int) (*[]models.Product, error) {
 	var data []models.Product
-	if err := r.db.Preload("Shop.Category").Limit(limit).Find(&data).Error; err != nil {
+	if err := r.db.Preload("Shop").Limit(limit).Find(&data).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil

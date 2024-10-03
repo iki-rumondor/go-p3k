@@ -78,6 +78,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.POST("/members", handlers.ManagementHandler.CreateMember)
 		admin.PUT("/members/:uuid", handlers.ManagementHandler.UpdateMember)
 
+		admin.GET("/files/shops/:filename", handlers.FetchHandler.GetShopImage)
+		admin.GET("/files/identities/:filename", handlers.FetchHandler.GetIdentityImage)
 	}
 
 	umkm := router.Group("api").Use(IsValidJWT()).Use(IsRole("UMKM")).Use(SetUserUuid())

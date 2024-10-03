@@ -99,7 +99,6 @@ func (h *FetchHandler) GetShops(c *gin.Context) {
 }
 
 func (h *FetchHandler) GetShopByUuid(c *gin.Context) {
-
 	uuid := c.Param("uuid")
 	resp, err := h.Service.GetShopByUuid(uuid)
 	if err != nil {
@@ -256,6 +255,20 @@ func (h *FetchHandler) GetProductImage(c *gin.Context) {
 func (h *FetchHandler) GetActivityImage(c *gin.Context) {
 	filename := c.Param("filename")
 	folder := "internal/files/activities"
+	pathFile := filepath.Join(folder, filename)
+	c.File(pathFile)
+}
+
+func (h *FetchHandler) GetShopImage(c *gin.Context) {
+	filename := c.Param("filename")
+	folder := "internal/files/shops"
+	pathFile := filepath.Join(folder, filename)
+	c.File(pathFile)
+}
+
+func (h *FetchHandler) GetIdentityImage(c *gin.Context) {
+	filename := c.Param("filename")
+	folder := "internal/files/identities"
 	pathFile := filepath.Join(folder, filename)
 	c.File(pathFile)
 }

@@ -159,13 +159,15 @@ func (s *FetchService) GetShops() (*[]response.Shop, error) {
 	var resp []response.Shop
 	for _, item := range *data {
 		resp = append(resp, response.Shop{
-			Uuid:        item.Uuid,
-			Name:        item.Name,
-			Owner:       item.Owner,
-			Address:     item.Address,
-			PhoneNumber: item.PhoneNumber,
-			CreatedAt:   item.CreatedAt,
-			UpdatedAt:   item.UpdatedAt,
+			Uuid:          item.Uuid,
+			Name:          item.Name,
+			Owner:         item.Owner,
+			Address:       item.Address,
+			PhoneNumber:   item.PhoneNumber,
+			ShopImage:     item.ShopImage,
+			IdentityImage: item.IdentityImage,
+			CreatedAt:     item.CreatedAt,
+			UpdatedAt:     item.UpdatedAt,
 			User: &response.User{
 				Uuid:     item.User.Uuid,
 				IsActive: item.User.Active,
