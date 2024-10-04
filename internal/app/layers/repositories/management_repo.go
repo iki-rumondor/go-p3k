@@ -217,9 +217,9 @@ func (r *ManagementRepo) CreateMemberActivity(userID uint, memberUuid, activityU
 	}
 
 	model := models.MemberActivity{
-		MemberID:      member.ID,
-		ActivityID:    activity.ID,
-		CreatedUserID: userID,
+		MemberID:   member.ID,
+		ActivityID: activity.ID,
+		// CreatedUserID: userID,
 	}
 
 	return r.db.Create(&model).Error

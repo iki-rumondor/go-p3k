@@ -98,3 +98,12 @@ type Activity struct {
 	UpdatedUser *User     `json:"updated_user"`
 	Members     *[]Member `json:"members"`
 }
+
+type MemberActivity struct {
+	Uuid            string    `json:"uuid"`
+	AttendanceImage string    `json:"attendance_image"`
+	IsAccept        bool      `json:"is_accept"`
+	CreatedAt       int64     `json:"created_at"`
+	UpdatedAt       int64     `json:"updated_at"`
+	Activity        *Activity `json:"activity"`
+}

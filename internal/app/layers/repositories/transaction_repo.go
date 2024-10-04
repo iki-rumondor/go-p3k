@@ -60,11 +60,20 @@ func (r *TransactionRepo) GetOwnerProductTransactionByUuid(userUuid, transaction
 func (r *TransactionRepo) GetUserByUuid(userUuid string) (*models.User, error) {
 
 	var user models.User
-	if err := r.db.Preload("Role").First(&user, "uuid = ?", userUuid).Error; err != nil {
+	if err := r.db.Preload("Role").Preload("Member").First(&user, "uuid = ?", userUuid).Error; err != nil {
 		return nil, err
 	}
 
 	return &user, nil
+}
+
+func (r *TransactionRepo) GetActivityByUuid(uuid string) (*models.Activity, error) {
+	var data models.Activity
+	if err := r.db.First(&data, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+
+	return &data, nil
 }
 
 func (r *TransactionRepo) BuyProduct(userUuid string, model *models.ProductTransaction) error {
@@ -133,4 +142,8 @@ func (r *TransactionRepo) UpdateTransaction(userUuid, uuid string, model *models
 
 	model.ID = transaction.ID
 	return r.db.Updates(model).Error
+}
+
+func (r *TransactionRepo) CreateModel(pointerModel interface{}) error {
+	return r.db.Create(pointerModel).Error
 }

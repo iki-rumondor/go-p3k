@@ -122,3 +122,45 @@ func (h *TransactionHandler) SetTransactionProof(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Bukti Transaksi produk berhasil diupload"))
 }
+
+func (h *TransactionHandler) CreateMemberActivity(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if status := utils.CheckTypeFile(file, []string{"jpg", "png", "jpeg"}); !status {
+		utils.HandleError(c, response.BADREQ_ERR("Tipe file tidak valid, gunakan tipe jpg, png, atau jpeg"))
+		return
+	}
+
+	if moreThan := utils.CheckFileSize(file, 1); moreThan {
+		utils.HandleError(c, response.BADREQ_ERR("File yang diupload lebih dari 1MB"))
+		return
+	}
+
+	proofFolder := "internal/files/attendances"
+	filename := utils.RandomFileName(file)
+	pathFile := filepath.Join(proofFolder, filename)
+
+	if err := utils.SaveUploadedFile(file, pathFile); err != nil {
+		if err := os.Remove(pathFile); err != nil {
+			log.Println(err.Error())
+		}
+		utils.HandleError(c, response.HANDLER_INTERR)
+		return
+	}
+
+	userUuid := c.GetString("uuid")
+	activityUuid := c.Param("activityUuid")
+	if err := h.Service.CreateMemberActivity(userUuid, activityUuid, filename); err != nil {
+		if err := os.Remove(pathFile); err != nil {
+			log.Println(err.Error())
+		}
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Presensi Kehadiran Kegiatan Berhasil Ditambahkan"))
+}

@@ -143,9 +143,34 @@ func (s *TransactionService) SetTransactionProof(userUuid, transactionUuid, file
 
 	if err := s.Repo.UpdateTransaction(userUuid, transactionUuid, &model); err != nil {
 		log.Println(err.Error())
-		if utils.IsErrorType(err){
+		if utils.IsErrorType(err) {
 			return err
 		}
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *TransactionService) CreateMemberActivity(userUuid, activityUuid, filename string) error {
+	user, err := s.Repo.GetUserByUuid(userUuid)
+	if err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	activity, err := s.Repo.GetActivityByUuid(activityUuid)
+	if err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	model := models.MemberActivity{
+		MemberID:        user.Member.ID,
+		ActivityID:      activity.ID,
+		AttendenceImage: filename,
+	}
+
+	if err := s.Repo.CreateModel(&model); err != nil {
+		log.Println(err.Error())
 		return response.SERVICE_INTERR
 	}
 

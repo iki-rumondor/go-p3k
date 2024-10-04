@@ -531,3 +531,26 @@ func (s *FetchService) GetMembersNotInActivity(activityUuid string) (*[]response
 
 	return &resp, nil
 }
+
+func (s *FetchService) GetMemberActivity(userUuid, activityUuid string) (*response.MemberActivity, error) {
+	data, err := s.Repo.GetMemberActivity(userUuid, activityUuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var resp = response.MemberActivity{
+		AttendanceImage: data.AttendenceImage,
+		IsAccept:        data.IsAccept,
+		Activity: &response.Activity{
+			Title:       data.Activity.Title,
+			Description: data.Activity.Description,
+			Group:       data.Activity.Group,
+			UpdatedAt:   data.Activity.UpdatedAt,
+			UpdatedUser: &response.User{
+				Name: data.Activity.UpdatedUser.Name,
+			},
+		},
+	}
+
+	return &resp, nil
+}

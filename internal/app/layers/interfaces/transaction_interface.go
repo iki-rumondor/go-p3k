@@ -8,6 +8,7 @@ type TransactionInterface interface {
 	GetOwnerProductTransactionByUuid(userUuid, transactionUuid string) (*models.ProductTransaction, error)
 	GetProductByUuid(productUuid string) (*models.Product, error)
 	GetUserByUuid(userUuid string) (*models.User, error)
+	GetActivityByUuid(uuid string) (*models.Activity, error)
 
 	BuyProduct(userUuid string, model *models.ProductTransaction) error
 	AcceptProductTransaction(model *models.ProductTransaction) error
@@ -15,4 +16,6 @@ type TransactionInterface interface {
 
 	UpdateModel(modelPointer interface{}) error
 	UpdateTransaction(userUuid, uuid string, model *models.ProductTransaction) error
+
+	CreateModel(pointerModel interface{}) error
 }

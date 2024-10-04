@@ -228,3 +228,22 @@ func (r *FetchRepo) GetMembersNotInActivity(activityUuid string) (*[]models.Memb
 	}
 	return &resp, nil
 }
+
+func (r *FetchRepo) GetMemberActivity(userUuid, activityUuid string) (*models.MemberActivity, error) {
+	var user models.User
+	if err := r.db.Preload("Member").First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+
+	var activity models.Activity
+	if err := r.db.First(&activity, "uuid = ?", activityUuid).Error; err != nil {
+		return nil, err
+	}
+
+	var result models.MemberActivity
+	if err := r.db.Preload("Activity.UpdatedUser").First(&result, "member_id = ? AND activity_id = ?", user.Member.ID, activity.ID).Error; err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}

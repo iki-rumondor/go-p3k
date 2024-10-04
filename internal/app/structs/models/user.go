@@ -20,6 +20,7 @@ type User struct {
 	Role      *Role
 	Shop      *Shop
 	Guest     *Guest
+	Member    *Member
 }
 
 func (m *User) BeforeSave(tx *gorm.DB) error {

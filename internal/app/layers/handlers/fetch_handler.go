@@ -245,6 +245,18 @@ func (h *FetchHandler) GetMembersNotInActivity(c *gin.Context) {
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
 
+func (h *FetchHandler) GetMemberActivity(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	activityUuid := c.Param("activityUuid")
+	resp, err := h.Service.GetMemberActivity(userUuid, activityUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
 func (h *FetchHandler) GetProductImage(c *gin.Context) {
 	filename := c.Param("filename")
 	folder := "internal/files/products"
@@ -276,6 +288,13 @@ func (h *FetchHandler) GetIdentityImage(c *gin.Context) {
 func (h *FetchHandler) GetTransactionProofImage(c *gin.Context) {
 	filename := c.Param("filename")
 	folder := "internal/files/transaction_proofs"
+	pathFile := filepath.Join(folder, filename)
+	c.File(pathFile)
+}
+
+func (h *FetchHandler) GetAttendanceImage(c *gin.Context) {
+	filename := c.Param("filename")
+	folder := "internal/files/attendances"
 	pathFile := filepath.Join(folder, filename)
 	c.File(pathFile)
 }

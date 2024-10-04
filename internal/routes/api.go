@@ -55,6 +55,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 		user.PATCH("/transactions/:transactionUuid/proof", handlers.TransactionHandler.SetTransactionProof)
 		user.GET("/files/transaction_proofs/:filename", handlers.FetchHandler.GetTransactionProofImage)
+		user.GET("/files/attendances/:filename", handlers.FetchHandler.GetAttendanceImage)
 	}
 
 	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN"))
@@ -96,6 +97,12 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		umkm.GET("/transactions/:uuid", handlers.FetchHandler.GetProductTransactionByUuid)
 		umkm.PATCH("/transactions/:transactionUuid/accept", handlers.TransactionHandler.AcceptProductTransaction)
 		umkm.PATCH("/transactions/:transactionUuid/unaccept", handlers.TransactionHandler.UnacceptProductTransaction)
+	}
+
+	member := router.Group("api").Use(IsValidJWT()).Use(IsRole("MEMBER")).Use(SetUserUuid())
+	{
+		member.GET("/members/activities/:activityUuid", handlers.FetchHandler.GetMemberActivity)
+		member.POST("/activities/:activityUuid/attendance", handlers.TransactionHandler.CreateMemberActivity)
 	}
 
 	return router
