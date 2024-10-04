@@ -272,3 +272,10 @@ func (h *FetchHandler) GetIdentityImage(c *gin.Context) {
 	pathFile := filepath.Join(folder, filename)
 	c.File(pathFile)
 }
+
+func (h *FetchHandler) GetTransactionProofImage(c *gin.Context) {
+	filename := c.Param("filename")
+	folder := "internal/files/transaction_proofs"
+	pathFile := filepath.Join(folder, filename)
+	c.File(pathFile)
+}

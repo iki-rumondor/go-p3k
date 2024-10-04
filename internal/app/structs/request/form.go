@@ -1,9 +1,11 @@
 package request
 
 type Product struct {
-	Name  string `form:"name" valid:"required~field nama tidak ditemukan"`
-	Price string `form:"price" valid:"required~field harga tidak ditemukan"`
-	Stock string `form:"stock" valid:"required~field stok tidak ditemukan"`
+	CategoryUuid string `form:"category_uuid" valid:"required~field kategori tidak ditemukan"`
+	Name         string `form:"name" valid:"required~field nama tidak ditemukan"`
+	Price        string `form:"price" valid:"required~field harga tidak ditemukan"`
+	Unit         string `form:"unit" valid:"required~field satuan tidak ditemukan"`
+	Stock        string `form:"stock" valid:"required~field stok tidak ditemukan"`
 }
 
 type Activity struct {

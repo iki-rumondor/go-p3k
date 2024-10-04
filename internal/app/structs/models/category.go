@@ -6,11 +6,12 @@ import (
 )
 
 type Category struct {
-	ID          uint   `gorm:"primaryKey"`
-	Uuid        string `gorm:"not_null;unique;size:64"`
-	Name        string `gorm:"not_null;size:128"`
-	CreatedAt   int64  `gorm:"autoCreateTime:milli"`
-	UpdatedAt   int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
+	ID        uint   `gorm:"primaryKey"`
+	Uuid      string `gorm:"not_null;unique;size:64"`
+	Name      string `gorm:"not_null;size:128"`
+	CreatedAt int64  `gorm:"autoCreateTime:milli"`
+	UpdatedAt int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
+	Products  *[]Product
 }
 
 func (m *Category) BeforeCreate(tx *gorm.DB) error {

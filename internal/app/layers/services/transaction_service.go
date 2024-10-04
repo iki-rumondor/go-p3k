@@ -2,11 +2,13 @@ package services
 
 import (
 	"errors"
+	"log"
 
 	"github.com/iki-rumondor/go-p3k/internal/app/layers/interfaces"
 	"github.com/iki-rumondor/go-p3k/internal/app/structs/models"
 	"github.com/iki-rumondor/go-p3k/internal/app/structs/request"
 	"github.com/iki-rumondor/go-p3k/internal/app/structs/response"
+	"github.com/iki-rumondor/go-p3k/internal/utils"
 	"gorm.io/gorm"
 )
 
@@ -124,6 +126,26 @@ func (s *TransactionService) UnacceptProductTransaction(userUuid, transactionUui
 	}
 
 	if err := s.Repo.UpdateModel(&model); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *TransactionService) SetTransactionProof(userUuid, transactionUuid, filename string) error {
+	if isHas := s.Repo.CheckProductTransactionIsResponse(transactionUuid); isHas {
+		return response.BADREQ_ERR("Transaksi produk sudah diresponse")
+	}
+
+	model := models.ProductTransaction{
+		ProofFile: filename,
+	}
+
+	if err := s.Repo.UpdateTransaction(userUuid, transactionUuid, &model); err != nil {
+		log.Println(err.Error())
+		if utils.IsErrorType(err){
+			return err
+		}
 		return response.SERVICE_INTERR
 	}
 

@@ -38,6 +38,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 	user := router.Group("api").Use(IsValidJWT()).Use(SetUserUuid())
 	{
 		user.GET("/users/detail", handlers.AuthHandler.GetUserByUuid)
+		user.GET("/categories", handlers.FetchHandler.GetCategories)
 
 		user.PATCH("/products/buy", handlers.TransactionHandler.BuyProduct)
 		user.GET("/transactions", handlers.FetchHandler.GetProductTransactions)
@@ -51,6 +52,9 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		user.GET("/members/not/activities/:activityUuid", handlers.FetchHandler.GetMembersNotInActivity)
 		user.POST("/members/activities", handlers.ManagementHandler.CreateMemberActivity)
 		user.DELETE("/members/:memberUuid/activities/:activityUuid", handlers.ManagementHandler.DeleteMemberActivity)
+
+		user.PATCH("/transactions/:transactionUuid/proof", handlers.TransactionHandler.SetTransactionProof)
+		user.GET("/files/transaction_proofs/:filename", handlers.FetchHandler.GetTransactionProofImage)
 	}
 
 	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN"))
@@ -64,7 +68,6 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.POST("/citizens", handlers.ManagementHandler.CreateCitizen)
 		admin.PUT("/citizens/:uuid", handlers.ManagementHandler.UpdateCitizen)
 
-		admin.GET("/categories", handlers.FetchHandler.GetCategories)
 		admin.GET("/categories/:uuid", handlers.FetchHandler.GetCategoryByUuid)
 		admin.POST("/categories", handlers.ManagementHandler.CreateCategory)
 		admin.PUT("/categories/:uuid", handlers.ManagementHandler.UpdateCategory)

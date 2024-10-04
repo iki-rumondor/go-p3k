@@ -40,14 +40,17 @@ type Shop struct {
 }
 
 type Product struct {
-	Uuid      string `json:"uuid"`
-	Name      string `json:"name"`
-	Price     int64  `json:"price"`
-	Stock     int64  `json:"stock"`
-	ImageName string `json:"image_name"`
-	CreatedAt int64  `json:"created_at"`
-	UpdatedAt int64  `json:"updated_at"`
-	Shop      *Shop  `json:"shop"`
+	Uuid         string `json:"uuid"`
+	CategoryUuid string `json:"category_uuid"`
+	CategoryName string `json:"category_name"`
+	Name         string `json:"name"`
+	Price        int64  `json:"price"`
+	Stock        int64  `json:"stock"`
+	Unit         string `json:"unit"`
+	ImageName    string `json:"image_name"`
+	CreatedAt    int64  `json:"created_at"`
+	UpdatedAt    int64  `json:"updated_at"`
+	Shop         *Shop  `json:"shop"`
 }
 
 type ProductTransaction struct {
@@ -55,6 +58,7 @@ type ProductTransaction struct {
 	Quantity   int64    `json:"quantity"`
 	IsResponse bool     `json:"is_response"`
 	IsAccept   bool     `json:"is_accept"`
+	ProofFile  string   `json:"proof_file"`
 	CreatedAt  int64    `json:"created_at"`
 	UpdatedAt  int64    `json:"updated_at"`
 	User       *User    `json:"user"`

@@ -94,21 +94,34 @@ func (r *ManagementRepo) UpdateMember(uuid string, model *models.Member) error {
 // 	return r.db.Updates(model).Error
 // }
 
-func (r *ManagementRepo) CreateProduct(userUuid string, model *models.Product) error {
+func (r *ManagementRepo) CreateProduct(userUuid, categoryUuid string, model *models.Product) error {
 	var user models.User
 	if err := r.db.Preload("Shop").First(&user, "uuid = ?", userUuid).Error; err != nil {
 		return err
 	}
 
+	var category models.Category
+	if err := r.db.First(&category, "uuid = ?", categoryUuid).Error; err != nil {
+		return err
+	}
+
+	model.CategoryID = category.ID
 	model.ShopID = user.Shop.ID
 	return r.db.Create(model).Error
 }
 
-func (r *ManagementRepo) UpdateProduct(userUuid string, uuid string, model *models.Product) (string, error) {
+func (r *ManagementRepo) UpdateProduct(userUuid, categoryUuid, uuid string, model *models.Product) (string, error) {
 	var user models.User
 	if err := r.db.Preload("Shop").First(&user, "uuid = ?", userUuid).Error; err != nil {
 		return "", err
 	}
+
+	var category models.Category
+	if err := r.db.First(&category, "uuid = ?", categoryUuid).Error; err != nil {
+		return "", err
+	}
+
+	model.CategoryID = category.ID
 
 	var dataDB models.Product
 	if err := r.db.First(&dataDB, "uuid = ? AND shop_id = ?", uuid, user.Shop.ID).Error; err != nil {

@@ -109,12 +109,13 @@ func (s *ManagementService) CreateProduct(userUuid, imageName string, req *reque
 
 	model := models.Product{
 		Name:  req.Name,
+		Unit:  req.Unit,
 		Price: int64(price),
 		Stock: int64(stock),
 		Image: imageName,
 	}
 
-	if err := s.Repo.CreateProduct(userUuid, &model); err != nil {
+	if err := s.Repo.CreateProduct(userUuid, req.CategoryUuid, &model); err != nil {
 		return response.SERVICE_INTERR
 	}
 
@@ -134,12 +135,13 @@ func (s *ManagementService) UpdateProduct(userUuid, uuid, imageName string, req 
 
 	model := models.Product{
 		Name:  req.Name,
+		Unit:  req.Unit,
 		Price: int64(price),
 		Stock: int64(stock),
 		Image: imageName,
 	}
 
-	oldImage, err := s.Repo.UpdateProduct(userUuid, uuid, &model)
+	oldImage, err := s.Repo.UpdateProduct(userUuid, req.CategoryUuid, uuid, &model)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return response.NOTFOUND_ERR("Produk tidak ditemukan")

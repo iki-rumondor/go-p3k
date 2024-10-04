@@ -3,6 +3,7 @@ package repositories
 import (
 	"github.com/iki-rumondor/go-p3k/internal/app/layers/interfaces"
 	"github.com/iki-rumondor/go-p3k/internal/app/structs/models"
+	"github.com/iki-rumondor/go-p3k/internal/app/structs/response"
 	"gorm.io/gorm"
 )
 
@@ -18,6 +19,11 @@ func NewTransactionInterface(db *gorm.DB) interfaces.TransactionInterface {
 
 func (r *TransactionRepo) CheckProductTransactionIsAccept(transactionUuid string) bool {
 	rows := r.db.First(&models.ProductTransaction{}, "uuid = ? AND is_accept = ?", transactionUuid, true).RowsAffected
+	return rows == 1
+}
+
+func (r *TransactionRepo) CheckProductTransactionIsResponse(transactionUuid string) bool {
+	rows := r.db.First(&models.ProductTransaction{}, "uuid = ? AND is_response = ?", transactionUuid, true).RowsAffected
 	return rows == 1
 }
 
@@ -108,4 +114,23 @@ func (r *TransactionRepo) AcceptProductTransaction(model *models.ProductTransact
 
 func (r *TransactionRepo) UpdateModel(modelPointer interface{}) error {
 	return r.db.Updates(modelPointer).Error
+}
+
+func (r *TransactionRepo) UpdateTransaction(userUuid, uuid string, model *models.ProductTransaction) error {
+	var user models.User
+	if err := r.db.First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return err
+	}
+
+	var transaction models.ProductTransaction
+	if err := r.db.First(&transaction, "uuid = ? AND user_id = ?", uuid, user.ID).Error; err != nil {
+		return err
+	}
+
+	if transaction.ProofFile != "" {
+		return response.BADREQ_ERR("Bukti transaksi sudah diupload")
+	}
+
+	model.ID = transaction.ID
+	return r.db.Updates(model).Error
 }

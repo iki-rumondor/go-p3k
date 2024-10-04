@@ -66,7 +66,7 @@ func (r *FetchRepo) GetShopByUuid(uuid string) (*models.Shop, error) {
 
 func (r *FetchRepo) GetAllProducts(limit int) (*[]models.Product, error) {
 	var data []models.Product
-	if err := r.db.Preload("Shop").Limit(limit).Find(&data).Error; err != nil {
+	if err := r.db.Preload("Shop").Preload("Category").Limit(limit).Find(&data).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
@@ -75,7 +75,7 @@ func (r *FetchRepo) GetAllProducts(limit int) (*[]models.Product, error) {
 func (r *FetchRepo) GetPublicProductByUuid(uuid string) (*models.Product, error) {
 
 	var data models.Product
-	if err := r.db.Preload("Shop.Category").First(&data, "uuid = ?", uuid).Error; err != nil {
+	if err := r.db.Preload("Shop").Preload("Category").First(&data, "uuid = ?", uuid).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
@@ -88,7 +88,7 @@ func (r *FetchRepo) GetProducts(userUuid string) (*[]models.Product, error) {
 	}
 
 	var data []models.Product
-	if err := r.db.Preload("Shop").Find(&data, "shop_id = ?", user.Shop.ID).Error; err != nil {
+	if err := r.db.Preload("Shop").Preload("Category").Find(&data, "shop_id = ?", user.Shop.ID).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
@@ -101,7 +101,7 @@ func (r *FetchRepo) GetProductByUuid(userUuid, uuid string) (*models.Product, er
 	}
 
 	var data models.Product
-	if err := r.db.Preload("Shop").First(&data, "uuid = ? AND shop_id = ?", uuid, user.Shop.ID).Error; err != nil {
+	if err := r.db.Preload("Shop").Preload("Category").First(&data, "uuid = ? AND shop_id = ?", uuid, user.Shop.ID).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil

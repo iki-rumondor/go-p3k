@@ -220,13 +220,15 @@ func (s *FetchService) GetAllProducts(limit string) (*[]response.Product, error)
 	var resp []response.Product
 	for _, item := range *data {
 		resp = append(resp, response.Product{
-			Uuid:      item.Uuid,
-			Name:      item.Name,
-			Price:     item.Price,
-			Stock:     item.Stock,
-			ImageName: item.Image,
-			CreatedAt: item.CreatedAt,
-			UpdatedAt: item.UpdatedAt,
+			Uuid:         item.Uuid,
+			Name:         item.Name,
+			Price:        item.Price,
+			Stock:        item.Stock,
+			Unit:         item.Unit,
+			ImageName:    item.Image,
+			CategoryName: item.Category.Name,
+			CreatedAt:    item.CreatedAt,
+			UpdatedAt:    item.UpdatedAt,
 			Shop: &response.Shop{
 				Name: item.Shop.Name,
 			},
@@ -243,11 +245,13 @@ func (s *FetchService) GetPublicProductByUuid(uuid string) (*response.Product, e
 	}
 
 	var resp = response.Product{
-		Uuid:      item.Uuid,
-		Name:      item.Name,
-		Price:     item.Price,
-		Stock:     item.Stock,
-		ImageName: item.Image,
+		Uuid:         item.Uuid,
+		Name:         item.Name,
+		Price:        item.Price,
+		Stock:        item.Stock,
+		Unit:         item.Unit,
+		ImageName:    item.Image,
+		CategoryName: item.Category.Name,
 		Shop: &response.Shop{
 			Name: item.Shop.Name,
 		},
@@ -265,13 +269,15 @@ func (s *FetchService) GetProducts(userUuid string) (*[]response.Product, error)
 	var resp []response.Product
 	for _, item := range *data {
 		resp = append(resp, response.Product{
-			Uuid:      item.Uuid,
-			Name:      item.Name,
-			Price:     item.Price,
-			Stock:     item.Stock,
-			ImageName: item.Image,
-			CreatedAt: item.CreatedAt,
-			UpdatedAt: item.UpdatedAt,
+			Uuid:         item.Uuid,
+			CategoryName: item.Category.Name,
+			Name:         item.Name,
+			Price:        item.Price,
+			Stock:        item.Stock,
+			Unit:         item.Unit,
+			ImageName:    item.Image,
+			CreatedAt:    item.CreatedAt,
+			UpdatedAt:    item.UpdatedAt,
 		})
 	}
 
@@ -285,13 +291,15 @@ func (s *FetchService) GetProductByUuid(userUuid, uuid string) (*response.Produc
 	}
 
 	var resp = response.Product{
-		Uuid:      item.Uuid,
-		Name:      item.Name,
-		Price:     item.Price,
-		Stock:     item.Stock,
-		ImageName: item.Image,
-		CreatedAt: item.CreatedAt,
-		UpdatedAt: item.UpdatedAt,
+		Uuid:         item.Uuid,
+		CategoryUuid: item.Category.Uuid,
+		Name:         item.Name,
+		Price:        item.Price,
+		Stock:        item.Stock,
+		Unit:         item.Unit,
+		ImageName:    item.Image,
+		CreatedAt:    item.CreatedAt,
+		UpdatedAt:    item.UpdatedAt,
 	}
 
 	return &resp, nil
@@ -310,6 +318,7 @@ func (s *FetchService) GetProductTransactions(userUuid string) (*[]response.Prod
 			Quantity:   item.Quantity,
 			IsResponse: item.IsResponse,
 			IsAccept:   item.IsAccept,
+			ProofFile:  item.ProofFile,
 			CreatedAt:  item.CreatedAt,
 			UpdatedAt:  item.UpdatedAt,
 			Product: &response.Product{
@@ -342,12 +351,14 @@ func (s *FetchService) GetProductTransactionByUuid(userUuid, uuid string) (*resp
 		Quantity:   item.Quantity,
 		IsResponse: item.IsResponse,
 		IsAccept:   item.IsAccept,
+		ProofFile:  item.ProofFile,
 		CreatedAt:  item.CreatedAt,
 		UpdatedAt:  item.UpdatedAt,
 		Product: &response.Product{
 			Name:      item.Product.Name,
 			Stock:     item.Product.Stock,
 			Price:     item.Product.Price,
+			Unit:      item.Product.Unit,
 			ImageName: item.Product.Image,
 			CreatedAt: item.Product.CreatedAt,
 		},
