@@ -408,11 +408,12 @@ func (s *FetchService) GetMembers() (*[]response.Member, error) {
 	var resp []response.Member
 	for _, item := range *data {
 		resp = append(resp, response.Member{
-			Uuid:      item.Uuid,
-			Name:      item.Name,
-			Group:     item.Group,
-			CreatedAt: item.CreatedAt,
-			UpdatedAt: item.UpdatedAt,
+			Uuid:        item.Uuid,
+			Name:        item.Name,
+			Position:    item.Position,
+			IsImportant: item.IsImportant,
+			CreatedAt:   item.CreatedAt,
+			UpdatedAt:   item.UpdatedAt,
 			User: &response.User{
 				Uuid:     item.User.Uuid,
 				Username: item.User.Username,
@@ -430,12 +431,12 @@ func (s *FetchService) GetMemberByUuid(uuid string) (*response.Member, error) {
 	}
 
 	var resp = response.Member{
-		Uuid:      item.Uuid,
-		Name:      item.Name,
-		Group:     item.Group,
-		Position:  item.Position,
-		CreatedAt: item.CreatedAt,
-		UpdatedAt: item.UpdatedAt,
+		Uuid:        item.Uuid,
+		Name:        item.Name,
+		IsImportant: item.IsImportant,
+		Position:    item.Position,
+		CreatedAt:   item.CreatedAt,
+		UpdatedAt:   item.UpdatedAt,
 		User: &response.User{
 			Uuid:     item.User.Uuid,
 			Username: item.User.Username,
@@ -490,9 +491,9 @@ func (s *FetchService) GetActivityByUuid(uuid string) (*response.Activity, error
 	var members = []response.Member{}
 	for _, i := range *item.Members {
 		members = append(members, response.Member{
-			Uuid:  i.Member.Uuid,
-			Name:  i.Member.Name,
-			Group: i.Member.Group,
+			Uuid:        i.Member.Uuid,
+			Name:        i.Member.Name,
+			IsImportant: i.Member.IsImportant,
 		})
 	}
 	var resp = response.Activity{

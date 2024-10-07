@@ -44,9 +44,9 @@ type Citizen struct {
 }
 
 type Member struct {
-	Name     string `json:"name" valid:"required~field nama tidak ditemukan"`
-	Group    uint   `json:"group" valid:"required~field kelompok kerja tidak ditemukan"`
-	Position string `json:"position" valid:"required~field jabatan tidak ditemukan"`
+	Name        string `json:"name" valid:"required~field nama tidak ditemukan"`
+	IsImportant bool   `json:"is_important" valid:"required~field status kepentingan tidak ditemukan"`
+	Position    string `json:"position" valid:"required~field jabatan tidak ditemukan"`
 }
 
 type MemberActivity struct {

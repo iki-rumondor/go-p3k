@@ -77,13 +77,13 @@ type Citizen struct {
 }
 
 type Member struct {
-	Uuid      string `json:"uuid"`
-	Name      string `json:"name"`
-	Group     uint   `json:"group"`
-	Position  string `json:"position"`
-	CreatedAt int64  `json:"created_at"`
-	UpdatedAt int64  `json:"updated_at"`
-	User      *User  `json:"user"`
+	Uuid        string `json:"uuid"`
+	Name        string `json:"name"`
+	IsImportant bool   `json:"is_important"`
+	Position    string `json:"position"`
+	CreatedAt   int64  `json:"created_at"`
+	UpdatedAt   int64  `json:"updated_at"`
+	User        *User  `json:"user"`
 }
 
 type Activity struct {
