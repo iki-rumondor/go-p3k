@@ -32,4 +32,7 @@ type FetchInterface interface {
 
 	GetMembersNotInActivity(activityUuid string) (*[]models.Member, error)
 	GetMemberActivity(userUuid, activityUuid string) (*models.MemberActivity, error)
+
+	CountGuestsInactive() (int64, error)
+	CountShopsInactive() (int64, error)
 }

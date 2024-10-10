@@ -247,3 +247,19 @@ func (r *FetchRepo) GetMemberActivity(userUuid, activityUuid string) (*models.Me
 
 	return &result, nil
 }
+
+func (r *FetchRepo) CountGuestsInactive() (int64, error) {
+	var count int64
+	if err := r.db.Joins("User").Model(&models.Guest{}).Where("User.active = ?", false).Count(&count).Error; err != nil {
+		return count, err
+	}
+	return count, nil
+}
+
+func (r *FetchRepo) CountShopsInactive() (int64, error) {
+	var count int64
+	if err := r.db.Joins("User").Model(&models.Shop{}).Where("User.active = ?", false).Count(&count).Error; err != nil {
+		return count, err
+	}
+	return count, nil
+}

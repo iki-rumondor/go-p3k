@@ -87,16 +87,17 @@ type Member struct {
 }
 
 type Activity struct {
-	Uuid        string    `json:"uuid"`
-	Title       string    `json:"title"`
-	Group       uint      `json:"group"`
-	Description string    `json:"description"`
-	ImageName   string    `json:"image_name"`
-	CreatedAt   int64     `json:"created_at"`
-	UpdatedAt   int64     `json:"updated_at"`
-	CreatedUser *User     `json:"created_user"`
-	UpdatedUser *User     `json:"updated_user"`
-	Members     *[]Member `json:"members"`
+	Uuid           string          `json:"uuid"`
+	Title          string          `json:"title"`
+	Group          uint            `json:"group"`
+	Description    string          `json:"description"`
+	ImageName      string          `json:"image_name"`
+	CreatedAt      int64           `json:"created_at"`
+	UpdatedAt      int64           `json:"updated_at"`
+	CreatedUser    *User           `json:"created_user"`
+	UpdatedUser    *User           `json:"updated_user"`
+	Members        *[]Member       `json:"members"`
+	MemberActivity *MemberActivity `json:"member_activity"`
 }
 
 type MemberActivity struct {
@@ -106,4 +107,9 @@ type MemberActivity struct {
 	CreatedAt       int64     `json:"created_at"`
 	UpdatedAt       int64     `json:"updated_at"`
 	Activity        *Activity `json:"activity"`
+}
+
+type AdminDashboard struct {
+	GuestsInactive int64 `json:"guests_inactive"`
+	ShopsInactive  int64 `json:"shops_inactive"`
 }

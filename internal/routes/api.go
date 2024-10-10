@@ -84,6 +84,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 		admin.GET("/files/shops/:filename", handlers.FetchHandler.GetShopImage)
 		admin.GET("/files/identities/:filename", handlers.FetchHandler.GetIdentityImage)
+
+		admin.GET("/dashboard/admin", handlers.FetchHandler.GetAdminDashboard)
 	}
 
 	umkm := router.Group("api").Use(IsValidJWT()).Use(IsRole("UMKM")).Use(SetUserUuid())

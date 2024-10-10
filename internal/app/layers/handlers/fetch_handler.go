@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/iki-rumondor/go-p3k/internal/app/layers/services"
+	"github.com/iki-rumondor/go-p3k/internal/app/structs/request"
 	"github.com/iki-rumondor/go-p3k/internal/app/structs/response"
 	"github.com/iki-rumondor/go-p3k/internal/utils"
 )
@@ -223,9 +224,12 @@ func (h *FetchHandler) GetActivities(c *gin.Context) {
 }
 
 func (h *FetchHandler) GetActivityByUuid(c *gin.Context) {
-
+	member := c.Query("member")
+	queries := request.ActivityQuery{
+		Member: member,
+	}
 	uuid := c.Param("uuid")
-	resp, err := h.Service.GetActivityByUuid(uuid)
+	resp, err := h.Service.GetActivityByUuid(uuid, queries)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
@@ -249,6 +253,16 @@ func (h *FetchHandler) GetMemberActivity(c *gin.Context) {
 	userUuid := c.GetString("uuid")
 	activityUuid := c.Param("activityUuid")
 	resp, err := h.Service.GetMemberActivity(userUuid, activityUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetAdminDashboard(c *gin.Context) {
+	resp, err := h.Service.GetAdminDashboard()
 	if err != nil {
 		utils.HandleError(c, err)
 		return

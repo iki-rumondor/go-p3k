@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/iki-rumondor/go-p3k/internal/app/layers/interfaces"
+	"github.com/iki-rumondor/go-p3k/internal/app/structs/request"
 	"github.com/iki-rumondor/go-p3k/internal/app/structs/response"
 )
 
@@ -482,10 +483,22 @@ func (s *FetchService) GetActivities(limit string) (*[]response.Activity, error)
 	return &resp, nil
 }
 
-func (s *FetchService) GetActivityByUuid(uuid string) (*response.Activity, error) {
+func (s *FetchService) GetActivityByUuid(uuid string, queries request.ActivityQuery) (*response.Activity, error) {
 	item, err := s.Repo.GetActivityByUuid(uuid)
 	if err != nil {
 		return nil, response.SERVICE_INTERR
+	}
+
+	var memberActivityResp response.MemberActivity
+	if queries.Member != "" {
+		memberActivity, err := s.Repo.GetMemberActivity(queries.Member, uuid)
+		if err != nil {
+			return nil, response.SERVICE_INTERR
+		}
+		memberActivityResp = response.MemberActivity{
+			AttendanceImage: memberActivity.AttendenceImage,
+			IsAccept:        memberActivity.IsAccept,
+		}
 	}
 
 	var members = []response.Member{}
@@ -496,6 +509,7 @@ func (s *FetchService) GetActivityByUuid(uuid string) (*response.Activity, error
 			IsImportant: i.Member.IsImportant,
 		})
 	}
+
 	var resp = response.Activity{
 		Uuid:        item.Uuid,
 		Title:       item.Title,
@@ -510,7 +524,8 @@ func (s *FetchService) GetActivityByUuid(uuid string) (*response.Activity, error
 		UpdatedUser: &response.User{
 			Name: item.UpdatedUser.Name,
 		},
-		Members: &members,
+		Members:        &members,
+		MemberActivity: &memberActivityResp,
 	}
 
 	return &resp, nil
@@ -553,5 +568,24 @@ func (s *FetchService) GetMemberActivity(userUuid, activityUuid string) (*respon
 		},
 	}
 
+	return &resp, nil
+}
+
+func (s *FetchService) GetAdminDashboard() (*response.AdminDashboard, error) {
+	guestsInactive, err := s.Repo.CountGuestsInactive()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	shopsInactive, err := s.Repo.CountShopsInactive()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	resp := response.AdminDashboard{
+		GuestsInactive: guestsInactive,
+		ShopsInactive:  shopsInactive,
+	}
+	
 	return &resp, nil
 }
