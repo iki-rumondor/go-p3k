@@ -56,6 +56,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		user.PATCH("/transactions/:transactionUuid/proof", handlers.TransactionHandler.SetTransactionProof)
 		user.GET("/files/transaction_proofs/:filename", handlers.FetchHandler.GetTransactionProofImage)
 		user.GET("/files/attendances/:filename", handlers.FetchHandler.GetAttendanceImage)
+
+		user.PATCH("/users/password", handlers.AuthHandler.UpdatePassword)
 	}
 
 	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN"))

@@ -53,3 +53,9 @@ type MemberActivity struct {
 	ActivityUuid string `json:"activity_uuid" valid:"required~field uuid kegiatan tidak ditemukan"`
 	MemberUuid   string `json:"member_uuid" valid:"required~field uuid anggota tidak ditemukan"`
 }
+
+type UpdatePassword struct {
+	OldPassword     string `json:"old_password" valid:"required~field password lama tidak ditemukan"`
+	NewPassword     string `json:"new_password" valid:"required~field password baru tidak ditemukan"`
+	ConfirmPassword string `json:"confirm_password" valid:"required~field konfirmasi password tidak ditemukan"`
+}

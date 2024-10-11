@@ -158,3 +158,31 @@ func (s *AuthService) ActivationUser(uuid string, isActivate bool) error {
 	return nil
 
 }
+
+func (s *AuthService) UpdatePassword(userUuid string, req *request.UpdatePassword) error {
+	user, err := s.Repo.GetUserByUuid(userUuid)
+	if err != nil {
+		log.Println(err)
+		return response.SERVICE_INTERR
+	}
+
+	if err := utils.ComparePassword(user.Password, req.OldPassword); err != nil {
+		return response.BADREQ_ERR("Password lama salah")
+	}
+
+	if req.NewPassword != req.ConfirmPassword {
+		return response.BADREQ_ERR("Konfirmasi password tidak sesuai")
+	}
+
+	model := models.User{
+		Password: req.NewPassword,
+	}
+
+	if err := s.Repo.UpdateUser(userUuid, &model); err != nil {
+		log.Println(err.Error())
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+
+}

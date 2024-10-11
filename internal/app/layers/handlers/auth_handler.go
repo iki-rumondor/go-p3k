@@ -179,3 +179,25 @@ func (h *AuthHandler) ActivationUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Status aktivasi berhasil diperbarui"))
 }
+
+func (h *AuthHandler) UpdatePassword(c *gin.Context) {
+	var body request.UpdatePassword
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	userUuid := c.GetString("uuid")
+
+	if err := h.Service.UpdatePassword(userUuid, &body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Password berhasil diubah"))
+}
