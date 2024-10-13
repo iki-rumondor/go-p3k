@@ -92,6 +92,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 	umkm := router.Group("api").Use(IsValidJWT()).Use(IsRole("UMKM")).Use(SetUserUuid())
 	{
+		umkm.GET("/dashboard/shop", handlers.FetchHandler.GetShopDashboard)
+
 		umkm.GET("/products", handlers.FetchHandler.GetProducts)
 		umkm.GET("/products/:uuid", handlers.FetchHandler.GetProductByUuid)
 		umkm.POST("/products", handlers.ManagementHandler.CreateProduct)

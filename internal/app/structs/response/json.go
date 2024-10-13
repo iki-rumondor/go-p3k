@@ -113,3 +113,8 @@ type AdminDashboard struct {
 	GuestsInactive int64 `json:"guests_inactive"`
 	ShopsInactive  int64 `json:"shops_inactive"`
 }
+
+type ShopDashboard struct {
+	Products              int64 `json:"products"`
+	UnprocessTransactions int64 `json:"unprocess_transactions"`
+}

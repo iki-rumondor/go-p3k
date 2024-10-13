@@ -263,3 +263,36 @@ func (r *FetchRepo) CountShopsInactive() (int64, error) {
 	}
 	return count, nil
 }
+
+func (r *FetchRepo) CountShopProducts(userUuid string) (int64, error) {
+	var count int64
+
+	var user models.User
+	if err := r.db.Preload("Shop").First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return count, err
+	}
+
+	if err := r.db.Model(&models.Product{}).Where("shop_id = ?", user.Shop.ID).Count(&count).Error; err != nil {
+		return count, err
+	}
+	return count, nil
+}
+
+func (r *FetchRepo) CountShopUnprocessTransaction(userUuid string) (int64, error) {
+	var count int64
+
+	var user models.User
+	if err := r.db.Preload("Shop").First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return count, err
+	}
+
+	var productIDs []uint
+	if err := r.db.Model(&models.Product{}).Where("shop_id = ?", user.Shop.ID).Pluck("id", &productIDs).Error; err != nil {
+		return count, err
+	}
+
+	if err := r.db.Model(&models.ProductTransaction{}).Where("product_id IN (?) AND is_response = ?", productIDs, false).Count(&count).Error; err != nil {
+		return count, err
+	}
+	return count, nil
+}

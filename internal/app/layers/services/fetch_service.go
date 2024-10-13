@@ -586,6 +586,25 @@ func (s *FetchService) GetAdminDashboard() (*response.AdminDashboard, error) {
 		GuestsInactive: guestsInactive,
 		ShopsInactive:  shopsInactive,
 	}
-	
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetShopDashboard(userUuid string) (*response.ShopDashboard, error) {
+	products, err := s.Repo.CountShopProducts(userUuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	transactions, err := s.Repo.CountShopUnprocessTransaction(userUuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	resp := response.ShopDashboard{
+		Products:              products,
+		UnprocessTransactions: transactions,
+	}
+
 	return &resp, nil
 }

@@ -271,6 +271,17 @@ func (h *FetchHandler) GetAdminDashboard(c *gin.Context) {
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
 
+func (h *FetchHandler) GetShopDashboard(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	resp, err := h.Service.GetShopDashboard(userUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
 func (h *FetchHandler) GetProductImage(c *gin.Context) {
 	filename := c.Param("filename")
 	folder := "internal/files/products"
