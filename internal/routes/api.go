@@ -58,6 +58,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		user.GET("/files/attendances/:filename", handlers.FetchHandler.GetAttendanceImage)
 
 		user.PATCH("/users/password", handlers.AuthHandler.UpdatePassword)
+
+		user.GET("/dashboard/guest", handlers.FetchHandler.GetGuestDashboard)
 	}
 
 	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN"))

@@ -138,7 +138,7 @@ func (r *FetchRepo) GetProductTransactionByUuid(userUuid, uuid string) (*models.
 	return &data, nil
 }
 
-func (r *FetchRepo) GetProductTransactionsByShop(userUuid string) (*[]models.ProductTransaction, error) {
+func (r *FetchRepo) GetProductTransactionsByShop(userUuid string, isAccept bool) (*[]models.ProductTransaction, error) {
 	var user models.User
 	if err := r.db.Preload("Shop").First(&user, "uuid = ?", userUuid).Error; err != nil {
 		return nil, err
@@ -150,7 +150,7 @@ func (r *FetchRepo) GetProductTransactionsByShop(userUuid string) (*[]models.Pro
 	}
 
 	var data []models.ProductTransaction
-	if err := r.db.Preload("Product").Preload("User").Find(&data, "product_id IN (?)", productIDs).Error; err != nil {
+	if err := r.db.Preload("Product").Preload("User").Find(&data, "product_id IN (?) AND is_accept = ?", productIDs, isAccept).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
@@ -278,7 +278,7 @@ func (r *FetchRepo) CountShopProducts(userUuid string) (int64, error) {
 	return count, nil
 }
 
-func (r *FetchRepo) CountShopUnprocessTransaction(userUuid string) (int64, error) {
+func (r *FetchRepo) CountShopUnprocessTransactions(userUuid string) (int64, error) {
 	var count int64
 
 	var user models.User
@@ -292,6 +292,34 @@ func (r *FetchRepo) CountShopUnprocessTransaction(userUuid string) (int64, error
 	}
 
 	if err := r.db.Model(&models.ProductTransaction{}).Where("product_id IN (?) AND is_response = ?", productIDs, false).Count(&count).Error; err != nil {
+		return count, err
+	}
+	return count, nil
+}
+
+func (r *FetchRepo) CountUserSuccessTransactions(userUuid string) (int64, error) {
+	var count int64
+
+	var user models.User
+	if err := r.db.First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return count, err
+	}
+
+	if err := r.db.Model(&models.ProductTransaction{}).Where("user_id = ? AND is_accept = ?", user.ID, true).Count(&count).Error; err != nil {
+		return count, err
+	}
+	return count, nil
+}
+
+func (r *FetchRepo) CountUserUnprocessTransactions(userUuid string) (int64, error) {
+	var count int64
+
+	var user models.User
+	if err := r.db.First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return count, err
+	}
+
+	if err := r.db.Model(&models.ProductTransaction{}).Where("user_id = ? AND is_response = ?", user.ID, false).Count(&count).Error; err != nil {
 		return count, err
 	}
 	return count, nil

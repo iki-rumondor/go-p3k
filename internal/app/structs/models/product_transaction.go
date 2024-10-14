@@ -12,6 +12,7 @@ type ProductTransaction struct {
 	IsResponse bool   `gorm:"not_null"`
 	IsAccept   bool   `gorm:"not_null"`
 	ProofFile  string `gorm:"not_null"`
+	Revenue    int64  `gorm:"not_null"`
 	CreatedAt  int64  `gorm:"autoCreateTime:milli"`
 	UpdatedAt  int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
 	UserID     uint   `gorm:"not_null"`

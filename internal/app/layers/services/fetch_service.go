@@ -373,8 +373,8 @@ func (s *FetchService) GetProductTransactionByUuid(userUuid, uuid string) (*resp
 	return &resp, nil
 }
 
-func (s *FetchService) GetProductTransactionsByShop(userUuid string) (*[]response.ProductTransaction, error) {
-	data, err := s.Repo.GetProductTransactionsByShop(userUuid)
+func (s *FetchService) GetProductTransactionsByShop(userUuid string, isAccept bool) (*[]response.ProductTransaction, error) {
+	data, err := s.Repo.GetProductTransactionsByShop(userUuid, isAccept)
 	if err != nil {
 		return nil, response.SERVICE_INTERR
 	}
@@ -384,6 +384,7 @@ func (s *FetchService) GetProductTransactionsByShop(userUuid string) (*[]respons
 		resp = append(resp, response.ProductTransaction{
 			Uuid:       item.Uuid,
 			Quantity:   item.Quantity,
+			Revenue:    item.Revenue,
 			IsResponse: item.IsResponse,
 			IsAccept:   item.IsAccept,
 			CreatedAt:  item.CreatedAt,
@@ -596,7 +597,7 @@ func (s *FetchService) GetShopDashboard(userUuid string) (*response.ShopDashboar
 		return nil, response.SERVICE_INTERR
 	}
 
-	transactions, err := s.Repo.CountShopUnprocessTransaction(userUuid)
+	transactions, err := s.Repo.CountShopUnprocessTransactions(userUuid)
 	if err != nil {
 		return nil, response.SERVICE_INTERR
 	}
@@ -604,6 +605,25 @@ func (s *FetchService) GetShopDashboard(userUuid string) (*response.ShopDashboar
 	resp := response.ShopDashboard{
 		Products:              products,
 		UnprocessTransactions: transactions,
+	}
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetGuestDashboard(userUuid string) (*response.GuestDashboard, error) {
+	unprocess_transactions, err := s.Repo.CountUserUnprocessTransactions(userUuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	success_transactions, err := s.Repo.CountUserSuccessTransactions(userUuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	resp := response.GuestDashboard{
+		UnprocessTransactions: unprocess_transactions,
+		SuccessTransactions:   success_transactions,
 	}
 
 	return &resp, nil

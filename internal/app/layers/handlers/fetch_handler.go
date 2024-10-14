@@ -179,8 +179,9 @@ func (h *FetchHandler) GetProductTransactionByUuid(c *gin.Context) {
 }
 
 func (h *FetchHandler) GetProductTransactionsByShop(c *gin.Context) {
+	is_accept := c.Query("is_accept") == "true"
 	userUuid := c.GetString("uuid")
-	resp, err := h.Service.GetProductTransactionsByShop(userUuid)
+	resp, err := h.Service.GetProductTransactionsByShop(userUuid, is_accept)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
@@ -274,6 +275,17 @@ func (h *FetchHandler) GetAdminDashboard(c *gin.Context) {
 func (h *FetchHandler) GetShopDashboard(c *gin.Context) {
 	userUuid := c.GetString("uuid")
 	resp, err := h.Service.GetShopDashboard(userUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetGuestDashboard(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	resp, err := h.Service.GetGuestDashboard(userUuid)
 	if err != nil {
 		utils.HandleError(c, err)
 		return

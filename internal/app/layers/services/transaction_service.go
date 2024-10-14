@@ -97,6 +97,7 @@ func (s *TransactionService) AcceptProductTransaction(userUuid, transactionUuid 
 		Quantity:   transaction.Quantity,
 		IsResponse: true,
 		IsAccept:   true,
+		Revenue:    transaction.Quantity * transaction.Product.Price,
 	}
 
 	if err := s.Repo.AcceptProductTransaction(&model); err != nil {
@@ -107,7 +108,6 @@ func (s *TransactionService) AcceptProductTransaction(userUuid, transactionUuid 
 }
 
 func (s *TransactionService) UnacceptProductTransaction(userUuid, transactionUuid string) error {
-
 	transaction, err := s.Repo.GetOwnerProductTransactionByUuid(userUuid, transactionUuid)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -117,7 +117,11 @@ func (s *TransactionService) UnacceptProductTransaction(userUuid, transactionUui
 	}
 
 	if transaction.IsResponse {
-		return response.NOTFOUND_ERR("Transaksi sudah direspon sebelumnya")
+		return response.BADREQ_ERR("Transaksi sudah direspon sebelumnya")
+	}
+
+	if transaction.ProofFile != "" {
+		return response.BADREQ_ERR("Tindakan tidak dapat dilanjutkan, bukti transaksi sudah diupload")
 	}
 
 	model := models.ProductTransaction{

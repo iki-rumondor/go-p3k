@@ -22,7 +22,7 @@ type FetchInterface interface {
 
 	GetProductTransactions(userUuid string) (*[]models.ProductTransaction, error)
 	GetProductTransactionByUuid(userUuid, uuid string) (*models.ProductTransaction, error)
-	GetProductTransactionsByShop(userUuid string) (*[]models.ProductTransaction, error)
+	GetProductTransactionsByShop(userUuid string, isAccept bool) (*[]models.ProductTransaction, error)
 
 	GetMembers() (*[]models.Member, error)
 	GetMemberByUuid(uuid string) (*models.Member, error)
@@ -37,5 +37,8 @@ type FetchInterface interface {
 	CountShopsInactive() (int64, error)
 
 	CountShopProducts(userUuid string) (int64, error)
-	CountShopUnprocessTransaction(userUuid string) (int64, error)
+	CountShopUnprocessTransactions(userUuid string) (int64, error)
+
+	CountUserSuccessTransactions(userUuid string) (int64, error)
+	CountUserUnprocessTransactions(userUuid string) (int64, error)
 }

@@ -58,6 +58,7 @@ type ProductTransaction struct {
 	Quantity   int64    `json:"quantity"`
 	IsResponse bool     `json:"is_response"`
 	IsAccept   bool     `json:"is_accept"`
+	Revenue    int64    `json:"revenue"`
 	ProofFile  string   `json:"proof_file"`
 	CreatedAt  int64    `json:"created_at"`
 	UpdatedAt  int64    `json:"updated_at"`
@@ -116,5 +117,10 @@ type AdminDashboard struct {
 
 type ShopDashboard struct {
 	Products              int64 `json:"products"`
+	UnprocessTransactions int64 `json:"unprocess_transactions"`
+}
+
+type GuestDashboard struct {
+	SuccessTransactions   int64 `json:"success_transactions"`
 	UnprocessTransactions int64 `json:"unprocess_transactions"`
 }
