@@ -26,6 +26,7 @@ type FetchInterface interface {
 
 	GetMembers() (*[]models.Member, error)
 	GetMemberByUuid(uuid string) (*models.Member, error)
+	GetMemberByUserUuid(uuid string) (*models.Member, error)
 
 	GetActivities(limit int) (*[]models.Activity, error)
 	GetActivityByUuid(uuid string) (*models.Activity, error)
@@ -41,4 +42,6 @@ type FetchInterface interface {
 
 	CountUserSuccessTransactions(userUuid string) (int64, error)
 	CountUserUnprocessTransactions(userUuid string) (int64, error)
+
+	CountActivities() (int64, error)
 }

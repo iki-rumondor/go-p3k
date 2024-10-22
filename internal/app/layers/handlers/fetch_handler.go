@@ -294,6 +294,28 @@ func (h *FetchHandler) GetGuestDashboard(c *gin.Context) {
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
 
+func (h *FetchHandler) GetMemberDashboard(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	resp, err := h.Service.GetMemberDashboard(userUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetMemberActivities(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	resp, err := h.Service.GetMemberActivities(userUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
 func (h *FetchHandler) GetProductImage(c *gin.Context) {
 	filename := c.Param("filename")
 	folder := "internal/files/products"

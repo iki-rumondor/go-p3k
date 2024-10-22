@@ -45,7 +45,7 @@ type Citizen struct {
 
 type Member struct {
 	Name        string `json:"name" valid:"required~field nama tidak ditemukan"`
-	IsImportant bool   `json:"is_important" valid:"required~field status kepentingan tidak ditemukan"`
+	IsImportant bool   `json:"is_important"`
 	Position    string `json:"position" valid:"required~field jabatan tidak ditemukan"`
 }
 

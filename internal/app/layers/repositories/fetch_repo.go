@@ -188,6 +188,15 @@ func (r *FetchRepo) GetMemberByUuid(uuid string) (*models.Member, error) {
 	return &data, nil
 }
 
+func (r *FetchRepo) GetMemberByUserUuid(userUuid string) (*models.Member, error) {
+	var user models.User
+	if err := r.db.Preload("Member").First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+
+	return user.Member, nil
+}
+
 func (r *FetchRepo) GetActivities(limit int) (*[]models.Activity, error) {
 	var data []models.Activity
 	if err := r.db.Preload("CreatedUser").Preload("UpdatedUser").Limit(limit).Find(&data).Error; err != nil {
@@ -320,6 +329,15 @@ func (r *FetchRepo) CountUserUnprocessTransactions(userUuid string) (int64, erro
 	}
 
 	if err := r.db.Model(&models.ProductTransaction{}).Where("user_id = ? AND is_response = ?", user.ID, false).Count(&count).Error; err != nil {
+		return count, err
+	}
+	return count, nil
+}
+
+func (r *FetchRepo) CountActivities() (int64, error) {
+	var count int64
+
+	if err := r.db.Model(&models.Activity{}).Count(&count).Error; err != nil {
 		return count, err
 	}
 	return count, nil

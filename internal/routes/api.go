@@ -111,6 +111,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 	{
 		member.GET("/members/activities/:activityUuid", handlers.FetchHandler.GetMemberActivity)
 		member.POST("/activities/:activityUuid/attendance", handlers.TransactionHandler.CreateMemberActivity)
+		member.GET("/dashboard/member", handlers.FetchHandler.GetMemberDashboard)
+		member.GET("/member/activities", handlers.FetchHandler.GetMemberActivities)
 	}
 
 	return router

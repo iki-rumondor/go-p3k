@@ -124,3 +124,13 @@ type GuestDashboard struct {
 	SuccessTransactions   int64 `json:"success_transactions"`
 	UnprocessTransactions int64 `json:"unprocess_transactions"`
 }
+
+type MemberDashboard struct {
+	Activities int64  `json:"activities"`
+	Position   string `json:"position"`
+}
+
+type MemberActivities struct {
+	IsImportant bool        `json:"is_important"`
+	Activities  *[]Activity `json:"activities"`
+}

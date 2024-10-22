@@ -493,12 +493,11 @@ func (s *FetchService) GetActivityByUuid(uuid string, queries request.ActivityQu
 	var memberActivityResp response.MemberActivity
 	if queries.Member != "" {
 		memberActivity, err := s.Repo.GetMemberActivity(queries.Member, uuid)
-		if err != nil {
-			return nil, response.SERVICE_INTERR
-		}
-		memberActivityResp = response.MemberActivity{
-			AttendanceImage: memberActivity.AttendenceImage,
-			IsAccept:        memberActivity.IsAccept,
+		if err == nil {
+			memberActivityResp = response.MemberActivity{
+				AttendanceImage: memberActivity.AttendenceImage,
+				IsAccept:        memberActivity.IsAccept,
+			}
 		}
 	}
 
@@ -624,6 +623,57 @@ func (s *FetchService) GetGuestDashboard(userUuid string) (*response.GuestDashbo
 	resp := response.GuestDashboard{
 		UnprocessTransactions: unprocess_transactions,
 		SuccessTransactions:   success_transactions,
+	}
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetMemberDashboard(userUuid string) (*response.MemberDashboard, error) {
+	member, err := s.Repo.GetMemberByUserUuid(userUuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	activities, err := s.Repo.CountActivities()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	resp := response.MemberDashboard{
+		Activities: activities,
+		Position:   member.Position,
+	}
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetMemberActivities(userUuid string) (*response.MemberActivities, error) {
+	member, err := s.Repo.GetMemberByUserUuid(userUuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	activities, err := s.Repo.GetActivities(-1)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var activitiesResp []response.Activity
+	for _, item := range *activities {
+		activitiesResp = append(activitiesResp, response.Activity{
+			Uuid:      item.Uuid,
+			Title:     item.Title,
+			ImageName: item.ImageName,
+			CreatedAt: item.CreatedAt,
+			CreatedUser: &response.User{
+				Name: item.CreatedUser.Name,
+			},
+		})
+	}
+
+	resp := response.MemberActivities{
+		Activities:  &activitiesResp,
+		IsImportant: member.IsImportant,
 	}
 
 	return &resp, nil
