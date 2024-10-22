@@ -1,6 +1,10 @@
 package models
 
 import (
+	"log"
+	"os"
+	"path/filepath"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -20,5 +24,14 @@ type MemberActivity struct {
 
 func (m *MemberActivity) BeforeCreate(tx *gorm.DB) error {
 	m.Uuid = uuid.NewString()
+	return nil
+}
+
+func (m *MemberActivity) BeforeDelete(tx *gorm.DB) error {
+	folder := "internal/files/attendances"
+	pathFile := filepath.Join(folder, m.AttendenceImage)
+	if err := os.Remove(pathFile); err != nil {
+		log.Println(err.Error())
+	}
 	return nil
 }

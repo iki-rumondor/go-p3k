@@ -53,48 +53,16 @@ func (s *ManagementService) UpdateCategory(uuid string, req *request.Category) e
 	return nil
 }
 
-// func (s *ManagementService) CreateShop(req *request.Shop) error {
-// 	var username = utils.GenerateRandomString(8)
+func (s *ManagementService) DeleteCategory(uuid string) error {
+	if err := s.Repo.DeleteCategory(uuid); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Kategori tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
 
-// 	model := models.Shop{
-// 		Name:        req.Name,
-// 		Owner:       req.Owner,
-// 		Address:     req.Address,
-// 		PhoneNumber: req.PhoneNumber,
-// 		User: &models.User{
-// 			Name:     req.Owner,
-// 			Username: username,
-// 			Password: username,
-// 			RoleID:   3,
-// 			Active:   true,
-// 		},
-// 	}
-
-// 	if err := s.Repo.CreateShop(req.CategoryUuid, &model); err != nil {
-// 		return response.SERVICE_INTERR
-// 	}
-
-// 	return nil
-// }
-
-// func (s *ManagementService) UpdateShop(uuid string, req *request.Shop) error {
-
-// 	model := models.Shop{
-// 		Name:        req.Name,
-// 		Owner:       req.Owner,
-// 		Address:     req.Address,
-// 		PhoneNumber: req.PhoneNumber,
-// 	}
-
-// 	if err := s.Repo.UpdateShop(uuid, req.CategoryUuid, &model); err != nil {
-// 		if errors.Is(err, gorm.ErrRecordNotFound) {
-// 			return response.NOTFOUND_ERR("Umkm tidak ditemukan")
-// 		}
-// 		return response.SERVICE_INTERR
-// 	}
-
-// 	return nil
-// }
+	return nil
+}
 
 func (s *ManagementService) CreateProduct(userUuid, imageName string, req *request.Product) error {
 	price, err := strconv.Atoi(req.Price)
@@ -161,6 +129,19 @@ func (s *ManagementService) UpdateProduct(userUuid, uuid, imageName string, req 
 	return nil
 }
 
+
+func (s *ManagementService) DeleteProduct(uuid string) error {
+	if err := s.Repo.DeleteProduct(uuid); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Produk tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+
 func (s *ManagementService) CreateCitizen(req *request.Citizen) error {
 	if unique := s.Repo.CheckUniqueNik(req.Nik); !unique {
 		return response.BADREQ_ERR("Nik yang digunakan sudah terdafatar")
@@ -210,6 +191,19 @@ func (s *ManagementService) UpdateCitizen(uuid string, req *request.Citizen) err
 	return nil
 }
 
+
+func (s *ManagementService) DeleteCitizen(uuid string) error {
+	if err := s.Repo.DeleteCitizen(uuid); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Masyarakat tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+
 func (s *ManagementService) CreateMember(req *request.Member) error {
 	var username = utils.GenerateRandomString(8)
 
@@ -242,6 +236,18 @@ func (s *ManagementService) UpdateMember(uuid string, req *request.Member) error
 	}
 
 	if err := s.Repo.UpdateMember(uuid, &model); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Anggota tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+
+func (s *ManagementService) DeleteMember(uuid string) error {
+	if err := s.Repo.DeleteMember(uuid); err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return response.NOTFOUND_ERR("Anggota tidak ditemukan")
 		}

@@ -7,15 +7,18 @@ type ManagementInterface interface {
 	CreateModel(pointerModel interface{}) error
 
 	UpdateCategory(uuid string, model *models.Category) error
+	DeleteCategory(uuid string) error
+	
 	UpdateCitizen(uuid string, model *models.Citizen) error
+	DeleteCitizen(uuid string) error
+
 	UpdateMember(uuid string, model *models.Member) error
-
-	// CreateShop(categoryUuid string, model *models.Shop) error
-	// UpdateShop(uuid string, categoryUuid string, model *models.Shop) error
-
+	DeleteMember(uuid string) error
+	
 	CreateProduct(userUuid, categoryUuid string, model *models.Product) error
 	UpdateProduct(userUuid, categoryUuid, uuid string, model *models.Product) (string, error)
-
+	DeleteProduct(uuid string) error
+	
 	CreateActivity(userUuid string, model *models.Activity) error
 	UpdateActivity(userUuid string, uuid string, model *models.Activity) (string, error)
 	DeleteActivity(uuid string) (string, error)

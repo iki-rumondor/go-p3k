@@ -1,6 +1,10 @@
 package models
 
 import (
+	"log"
+	"os"
+	"path/filepath"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -23,5 +27,14 @@ type ProductTransaction struct {
 
 func (m *ProductTransaction) BeforeCreate(tx *gorm.DB) error {
 	m.Uuid = uuid.NewString()
+	return nil
+}
+
+func (m *ProductTransaction) BeforeDelete(tx *gorm.DB) error {
+	folder := "internal/files/transaction_proofs"
+	pathFile := filepath.Join(folder, m.ProofFile)
+	if err := os.Remove(pathFile); err != nil {
+		log.Println(err.Error())
+	}
 	return nil
 }

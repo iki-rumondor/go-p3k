@@ -8,19 +8,21 @@ import (
 )
 
 type User struct {
-	ID        uint   `gorm:"primaryKey"`
-	Uuid      string `gorm:"not_null;unique;size:64"`
-	Name      string `gorm:"not_null;size:128"`
-	Username  string `gorm:"not_null;unique;size:32"`
-	Password  string `gorm:"not_null;size:64"`
-	Active    bool   `gorm:"not_null"`
-	RoleID    uint   `gorm:"not_null"`
-	CreatedAt int64  `gorm:"autoCreateTime:milli"`
-	UpdatedAt int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
-	Role      *Role
-	Shop      *Shop
-	Guest     *Guest
-	Member    *Member
+	ID                  uint                  `gorm:"primaryKey"`
+	Uuid                string                `gorm:"not_null;unique;size:64"`
+	Name                string                `gorm:"not_null;size:128"`
+	Username            string                `gorm:"not_null;unique;size:32"`
+	Password            string                `gorm:"not_null;size:64"`
+	Active              bool                  `gorm:"not_null"`
+	RoleID              uint                  `gorm:"not_null"`
+	CreatedAt           int64                 `gorm:"autoCreateTime:milli"`
+	UpdatedAt           int64                 `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
+	ProductTransactions *[]ProductTransaction `gorm:"constraint:OnDelete:CASCADE;"`
+	Role                *Role
+	Shop                *Shop
+	Guest               *Guest
+	Member              *Member
+	Citizen             *Citizen
 }
 
 func (m *User) BeforeSave(tx *gorm.DB) error {

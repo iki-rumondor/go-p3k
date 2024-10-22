@@ -72,19 +72,20 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.GET("/citizens/:uuid", handlers.FetchHandler.GetCitizenByUuid)
 		admin.POST("/citizens", handlers.ManagementHandler.CreateCitizen)
 		admin.PUT("/citizens/:uuid", handlers.ManagementHandler.UpdateCitizen)
+		admin.DELETE("/citizens/:uuid", handlers.ManagementHandler.DeleteCitizen)
 
 		admin.GET("/categories/:uuid", handlers.FetchHandler.GetCategoryByUuid)
 		admin.POST("/categories", handlers.ManagementHandler.CreateCategory)
 		admin.PUT("/categories/:uuid", handlers.ManagementHandler.UpdateCategory)
+		admin.DELETE("/categories/:uuid", handlers.ManagementHandler.DeleteCategory)
 
 		admin.GET("/shops", handlers.FetchHandler.GetShops)
 		admin.GET("/shops/:uuid", handlers.FetchHandler.GetShopByUuid)
-		// admin.POST("/shops", handlers.ManagementHandler.CreateShop)
-		// admin.PUT("/shops/:uuid", handlers.ManagementHandler.UpdateShop)
 
 		admin.GET("/members/:uuid", handlers.FetchHandler.GetMemberByUuid)
 		admin.POST("/members", handlers.ManagementHandler.CreateMember)
 		admin.PUT("/members/:uuid", handlers.ManagementHandler.UpdateMember)
+		admin.DELETE("/master/members/:uuid", handlers.ManagementHandler.DeleteMember)
 
 		admin.GET("/files/shops/:filename", handlers.FetchHandler.GetShopImage)
 		admin.GET("/files/identities/:filename", handlers.FetchHandler.GetIdentityImage)
@@ -100,6 +101,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		umkm.GET("/products/:uuid", handlers.FetchHandler.GetProductByUuid)
 		umkm.POST("/products", handlers.ManagementHandler.CreateProduct)
 		umkm.PUT("/products/:uuid", handlers.ManagementHandler.UpdateProduct)
+		umkm.DELETE("/products/:uuid", handlers.ManagementHandler.DeleteProduct)
 
 		umkm.GET("/shops/transactions", handlers.FetchHandler.GetProductTransactionsByShop)
 		umkm.GET("/transactions/:uuid", handlers.FetchHandler.GetProductTransactionByUuid)

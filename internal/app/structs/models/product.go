@@ -1,27 +1,41 @@
 package models
 
 import (
+	"log"
+	"os"
+	"path/filepath"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Product struct {
-	ID         uint   `gorm:"primaryKey"`
-	Uuid       string `gorm:"not_null;unique;size:64"`
-	Name       string `gorm:"not_null;size:128"`
-	Price      int64  `gorm:"not_null"`
-	Stock      int64  `gorm:"not_null"`
-	Unit       string `gorm:"not_null;"`
-	Image      string `gorm:"not_null;"`
-	CreatedAt  int64  `gorm:"autoCreateTime:milli"`
-	UpdatedAt  int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
-	ShopID     uint   `gorm:"not_null"`
-	CategoryID uint   `gorm:"not_null"`
-	Shop       *Shop
-	Category   *Category
+	ID                  uint                  `gorm:"primaryKey"`
+	Uuid                string                `gorm:"not_null;unique;size:64"`
+	Name                string                `gorm:"not_null;size:128"`
+	Price               int64                 `gorm:"not_null"`
+	Stock               int64                 `gorm:"not_null"`
+	Unit                string                `gorm:"not_null;"`
+	Image               string                `gorm:"not_null;"`
+	CreatedAt           int64                 `gorm:"autoCreateTime:milli"`
+	UpdatedAt           int64                 `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
+	ShopID              uint                  `gorm:"not_null"`
+	CategoryID          uint                  `gorm:"not_null"`
+	ProductTransactions *[]ProductTransaction `gorm:"constraint:OnDelete:CASCADE;"`
+	Shop                *Shop
+	Category            *Category
 }
 
 func (m *Product) BeforeCreate(tx *gorm.DB) error {
 	m.Uuid = uuid.NewString()
+	return nil
+}
+
+func (m *Product) BeforeDelete(tx *gorm.DB) error {
+	folder := "internal/files/products"
+	pathFile := filepath.Join(folder, m.Image)
+	if err := os.Remove(pathFile); err != nil {
+		log.Println(err.Error())
+	}
 	return nil
 }

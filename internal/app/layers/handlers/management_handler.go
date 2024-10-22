@@ -65,46 +65,15 @@ func (h *ManagementHandler) UpdateCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Kategori Berhasil Diperbarui"))
 }
 
-// func (h *ManagementHandler) CreateShop(c *gin.Context) {
-// 	var body request.Shop
-// 	if err := c.BindJSON(&body); err != nil {
-// 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
-// 		return
-// 	}
+func (h *ManagementHandler) DeleteCategory(c *gin.Context) {
+	uuid := c.Param("uuid")
+	if err := h.Service.DeleteCategory(uuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
 
-// 	if _, err := govalidator.ValidateStruct(&body); err != nil {
-// 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
-// 		return
-// 	}
-
-// 	if err := h.Service.CreateShop(&body); err != nil {
-// 		utils.HandleError(c, err)
-// 		return
-// 	}
-
-// 	c.JSON(http.StatusCreated, response.SUCCESS_RES("Umkm Berhasil Ditambahkan"))
-// }
-
-// func (h *ManagementHandler) UpdateShop(c *gin.Context) {
-// 	var body request.Shop
-// 	if err := c.BindJSON(&body); err != nil {
-// 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
-// 		return
-// 	}
-
-// 	if _, err := govalidator.ValidateStruct(&body); err != nil {
-// 		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
-// 		return
-// 	}
-
-// 	uuid := c.Param("uuid")
-// 	if err := h.Service.UpdateShop(uuid, &body); err != nil {
-// 		utils.HandleError(c, err)
-// 		return
-// 	}
-
-// 	c.JSON(http.StatusOK, response.SUCCESS_RES("Umkm Berhasil Diperbarui"))
-// }
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Kategori Berhasil Dihapus"))
+}
 
 func (h *ManagementHandler) CreateProduct(c *gin.Context) {
 	var body request.Product
@@ -205,6 +174,18 @@ func (h *ManagementHandler) UpdateProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Produk Berhasil Diperbarui"))
 }
 
+
+func (h *ManagementHandler) DeleteProduct(c *gin.Context) {
+	uuid := c.Param("uuid")
+	if err := h.Service.DeleteProduct(uuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Kategori Berhasil Dihapus"))
+}
+
+
 func (h *ManagementHandler) CreateCitizen(c *gin.Context) {
 	var body request.Citizen
 	if err := c.BindJSON(&body); err != nil {
@@ -246,6 +227,17 @@ func (h *ManagementHandler) UpdateCitizen(c *gin.Context) {
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Data Masyarakat Berhasil Diperbarui"))
 }
 
+
+func (h *ManagementHandler) DeleteCitizen(c *gin.Context) {
+	uuid := c.Param("uuid")
+	if err := h.Service.DeleteCitizen(uuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Masyarakat Berhasil Dihapus"))
+}
+
 func (h *ManagementHandler) CreateMember(c *gin.Context) {
 	var body request.Member
 	if err := c.BindJSON(&body); err != nil {
@@ -285,6 +277,17 @@ func (h *ManagementHandler) UpdateMember(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Data Anggota Berhasil Diperbarui"))
+}
+
+
+func (h *ManagementHandler) DeleteMember(c *gin.Context) {
+	uuid := c.Param("uuid")
+	if err := h.Service.DeleteMember(uuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Anggota Berhasil Dihapus"))
 }
 
 func (h *ManagementHandler) CreateActivity(c *gin.Context) {

@@ -1,6 +1,10 @@
 package repositories
 
 import (
+	"log"
+	"os"
+	"path/filepath"
+
 	"github.com/iki-rumondor/go-p3k/internal/app/layers/interfaces"
 	"github.com/iki-rumondor/go-p3k/internal/app/structs/models"
 	"github.com/iki-rumondor/go-p3k/internal/app/structs/response"
@@ -36,6 +40,15 @@ func (r *ManagementRepo) UpdateCategory(uuid string, model *models.Category) err
 	return r.db.Updates(model).Error
 }
 
+func (r *ManagementRepo) DeleteCategory(uuid string) error {
+	var dataDB models.Category
+	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
+		return err
+	}
+
+	return r.db.Delete(dataDB).Error
+}
+
 func (r *ManagementRepo) UpdateCitizen(uuid string, model *models.Citizen) error {
 	var dataDB models.Citizen
 	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
@@ -57,6 +70,19 @@ func (r *ManagementRepo) UpdateCitizen(uuid string, model *models.Citizen) error
 	return r.db.Updates(model).Error
 }
 
+func (r *ManagementRepo) DeleteCitizen(uuid string) error {
+	var dataDB models.Citizen
+	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
+		return err
+	}
+
+	if err := r.db.Delete(&dataDB).Error; err != nil {
+		return err
+	}
+
+	return r.db.Where("id = ?", dataDB.UserID).Delete(&models.User{}).Error
+}
+
 func (r *ManagementRepo) UpdateMember(uuid string, model *models.Member) error {
 	var dataDB models.Member
 	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
@@ -67,32 +93,18 @@ func (r *ManagementRepo) UpdateMember(uuid string, model *models.Member) error {
 	return r.db.Updates(model).Error
 }
 
-// func (r *ManagementRepo) CreateShop(categoryUuid string, model *models.Shop) error {
-// 	var category models.Category
-// 	if err := r.db.First(&category, "uuid = ?", categoryUuid).Error; err != nil {
-// 		return err
-// 	}
+func (r *ManagementRepo) DeleteMember(uuid string) error {
+	var dataDB models.Member
+	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
+		return err
+	}
 
-// 	model.CategoryID = category.ID
+	if err := r.db.Delete(&dataDB).Error; err != nil {
+		return err
+	}
 
-// 	return r.db.Create(model).Error
-// }
-
-// func (r *ManagementRepo) UpdateShop(uuid string, categoryUuid string, model *models.Shop) error {
-// 	var category models.Category
-// 	if err := r.db.First(&category, "uuid = ?", categoryUuid).Error; err != nil {
-// 		return err
-// 	}
-
-// 	var dataDB models.Shop
-// 	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
-// 		return err
-// 	}
-
-// 	model.ID = dataDB.ID
-// 	model.CategoryID = category.ID
-// 	return r.db.Updates(model).Error
-// }
+	return r.db.Where("id = ?", dataDB.UserID).Delete(&models.User{}).Error
+}
 
 func (r *ManagementRepo) CreateProduct(userUuid, categoryUuid string, model *models.Product) error {
 	var user models.User
@@ -134,6 +146,21 @@ func (r *ManagementRepo) UpdateProduct(userUuid, categoryUuid, uuid string, mode
 	}
 
 	return dataDB.Image, nil
+}
+
+func (r *ManagementRepo) DeleteProduct(uuid string) error {
+	var dataDB models.Product
+	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
+		return err
+	}
+
+	activitiesFolder := "internal/files/activities"
+	pathFile := filepath.Join(activitiesFolder, dataDB.Image)
+	if err := os.Remove(pathFile); err != nil {
+		log.Println(err.Error())
+	}
+
+	return r.db.Delete(&dataDB).Error
 }
 
 func (r *ManagementRepo) CreateActivity(userUuid string, model *models.Activity) error {
@@ -219,7 +246,6 @@ func (r *ManagementRepo) CreateMemberActivity(userID uint, memberUuid, activityU
 	model := models.MemberActivity{
 		MemberID:   member.ID,
 		ActivityID: activity.ID,
-		// CreatedUserID: userID,
 	}
 
 	return r.db.Create(&model).Error
