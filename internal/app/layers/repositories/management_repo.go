@@ -251,6 +251,15 @@ func (r *ManagementRepo) CreateMemberActivity(userID uint, memberUuid, activityU
 	return r.db.Create(&model).Error
 }
 
+func (r *ManagementRepo) UpdateMemberActivity(uuid string, model *models.MemberActivity) error {
+	var dataDB models.MemberActivity
+	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
+		return err
+	}
+	model.ID = dataDB.ID
+	return r.db.Updates(&model).Error
+}
+
 func (r *ManagementRepo) DeleteMemberActivity(memberUuid, activityUuid string) error {
 	var member models.Member
 	if err := r.db.First(&member, "uuid = ?", memberUuid).Error; err != nil {

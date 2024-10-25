@@ -215,7 +215,8 @@ func (h *FetchHandler) GetMemberByUuid(c *gin.Context) {
 
 func (h *FetchHandler) GetActivities(c *gin.Context) {
 	limit := c.Query("limit")
-	resp, err := h.Service.GetActivities(limit)
+	group := c.Query("group")
+	resp, err := h.Service.GetActivities(limit, group)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
@@ -308,6 +309,27 @@ func (h *FetchHandler) GetMemberDashboard(c *gin.Context) {
 func (h *FetchHandler) GetMemberActivities(c *gin.Context) {
 	userUuid := c.GetString("uuid")
 	resp, err := h.Service.GetMemberActivities(userUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetMemberByUser(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	resp, err := h.Service.GetMemberByUser(userUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetAllMemberActivities(c *gin.Context) {
+	resp, err := h.Service.GetAllMemberActivities()
 	if err != nil {
 		utils.HandleError(c, err)
 		return

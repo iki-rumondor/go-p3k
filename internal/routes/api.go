@@ -33,6 +33,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 		public.GET("/files/products/:filename", handlers.FetchHandler.GetProductImage)
 		public.GET("/files/activities/:filename", handlers.FetchHandler.GetActivityImage)
+		public.GET("/files/attendances/:filename", handlers.FetchHandler.GetAttendanceImage)
 	}
 
 	user := router.Group("api").Use(IsValidJWT()).Use(SetUserUuid())
@@ -49,13 +50,15 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		user.DELETE("/activities/:uuid", handlers.ManagementHandler.DeleteActivity)
 
 		user.GET("/members", handlers.FetchHandler.GetMembers)
+		user.GET("/shops", handlers.FetchHandler.GetShops)
+		user.GET("/guests", handlers.FetchHandler.GetGuests)
+
 		user.GET("/members/not/activities/:activityUuid", handlers.FetchHandler.GetMembersNotInActivity)
 		user.POST("/members/activities", handlers.ManagementHandler.CreateMemberActivity)
 		user.DELETE("/members/:memberUuid/activities/:activityUuid", handlers.ManagementHandler.DeleteMemberActivity)
 
 		user.PATCH("/transactions/:transactionUuid/proof", handlers.TransactionHandler.SetTransactionProof)
 		user.GET("/files/transaction_proofs/:filename", handlers.FetchHandler.GetTransactionProofImage)
-		user.GET("/files/attendances/:filename", handlers.FetchHandler.GetAttendanceImage)
 
 		user.PATCH("/users/password", handlers.AuthHandler.UpdatePassword)
 
@@ -64,7 +67,6 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN"))
 	{
-		admin.GET("/guests", handlers.FetchHandler.GetGuests)
 		admin.GET("/guests/:uuid", handlers.FetchHandler.GetGuestByUuid)
 		admin.PATCH("/users/activation/:uuid", handlers.AuthHandler.ActivationUser)
 
@@ -79,7 +81,6 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.PUT("/categories/:uuid", handlers.ManagementHandler.UpdateCategory)
 		admin.DELETE("/categories/:uuid", handlers.ManagementHandler.DeleteCategory)
 
-		admin.GET("/shops", handlers.FetchHandler.GetShops)
 		admin.GET("/shops/:uuid", handlers.FetchHandler.GetShopByUuid)
 
 		admin.GET("/members/:uuid", handlers.FetchHandler.GetMemberByUuid)
@@ -115,6 +116,9 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		member.POST("/activities/:activityUuid/attendance", handlers.TransactionHandler.CreateMemberActivity)
 		member.GET("/dashboard/member", handlers.FetchHandler.GetMemberDashboard)
 		member.GET("/member/activities", handlers.FetchHandler.GetMemberActivities)
+		member.GET("/member/user", handlers.FetchHandler.GetMemberByUser)
+		member.GET("/member-activities", handlers.FetchHandler.GetAllMemberActivities)
+		member.PATCH("/member-activities/:uuid/accept-attendance", handlers.ManagementHandler.UpdatePresence)
 	}
 
 	return router

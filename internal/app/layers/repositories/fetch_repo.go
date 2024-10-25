@@ -197,9 +197,14 @@ func (r *FetchRepo) GetMemberByUserUuid(userUuid string) (*models.Member, error)
 	return user.Member, nil
 }
 
-func (r *FetchRepo) GetActivities(limit int) (*[]models.Activity, error) {
+func (r *FetchRepo) GetActivities(limit int, group string) (*[]models.Activity, error) {
 	var data []models.Activity
-	if err := r.db.Preload("CreatedUser").Preload("UpdatedUser").Limit(limit).Find(&data).Error; err != nil {
+	query := r.db.Preload("CreatedUser").Preload("UpdatedUser").Preload("Members.Member").Limit(limit)
+	if group != "" {
+		query = query.Where("`group` = ?", group)
+	}
+
+	if err := query.Find(&data).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
@@ -251,6 +256,16 @@ func (r *FetchRepo) GetMemberActivity(userUuid, activityUuid string) (*models.Me
 
 	var result models.MemberActivity
 	if err := r.db.Preload("Activity.UpdatedUser").First(&result, "member_id = ? AND activity_id = ?", user.Member.ID, activity.ID).Error; err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func (r *FetchRepo) GetMemberActivities() (*[]models.MemberActivity, error) {
+
+	var result []models.MemberActivity
+	if err := r.db.Preload("Activity.UpdatedUser").Preload("Member").Find(&result).Error; err != nil {
 		return nil, err
 	}
 

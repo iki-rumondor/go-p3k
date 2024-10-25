@@ -8,17 +8,17 @@ type ManagementInterface interface {
 
 	UpdateCategory(uuid string, model *models.Category) error
 	DeleteCategory(uuid string) error
-	
+
 	UpdateCitizen(uuid string, model *models.Citizen) error
 	DeleteCitizen(uuid string) error
 
 	UpdateMember(uuid string, model *models.Member) error
 	DeleteMember(uuid string) error
-	
+
 	CreateProduct(userUuid, categoryUuid string, model *models.Product) error
 	UpdateProduct(userUuid, categoryUuid, uuid string, model *models.Product) (string, error)
 	DeleteProduct(uuid string) error
-	
+
 	CreateActivity(userUuid string, model *models.Activity) error
 	UpdateActivity(userUuid string, uuid string, model *models.Activity) (string, error)
 	DeleteActivity(uuid string) (string, error)
@@ -27,5 +27,6 @@ type ManagementInterface interface {
 	CheckExistMemberActivity(memberUuid, activityUuid string) (bool, error)
 
 	CreateMemberActivity(userID uint, memberUuid, activityUuid string) error
+	UpdateMemberActivity(uuid string, model *models.MemberActivity) error
 	DeleteMemberActivity(memberUuid, activityUuid string) error
 }

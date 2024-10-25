@@ -174,7 +174,6 @@ func (h *ManagementHandler) UpdateProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Produk Berhasil Diperbarui"))
 }
 
-
 func (h *ManagementHandler) DeleteProduct(c *gin.Context) {
 	uuid := c.Param("uuid")
 	if err := h.Service.DeleteProduct(uuid); err != nil {
@@ -184,7 +183,6 @@ func (h *ManagementHandler) DeleteProduct(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Kategori Berhasil Dihapus"))
 }
-
 
 func (h *ManagementHandler) CreateCitizen(c *gin.Context) {
 	var body request.Citizen
@@ -226,7 +224,6 @@ func (h *ManagementHandler) UpdateCitizen(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Data Masyarakat Berhasil Diperbarui"))
 }
-
 
 func (h *ManagementHandler) DeleteCitizen(c *gin.Context) {
 	uuid := c.Param("uuid")
@@ -278,7 +275,6 @@ func (h *ManagementHandler) UpdateMember(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Data Anggota Berhasil Diperbarui"))
 }
-
 
 func (h *ManagementHandler) DeleteMember(c *gin.Context) {
 	uuid := c.Param("uuid")
@@ -419,6 +415,17 @@ func (h *ManagementHandler) CreateMemberActivity(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Anggota Kegiatan Berhasil Ditambahkan"))
+}
+
+func (h *ManagementHandler) UpdatePresence(c *gin.Context) {
+
+	uuid := c.Param("uuid")
+	if err := h.Service.UpdateMemberActivity(uuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Presensi Berhasil Diperbarui"))
 }
 
 func (h *ManagementHandler) DeleteMemberActivity(c *gin.Context) {

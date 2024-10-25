@@ -28,11 +28,12 @@ type FetchInterface interface {
 	GetMemberByUuid(uuid string) (*models.Member, error)
 	GetMemberByUserUuid(uuid string) (*models.Member, error)
 
-	GetActivities(limit int) (*[]models.Activity, error)
+	GetActivities(limit int, group string) (*[]models.Activity, error)
 	GetActivityByUuid(uuid string) (*models.Activity, error)
 
 	GetMembersNotInActivity(activityUuid string) (*[]models.Member, error)
 	GetMemberActivity(userUuid, activityUuid string) (*models.MemberActivity, error)
+	GetMemberActivities() (*[]models.MemberActivity, error)
 
 	CountGuestsInactive() (int64, error)
 	CountShopsInactive() (int64, error)

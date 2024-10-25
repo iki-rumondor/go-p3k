@@ -78,13 +78,14 @@ type Citizen struct {
 }
 
 type Member struct {
-	Uuid        string `json:"uuid"`
-	Name        string `json:"name"`
-	IsImportant bool   `json:"is_important"`
-	Position    string `json:"position"`
-	CreatedAt   int64  `json:"created_at"`
-	UpdatedAt   int64  `json:"updated_at"`
-	User        *User  `json:"user"`
+	Uuid            string `json:"uuid"`
+	Name            string `json:"name"`
+	AttendanceImage string `json:"attendance_image"`
+	IsImportant     bool   `json:"is_important"`
+	Position        string `json:"position"`
+	CreatedAt       int64  `json:"created_at"`
+	UpdatedAt       int64  `json:"updated_at"`
+	User            *User  `json:"user"`
 }
 
 type Activity struct {
@@ -108,6 +109,7 @@ type MemberActivity struct {
 	CreatedAt       int64     `json:"created_at"`
 	UpdatedAt       int64     `json:"updated_at"`
 	Activity        *Activity `json:"activity"`
+	Member          *Member   `json:"member"`
 }
 
 type AdminDashboard struct {

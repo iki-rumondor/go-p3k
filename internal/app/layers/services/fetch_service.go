@@ -448,7 +448,7 @@ func (s *FetchService) GetMemberByUuid(uuid string) (*response.Member, error) {
 	return &resp, nil
 }
 
-func (s *FetchService) GetActivities(limit string) (*[]response.Activity, error) {
+func (s *FetchService) GetActivities(limit, group string) (*[]response.Activity, error) {
 	var limitNumber = -1
 	if limit != "" {
 		result, err := strconv.Atoi(limit)
@@ -457,13 +457,22 @@ func (s *FetchService) GetActivities(limit string) (*[]response.Activity, error)
 		}
 	}
 
-	data, err := s.Repo.GetActivities(limitNumber)
+	data, err := s.Repo.GetActivities(limitNumber, group)
 	if err != nil {
 		return nil, response.SERVICE_INTERR
 	}
 
 	var resp []response.Activity
 	for _, item := range *data {
+		var members []response.Member
+		for _, member := range *item.Members {
+			if member.IsAccept {
+				members = append(members, response.Member{
+					Name:     member.Member.Name,
+					Position: member.Member.Position,
+				})
+			}
+		}
 		resp = append(resp, response.Activity{
 			Uuid:        item.Uuid,
 			Title:       item.Title,
@@ -478,6 +487,7 @@ func (s *FetchService) GetActivities(limit string) (*[]response.Activity, error)
 			UpdatedUser: &response.User{
 				Name: item.UpdatedUser.Name,
 			},
+			Members: &members,
 		})
 	}
 
@@ -503,11 +513,14 @@ func (s *FetchService) GetActivityByUuid(uuid string, queries request.ActivityQu
 
 	var members = []response.Member{}
 	for _, i := range *item.Members {
-		members = append(members, response.Member{
-			Uuid:        i.Member.Uuid,
-			Name:        i.Member.Name,
-			IsImportant: i.Member.IsImportant,
-		})
+		if i.IsAccept {
+			members = append(members, response.Member{
+				Uuid:            i.Member.Uuid,
+				AttendanceImage: i.AttendenceImage,
+				Name:            i.Member.Name,
+				IsImportant:     i.Member.IsImportant,
+			})
+		}
 	}
 
 	var resp = response.Activity{
@@ -653,7 +666,7 @@ func (s *FetchService) GetMemberActivities(userUuid string) (*response.MemberAct
 		return nil, response.SERVICE_INTERR
 	}
 
-	activities, err := s.Repo.GetActivities(-1)
+	activities, err := s.Repo.GetActivities(-1, "")
 	if err != nil {
 		return nil, response.SERVICE_INTERR
 	}
@@ -674,6 +687,45 @@ func (s *FetchService) GetMemberActivities(userUuid string) (*response.MemberAct
 	resp := response.MemberActivities{
 		Activities:  &activitiesResp,
 		IsImportant: member.IsImportant,
+	}
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetMemberByUser(userUuid string) (*response.Member, error) {
+	member, err := s.Repo.GetMemberByUserUuid(userUuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	resp := response.Member{
+		IsImportant: member.IsImportant,
+	}
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetAllMemberActivities() (*[]response.MemberActivity, error) {
+	results, err := s.Repo.GetMemberActivities()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var resp []response.MemberActivity
+
+	for _, item := range *results {
+		resp = append(resp, response.MemberActivity{
+			Uuid:            item.Uuid,
+			AttendanceImage: item.AttendenceImage,
+			IsAccept:        item.IsAccept,
+			CreatedAt:       item.CreatedAt,
+			Member: &response.Member{
+				Name: item.Member.Name,
+			},
+			Activity: &response.Activity{
+				Title: item.Activity.Title,
+			},
+		})
 	}
 
 	return &resp, nil

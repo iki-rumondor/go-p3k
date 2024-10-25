@@ -59,3 +59,7 @@ type UpdatePassword struct {
 	NewPassword     string `json:"new_password" valid:"required~field password baru tidak ditemukan"`
 	ConfirmPassword string `json:"confirm_password" valid:"required~field konfirmasi password tidak ditemukan"`
 }
+
+type AcceptPresence struct {
+	Status bool `json:"status"`
+}

@@ -129,7 +129,6 @@ func (s *ManagementService) UpdateProduct(userUuid, uuid, imageName string, req 
 	return nil
 }
 
-
 func (s *ManagementService) DeleteProduct(uuid string) error {
 	if err := s.Repo.DeleteProduct(uuid); err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -140,7 +139,6 @@ func (s *ManagementService) DeleteProduct(uuid string) error {
 
 	return nil
 }
-
 
 func (s *ManagementService) CreateCitizen(req *request.Citizen) error {
 	if unique := s.Repo.CheckUniqueNik(req.Nik); !unique {
@@ -191,7 +189,6 @@ func (s *ManagementService) UpdateCitizen(uuid string, req *request.Citizen) err
 	return nil
 }
 
-
 func (s *ManagementService) DeleteCitizen(uuid string) error {
 	if err := s.Repo.DeleteCitizen(uuid); err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -202,7 +199,6 @@ func (s *ManagementService) DeleteCitizen(uuid string) error {
 
 	return nil
 }
-
 
 func (s *ManagementService) CreateMember(req *request.Member) error {
 	var username = utils.GenerateRandomString(8)
@@ -244,7 +240,6 @@ func (s *ManagementService) UpdateMember(uuid string, req *request.Member) error
 
 	return nil
 }
-
 
 func (s *ManagementService) DeleteMember(uuid string) error {
 	if err := s.Repo.DeleteMember(uuid); err != nil {
@@ -376,6 +371,22 @@ func (s *ManagementService) CreateMemberActivity(userUuid string, req *request.M
 
 	if err := s.Repo.CreateMemberActivity(user.ID, req.MemberUuid, req.ActivityUuid); err != nil {
 		log.Println(err.Error())
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *ManagementService) UpdateMemberActivity(uuid string) error {
+	model := models.MemberActivity{
+		IsAccept: true,
+	}
+
+	if err := s.Repo.UpdateMemberActivity(uuid, &model); err != nil {
+		log.Println(err.Error())
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Absensi tidak ditemukan")
+		}
 		return response.SERVICE_INTERR
 	}
 
