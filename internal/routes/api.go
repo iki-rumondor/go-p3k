@@ -92,6 +92,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.GET("/files/identities/:filename", handlers.FetchHandler.GetIdentityImage)
 
 		admin.GET("/dashboard/admin", handlers.FetchHandler.GetAdminDashboard)
+		admin.GET("/member-activities", handlers.FetchHandler.GetAllMemberActivities)
+		admin.PATCH("/member-activities/:uuid/accept-attendance", handlers.ManagementHandler.UpdatePresence)
 	}
 
 	umkm := router.Group("api").Use(IsValidJWT()).Use(IsRole("UMKM")).Use(SetUserUuid())
@@ -117,8 +119,6 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		member.GET("/dashboard/member", handlers.FetchHandler.GetMemberDashboard)
 		member.GET("/member/activities", handlers.FetchHandler.GetMemberActivities)
 		member.GET("/member/user", handlers.FetchHandler.GetMemberByUser)
-		member.GET("/member-activities", handlers.FetchHandler.GetAllMemberActivities)
-		member.PATCH("/member-activities/:uuid/accept-attendance", handlers.ManagementHandler.UpdatePresence)
 	}
 
 	return router
