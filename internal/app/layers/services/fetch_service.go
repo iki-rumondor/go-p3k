@@ -479,6 +479,8 @@ func (s *FetchService) GetActivities(limit, group string) (*[]response.Activity,
 			Group:       item.Group,
 			Description: item.Description,
 			ImageName:   item.ImageName,
+			Location:    item.Location,
+			Date:        item.Date,
 			CreatedAt:   item.CreatedAt,
 			UpdatedAt:   item.UpdatedAt,
 			CreatedUser: &response.User{
@@ -529,6 +531,8 @@ func (s *FetchService) GetActivityByUuid(uuid string, queries request.ActivityQu
 		Group:       item.Group,
 		Description: item.Description,
 		ImageName:   item.ImageName,
+		Location:    item.Location,
+		Date:        item.Date,
 		CreatedAt:   item.CreatedAt,
 		UpdatedAt:   item.UpdatedAt,
 		CreatedUser: &response.User{
@@ -687,6 +691,7 @@ func (s *FetchService) GetMemberActivities(userUuid string) (*response.MemberAct
 	resp := response.MemberActivities{
 		Activities:  &activitiesResp,
 		IsImportant: member.IsImportant,
+		IsHeadgroup: member.IsHeadgroup,
 	}
 
 	return &resp, nil
@@ -700,6 +705,7 @@ func (s *FetchService) GetMemberByUser(userUuid string) (*response.Member, error
 
 	resp := response.Member{
 		IsImportant: member.IsImportant,
+		IsHeadgroup: member.IsHeadgroup,
 	}
 
 	return &resp, nil

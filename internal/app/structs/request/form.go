@@ -12,6 +12,8 @@ type Activity struct {
 	Group       uint   `form:"group" valid:"required~field kelompok kerja tidak ditemukan"`
 	Title       string `form:"title" valid:"required~field judul tidak ditemukan"`
 	Description string `form:"description" valid:"required~field deskripsi tidak ditemukan"`
+	Location    string `form:"location" valid:"required~field lokasi tidak ditemukan"`
+	Date        int64  `form:"date" valid:"required~field tanggal pelaksanaan tidak ditemukan"`
 }
 
 type RegisterShop struct {

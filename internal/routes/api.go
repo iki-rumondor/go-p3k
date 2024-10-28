@@ -52,6 +52,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		user.GET("/members", handlers.FetchHandler.GetMembers)
 		user.GET("/shops", handlers.FetchHandler.GetShops)
 		user.GET("/guests", handlers.FetchHandler.GetGuests)
+		user.GET("/citizens", handlers.FetchHandler.GetCitizens)
 
 		user.GET("/members/not/activities/:activityUuid", handlers.FetchHandler.GetMembersNotInActivity)
 		user.POST("/members/activities", handlers.ManagementHandler.CreateMemberActivity)
@@ -70,7 +71,6 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.GET("/guests/:uuid", handlers.FetchHandler.GetGuestByUuid)
 		admin.PATCH("/users/activation/:uuid", handlers.AuthHandler.ActivationUser)
 
-		admin.GET("/citizens", handlers.FetchHandler.GetCitizens)
 		admin.GET("/citizens/:uuid", handlers.FetchHandler.GetCitizenByUuid)
 		admin.POST("/citizens", handlers.ManagementHandler.CreateCitizen)
 		admin.PUT("/citizens/:uuid", handlers.ManagementHandler.UpdateCitizen)

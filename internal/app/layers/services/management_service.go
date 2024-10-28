@@ -206,6 +206,7 @@ func (s *ManagementService) CreateMember(req *request.Member) error {
 	model := models.Member{
 		Name:        req.Name,
 		IsImportant: req.IsImportant,
+		IsHeadgroup: req.IsHeadgroup,
 		Position:    req.Position,
 		User: &models.User{
 			Name:     req.Name,
@@ -228,6 +229,7 @@ func (s *ManagementService) UpdateMember(uuid string, req *request.Member) error
 	model := models.Member{
 		Name:        req.Name,
 		IsImportant: req.IsImportant,
+		IsHeadgroup: req.IsHeadgroup,
 		Position:    req.Position,
 	}
 
@@ -267,6 +269,8 @@ func (s *ManagementService) CreateActivity(userUuid, imageName string, req *requ
 	model := models.Activity{
 		Title:       req.Title,
 		Description: req.Description,
+		Location:    req.Location,
+		Date:        req.Date,
 		Group:       req.Group,
 		ImageName:   imageName,
 	}
@@ -293,6 +297,8 @@ func (s *ManagementService) UpdateActivity(userUuid, uuid, imageName string, req
 	model := models.Activity{
 		Title:       req.Title,
 		Description: req.Description,
+		Location:    req.Location,
+		Date:        req.Date,
 		Group:       req.Group,
 		ImageName:   imageName,
 	}

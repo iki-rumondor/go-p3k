@@ -11,6 +11,7 @@ type Member struct {
 	Name             string            `gorm:"not_null;size:128"`
 	Position         string            `gorm:"not_null"`
 	IsImportant      bool              `gorm:"not_null"`
+	IsHeadgroup      bool              `gorm:"not_null"`
 	CreatedAt        int64             `gorm:"autoCreateTime:milli"`
 	UpdatedAt        int64             `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
 	UserID           uint              `gorm:"not_null"`

@@ -82,6 +82,7 @@ type Member struct {
 	Name            string `json:"name"`
 	AttendanceImage string `json:"attendance_image"`
 	IsImportant     bool   `json:"is_important"`
+	IsHeadgroup     bool   `json:"is_headgroup"`
 	Position        string `json:"position"`
 	CreatedAt       int64  `json:"created_at"`
 	UpdatedAt       int64  `json:"updated_at"`
@@ -94,6 +95,8 @@ type Activity struct {
 	Group          uint            `json:"group"`
 	Description    string          `json:"description"`
 	ImageName      string          `json:"image_name"`
+	Location       string          `json:"location"`
+	Date           int64           `json:"date"`
 	CreatedAt      int64           `json:"created_at"`
 	UpdatedAt      int64           `json:"updated_at"`
 	CreatedUser    *User           `json:"created_user"`
@@ -133,6 +136,7 @@ type MemberDashboard struct {
 }
 
 type MemberActivities struct {
+	IsHeadgroup bool        `json:"is_headgroup"`
 	IsImportant bool        `json:"is_important"`
 	Activities  *[]Activity `json:"activities"`
 }
