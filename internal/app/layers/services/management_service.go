@@ -208,6 +208,7 @@ func (s *ManagementService) CreateMember(req *request.Member) error {
 		IsImportant: req.IsImportant,
 		IsHeadgroup: req.IsHeadgroup,
 		Position:    req.Position,
+		Group:       req.Group,
 		User: &models.User{
 			Name:     req.Name,
 			Username: username,
@@ -231,6 +232,7 @@ func (s *ManagementService) UpdateMember(uuid string, req *request.Member) error
 		IsImportant: req.IsImportant,
 		IsHeadgroup: req.IsHeadgroup,
 		Position:    req.Position,
+		Group:       req.Group,
 	}
 
 	if err := s.Repo.UpdateMember(uuid, &model); err != nil {

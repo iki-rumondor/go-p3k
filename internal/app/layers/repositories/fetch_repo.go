@@ -172,9 +172,13 @@ func (r *FetchRepo) GetCitizenByUuid(uuid string) (*models.Citizen, error) {
 	return &data, nil
 }
 
-func (r *FetchRepo) GetMembers() (*[]models.Member, error) {
+func (r *FetchRepo) GetMembers(group string) (*[]models.Member, error) {
 	var data []models.Member
-	if err := r.db.Preload("User").Find(&data).Error; err != nil {
+	query := r.db.Preload("User")
+	if group != "" {
+		query = query.Where("`group` = ?", group)
+	}
+	if err := query.Find(&data).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil

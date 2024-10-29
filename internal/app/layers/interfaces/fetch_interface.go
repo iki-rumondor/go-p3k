@@ -24,7 +24,7 @@ type FetchInterface interface {
 	GetProductTransactionByUuid(userUuid, uuid string) (*models.ProductTransaction, error)
 	GetProductTransactionsByShop(userUuid string, isAccept bool) (*[]models.ProductTransaction, error)
 
-	GetMembers() (*[]models.Member, error)
+	GetMembers(group string) (*[]models.Member, error)
 	GetMemberByUuid(uuid string) (*models.Member, error)
 	GetMemberByUserUuid(uuid string) (*models.Member, error)
 

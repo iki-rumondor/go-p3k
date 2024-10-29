@@ -401,8 +401,8 @@ func (s *FetchService) GetProductTransactionsByShop(userUuid string, isAccept bo
 	return &resp, nil
 }
 
-func (s *FetchService) GetMembers() (*[]response.Member, error) {
-	data, err := s.Repo.GetMembers()
+func (s *FetchService) GetMembers(group string) (*[]response.Member, error) {
+	data, err := s.Repo.GetMembers(group)
 	if err != nil {
 		return nil, response.SERVICE_INTERR
 	}
@@ -414,6 +414,7 @@ func (s *FetchService) GetMembers() (*[]response.Member, error) {
 			Name:        item.Name,
 			Position:    item.Position,
 			IsImportant: item.IsImportant,
+			Group:       item.Group,
 			CreatedAt:   item.CreatedAt,
 			UpdatedAt:   item.UpdatedAt,
 			User: &response.User{
@@ -437,6 +438,7 @@ func (s *FetchService) GetMemberByUuid(uuid string) (*response.Member, error) {
 		Name:        item.Name,
 		IsImportant: item.IsImportant,
 		Position:    item.Position,
+		Group:       item.Group,
 		CreatedAt:   item.CreatedAt,
 		UpdatedAt:   item.UpdatedAt,
 		User: &response.User{

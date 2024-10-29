@@ -191,8 +191,8 @@ func (h *FetchHandler) GetProductTransactionsByShop(c *gin.Context) {
 }
 
 func (h *FetchHandler) GetMembers(c *gin.Context) {
-
-	resp, err := h.Service.GetMembers()
+	group := c.Query("group")
+	resp, err := h.Service.GetMembers(group)
 	if err != nil {
 		utils.HandleError(c, err)
 		return

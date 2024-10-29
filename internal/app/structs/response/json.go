@@ -84,6 +84,7 @@ type Member struct {
 	IsImportant     bool   `json:"is_important"`
 	IsHeadgroup     bool   `json:"is_headgroup"`
 	Position        string `json:"position"`
+	Group           int64  `json:"group"`
 	CreatedAt       int64  `json:"created_at"`
 	UpdatedAt       int64  `json:"updated_at"`
 	User            *User  `json:"user"`
