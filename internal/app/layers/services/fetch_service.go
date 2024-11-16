@@ -151,8 +151,16 @@ func (s *FetchService) GetCategoryByUuid(uuid string) (*response.Category, error
 	return &resp, nil
 }
 
-func (s *FetchService) GetShops() (*[]response.Shop, error) {
-	data, err := s.Repo.GetShops()
+func (s *FetchService) GetShops(limit string) (*[]response.Shop, error) {
+	var limitNumber int
+	if limit != "" {
+		result, err := strconv.Atoi(limit)
+		if err == nil {
+			limitNumber = result
+		}
+	}
+
+	data, err := s.Repo.GetShops(limitNumber)
 	if err != nil {
 		return nil, response.SERVICE_INTERR
 	}
@@ -204,7 +212,7 @@ func (s *FetchService) GetShopByUuid(uuid string) (*response.Shop, error) {
 	return &resp, nil
 }
 
-func (s *FetchService) GetAllProducts(limit string) (*[]response.Product, error) {
+func (s *FetchService) GetAllProducts(limit, shopUuid string) (*[]response.Product, error) {
 	var limitNumber = -1
 	if limit != "" {
 		result, err := strconv.Atoi(limit)
@@ -213,7 +221,7 @@ func (s *FetchService) GetAllProducts(limit string) (*[]response.Product, error)
 		}
 	}
 
-	data, err := s.Repo.GetAllProducts(limitNumber)
+	data, err := s.Repo.GetAllProducts(limitNumber, shopUuid)
 	if err != nil {
 		return nil, response.SERVICE_INTERR
 	}

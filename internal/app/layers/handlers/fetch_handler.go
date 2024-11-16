@@ -89,8 +89,8 @@ func (h *FetchHandler) GetCategoryByUuid(c *gin.Context) {
 }
 
 func (h *FetchHandler) GetShops(c *gin.Context) {
-
-	resp, err := h.Service.GetShops()
+	limit := c.Query("limit")
+	resp, err := h.Service.GetShops(limit)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
@@ -112,7 +112,8 @@ func (h *FetchHandler) GetShopByUuid(c *gin.Context) {
 
 func (h *FetchHandler) GetAllProducts(c *gin.Context) {
 	limit := c.Query("limit")
-	resp, err := h.Service.GetAllProducts(limit)
+	shop := c.Query("shop")
+	resp, err := h.Service.GetAllProducts(limit, shop)
 	if err != nil {
 		utils.HandleError(c, err)
 		return

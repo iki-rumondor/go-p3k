@@ -12,10 +12,10 @@ type FetchInterface interface {
 	GetCategories() (*[]models.Category, error)
 	GetCategoryByUuid(uuid string) (*models.Category, error)
 
-	GetShops() (*[]models.Shop, error)
+	GetShops(limit int) (*[]models.Shop, error)
 	GetShopByUuid(uuid string) (*models.Shop, error)
 
-	GetAllProducts(limit int) (*[]models.Product, error)
+	GetAllProducts(limit int, shopUuid string) (*[]models.Product, error)
 	GetPublicProductByUuid(uuid string) (*models.Product, error)
 	GetProducts(userUuid string) (*[]models.Product, error)
 	GetProductByUuid(userUuid, uuid string) (*models.Product, error)

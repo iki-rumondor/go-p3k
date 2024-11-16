@@ -34,6 +34,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		public.GET("/files/products/:filename", handlers.FetchHandler.GetProductImage)
 		public.GET("/files/activities/:filename", handlers.FetchHandler.GetActivityImage)
 		public.GET("/files/attendances/:filename", handlers.FetchHandler.GetAttendanceImage)
+		public.GET("/shops", handlers.FetchHandler.GetShops)
+		public.GET("/files/shops/:filename", handlers.FetchHandler.GetShopImage)
 	}
 
 	user := router.Group("api").Use(IsValidJWT()).Use(SetUserUuid())
@@ -50,7 +52,6 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		user.DELETE("/activities/:uuid", handlers.ManagementHandler.DeleteActivity)
 
 		user.GET("/members", handlers.FetchHandler.GetMembers)
-		user.GET("/shops", handlers.FetchHandler.GetShops)
 		user.GET("/guests", handlers.FetchHandler.GetGuests)
 		user.GET("/citizens", handlers.FetchHandler.GetCitizens)
 
@@ -88,7 +89,6 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.PUT("/members/:uuid", handlers.ManagementHandler.UpdateMember)
 		admin.DELETE("/master/members/:uuid", handlers.ManagementHandler.DeleteMember)
 
-		admin.GET("/files/shops/:filename", handlers.FetchHandler.GetShopImage)
 		admin.GET("/files/identities/:filename", handlers.FetchHandler.GetIdentityImage)
 
 		admin.GET("/dashboard/admin", handlers.FetchHandler.GetAdminDashboard)

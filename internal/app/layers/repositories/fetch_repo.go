@@ -48,9 +48,14 @@ func (r *FetchRepo) GetCategoryByUuid(uuid string) (*models.Category, error) {
 	return &data, nil
 }
 
-func (r *FetchRepo) GetShops() (*[]models.Shop, error) {
+func (r *FetchRepo) GetShops(limit int) (*[]models.Shop, error) {
 	var data []models.Shop
-	if err := r.db.Preload("User").Find(&data).Error; err != nil {
+	query := r.db.Preload("User")
+	if limit != 0 {
+		query = query.Limit(limit)
+	}
+
+	if err := query.Find(&data).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
@@ -64,9 +69,18 @@ func (r *FetchRepo) GetShopByUuid(uuid string) (*models.Shop, error) {
 	return &data, nil
 }
 
-func (r *FetchRepo) GetAllProducts(limit int) (*[]models.Product, error) {
+func (r *FetchRepo) GetAllProducts(limit int, shopUuid string) (*[]models.Product, error) {
 	var data []models.Product
-	if err := r.db.Preload("Shop").Preload("Category").Limit(limit).Find(&data).Error; err != nil {
+	query := r.db.Preload("Shop").Preload("Category").Limit(limit)
+	if shopUuid != "" {
+		var shop models.Shop
+		if err := r.db.First(&shop, "uuid = ?", shopUuid).Error; err != nil {
+			return nil, err
+		}
+		query = query.Where("shop_id = ?", shop.ID)
+	}
+
+	if err := query.Find(&data).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
