@@ -5,6 +5,7 @@ import "github.com/iki-rumondor/go-p3k/internal/app/structs/models"
 type FetchInterface interface {
 	GetGuests() (*[]models.Guest, error)
 	GetGuestByUuid(uuid string) (*models.Guest, error)
+	GetGuestByUser(userUuid string) (*models.Guest, error)
 
 	GetCitizens() (*[]models.Citizen, error)
 	GetCitizenByUuid(uuid string) (*models.Citizen, error)
@@ -14,6 +15,7 @@ type FetchInterface interface {
 
 	GetShops(limit int) (*[]models.Shop, error)
 	GetShopByUuid(uuid string) (*models.Shop, error)
+	GetShopByUser(userUuid string) (*models.Shop, error)
 
 	GetAllProducts(limit int, shopUuid string) (*[]models.Product, error)
 	GetPublicProductByUuid(uuid string) (*models.Product, error)

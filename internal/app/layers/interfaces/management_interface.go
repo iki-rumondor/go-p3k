@@ -29,4 +29,7 @@ type ManagementInterface interface {
 	CreateMemberActivity(userID uint, memberUuid, activityUuid string) error
 	UpdateMemberActivity(uuid string, model *models.MemberActivity) error
 	DeleteMemberActivity(memberUuid, activityUuid string) error
+
+	UpdateShop(uuid string, model *models.Shop) error
+	UpdateGuest(uuid string, model *models.Guest) error
 }

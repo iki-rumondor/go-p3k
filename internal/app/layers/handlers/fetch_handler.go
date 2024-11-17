@@ -296,6 +296,17 @@ func (h *FetchHandler) GetGuestDashboard(c *gin.Context) {
 	c.JSON(http.StatusOK, response.DATA_RES(resp))
 }
 
+func (h *FetchHandler) GetShopByUser(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	resp, err := h.Service.GetShopByUser(userUuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
 func (h *FetchHandler) GetMemberDashboard(c *gin.Context) {
 	userUuid := c.GetString("uuid")
 	resp, err := h.Service.GetMemberDashboard(userUuid)

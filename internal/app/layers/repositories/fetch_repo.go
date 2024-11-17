@@ -32,6 +32,19 @@ func (r *FetchRepo) GetGuestByUuid(uuid string) (*models.Guest, error) {
 	return &data, nil
 }
 
+func (r *FetchRepo) GetGuestByUser(userUuid string) (*models.Guest, error) {
+	var user models.User
+	if err := r.db.Preload("Guest").First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+
+	var data models.Guest
+	if err := r.db.First(&data, "id = ?", user.Guest.ID).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
 func (r *FetchRepo) GetCategories() (*[]models.Category, error) {
 	var data []models.Category
 	if err := r.db.Find(&data).Error; err != nil {
@@ -64,6 +77,19 @@ func (r *FetchRepo) GetShops(limit int) (*[]models.Shop, error) {
 func (r *FetchRepo) GetShopByUuid(uuid string) (*models.Shop, error) {
 	var data models.Shop
 	if err := r.db.Preload("User").First(&data, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
+func (r *FetchRepo) GetShopByUser(userUuid string) (*models.Shop, error) {
+	var user models.User
+	if err := r.db.Preload("Shop").First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+
+	var data models.Shop
+	if err := r.db.First(&data, "id = ?", user.Shop.ID).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil

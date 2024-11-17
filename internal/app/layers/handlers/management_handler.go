@@ -439,3 +439,45 @@ func (h *ManagementHandler) DeleteMemberActivity(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Anggota Kegiatan Berhasil Dihapus"))
 }
+
+func (h *ManagementHandler) UpdateShop(c *gin.Context) {
+	var body request.UpdateShop
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	uuid := c.Param("uuid")
+	if err := h.Service.UpdateShop(uuid, &body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Data Umkm Berhasil Diperbarui"))
+}
+
+func (h *ManagementHandler) UpdateGuest(c *gin.Context) {
+	var body request.UpdateGuest
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	uuid := c.Param("uuid")
+	if err := h.Service.UpdateGuest(uuid, &body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Data Pembeli Berhasil Diperbarui"))
+}

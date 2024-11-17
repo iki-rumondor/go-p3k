@@ -65,6 +65,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		user.PATCH("/users/password", handlers.AuthHandler.UpdatePassword)
 
 		user.GET("/dashboard/guest", handlers.FetchHandler.GetGuestDashboard)
+		user.PUT("/guests/:uuid", handlers.ManagementHandler.UpdateGuest)
 	}
 
 	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN"))
@@ -98,6 +99,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 	umkm := router.Group("api").Use(IsValidJWT()).Use(IsRole("UMKM")).Use(SetUserUuid())
 	{
+		umkm.PUT("/shops/:uuid", handlers.ManagementHandler.UpdateShop)
+		umkm.GET("/shops/user", handlers.FetchHandler.GetShopByUser)
 		umkm.GET("/dashboard/shop", handlers.FetchHandler.GetShopDashboard)
 
 		umkm.GET("/products", handlers.FetchHandler.GetProducts)

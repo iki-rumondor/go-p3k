@@ -262,7 +262,8 @@ func (s *FetchService) GetPublicProductByUuid(uuid string) (*response.Product, e
 		ImageName:    item.Image,
 		CategoryName: item.Category.Name,
 		Shop: &response.Shop{
-			Name: item.Shop.Name,
+			Name:        item.Shop.Name,
+			PhoneNumber: item.Shop.PhoneNumber,
 		},
 	}
 
@@ -636,7 +637,29 @@ func (s *FetchService) GetShopDashboard(userUuid string) (*response.ShopDashboar
 	return &resp, nil
 }
 
+func (s *FetchService) GetShopByUser(userUuid string) (*response.Shop, error) {
+	shop, err := s.Repo.GetShopByUser(userUuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	resp := response.Shop{
+		Uuid:        shop.Uuid,
+		Name:        shop.Name,
+		Owner:       shop.Owner,
+		Address:     shop.Address,
+		PhoneNumber: shop.PhoneNumber,
+	}
+
+	return &resp, nil
+}
+
 func (s *FetchService) GetGuestDashboard(userUuid string) (*response.GuestDashboard, error) {
+	guest, err := s.Repo.GetGuestByUser(userUuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
 	unprocess_transactions, err := s.Repo.CountUserUnprocessTransactions(userUuid)
 	if err != nil {
 		return nil, response.SERVICE_INTERR
@@ -650,6 +673,10 @@ func (s *FetchService) GetGuestDashboard(userUuid string) (*response.GuestDashbo
 	resp := response.GuestDashboard{
 		UnprocessTransactions: unprocess_transactions,
 		SuccessTransactions:   success_transactions,
+		Uuid:                  guest.Uuid,
+		Name:                  guest.Name,
+		Address:               guest.Address,
+		PhoneNumber:           guest.PhoneNumber,
 	}
 
 	return &resp, nil

@@ -423,3 +423,40 @@ func (s *ManagementService) DeleteMemberActivity(userUuid, memberUuid, activityU
 
 	return nil
 }
+
+func (s *ManagementService) UpdateShop(uuid string, req *request.UpdateShop) error {
+	model := models.Shop{
+		Name:        req.Name,
+		Owner:       req.Owner,
+		Address:     req.Address,
+		PhoneNumber: req.PhoneNumber,
+	}
+
+	if err := s.Repo.UpdateShop(uuid, &model); err != nil {
+		log.Println(err.Error())
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Umkm tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *ManagementService) UpdateGuest(uuid string, req *request.UpdateGuest) error {
+	model := models.Guest{
+		Name:        req.Name,
+		Address:     req.Address,
+		PhoneNumber: req.PhoneNumber,
+	}
+
+	if err := s.Repo.UpdateGuest(uuid, &model); err != nil {
+		log.Println(err.Error())
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Pembeli tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}

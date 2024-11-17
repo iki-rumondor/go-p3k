@@ -278,3 +278,27 @@ func (r *ManagementRepo) DeleteMemberActivity(memberUuid, activityUuid string) e
 
 	return r.db.Delete(&model).Error
 }
+
+func (r *ManagementRepo) UpdateShop(uuid string, model *models.Shop) error {
+	var dataDB models.Shop
+	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
+		return err
+	}
+	model.ID = dataDB.ID
+	if err := r.db.Model(&models.User{}).Where("id = ?", dataDB.UserID).Update("name", model.Owner).Error; err != nil {
+		return err
+	}
+	return r.db.Updates(&model).Error
+}
+
+func (r *ManagementRepo) UpdateGuest(uuid string, model *models.Guest) error {
+	var dataDB models.Guest
+	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
+		return err
+	}
+	model.ID = dataDB.ID
+	if err := r.db.Model(&models.User{}).Where("id = ?", dataDB.UserID).Update("name", model.Name).Error; err != nil {
+		return err
+	}
+	return r.db.Updates(&model).Error
+}

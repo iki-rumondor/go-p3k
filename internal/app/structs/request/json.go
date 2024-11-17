@@ -31,6 +31,19 @@ type Shop struct {
 	PhoneNumber  string `json:"phone_number" valid:"required~field nomor handphone tidak ditemukan"`
 }
 
+type UpdateShop struct {
+	Name        string `json:"name" valid:"required~field nama tidak ditemukan"`
+	Owner       string `json:"owner" valid:"required~field nama pemilik tidak ditemukan"`
+	Address     string `json:"address" valid:"required~field alamat tidak ditemukan"`
+	PhoneNumber string `json:"phone_number" valid:"required~field nomor handphone tidak ditemukan"`
+}
+
+type UpdateGuest struct {
+	Name        string `json:"name" valid:"required~field nama tidak ditemukan"`
+	Address     string `json:"address" valid:"required~field alamat tidak ditemukan"`
+	PhoneNumber string `json:"phone_number" valid:"required~field nomor handphone tidak ditemukan"`
+}
+
 type BuyProduct struct {
 	ProductUuid string `json:"product_uuid" valid:"required~field Uuid produk tidak ditemukan"`
 	Quantity    int64  `json:"quantity" valid:"required~field jumlah tidak ditemukan"`

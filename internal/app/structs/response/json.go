@@ -127,8 +127,12 @@ type ShopDashboard struct {
 }
 
 type GuestDashboard struct {
-	SuccessTransactions   int64 `json:"success_transactions"`
-	UnprocessTransactions int64 `json:"unprocess_transactions"`
+	SuccessTransactions   int64  `json:"success_transactions"`
+	UnprocessTransactions int64  `json:"unprocess_transactions"`
+	Uuid                  string `json:"uuid"`
+	Name                  string `json:"name"`
+	Address               string `json:"address"`
+	PhoneNumber           string `json:"phone_number"`
 }
 
 type MemberDashboard struct {
