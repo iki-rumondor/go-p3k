@@ -51,7 +51,7 @@ func (r *ManagementRepo) DeleteCategory(uuid string) error {
 
 func (r *ManagementRepo) UpdateCitizen(uuid string, model *models.Citizen) error {
 	var dataDB models.Citizen
-	if err := r.db.First(&dataDB, "uuid = ?", uuid).Error; err != nil {
+	if err := r.db.Preload("User").First(&dataDB, "uuid = ?", uuid).Error; err != nil {
 		return err
 	}
 
@@ -60,9 +60,14 @@ func (r *ManagementRepo) UpdateCitizen(uuid string, model *models.Citizen) error
 			return response.BADREQ_ERR("Nik yang digunakan sudah terdaftar")
 		}
 
-		model.User = &models.User{
+		newUserData := &models.User{
+			ID:       dataDB.UserID,
 			Username: model.Nik,
 			Password: model.Nik,
+		}
+
+		if err := r.db.Updates(&newUserData).Error; err != nil {
+			return response.SERVICE_INTERR
 		}
 	}
 
