@@ -3,6 +3,7 @@ package utils
 import (
 	"mime/multipart"
 	"strings"
+	"time"
 )
 
 func CheckTypeFile(file *multipart.FileHeader, extensions []string) (status bool) {
@@ -27,4 +28,21 @@ func CheckContainsInt(slice []int, value int) bool {
 func CheckFileSize(file *multipart.FileHeader, maxSizeMB int64) bool {
 	const bytesInMB = 1024 * 1024
 	return file.Size > maxSizeMB*bytesInMB
+}
+
+func IsToday(ts int64) bool {
+	activityDate := time.UnixMilli(ts)
+	now := time.Now()
+
+	return activityDate.Year() == now.Year() &&
+		activityDate.Month() == now.Month() &&
+		activityDate.Day() == now.Day()
+}
+
+func BeforeDate(ts int64) bool {
+	return time.UnixMilli(ts).Before(time.Now())
+}
+
+func AfterDate(ts int64) bool {
+	return time.UnixMilli(ts).After(time.Now())
 }

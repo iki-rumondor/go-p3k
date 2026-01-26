@@ -167,6 +167,14 @@ func (s *TransactionService) CreateMemberActivity(userUuid, activityUuid, filena
 		return response.SERVICE_INTERR
 	}
 
+	if !utils.BeforeDate(activity.Date) {
+		return response.BADREQ_ERR("Kegiatan belum dimulai")
+	}
+
+	if !utils.AfterDate(activity.Date) {
+		return response.BADREQ_ERR("Kegiatan belum selesai")
+	}
+
 	model := models.MemberActivity{
 		MemberID:        user.Member.ID,
 		ActivityID:      activity.ID,
