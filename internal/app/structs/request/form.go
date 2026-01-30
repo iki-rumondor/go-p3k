@@ -13,7 +13,8 @@ type Activity struct {
 	Title       string `form:"title" valid:"required~field judul tidak ditemukan"`
 	Description string `form:"description" valid:"required~field deskripsi tidak ditemukan"`
 	Location    string `form:"location" valid:"required~field lokasi tidak ditemukan"`
-	Date        int64  `form:"date" valid:"required~field tanggal pelaksanaan tidak ditemukan"`
+	StartTime   int64  `form:"start_time" valid:"required~field waktu mulai tidak ditemukan"`
+	EndTime     int64  `form:"end_time" valid:"required~field waktu selesai tidak ditemukan"`
 }
 
 type RegisterShop struct {

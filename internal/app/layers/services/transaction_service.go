@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"log"
+	"time"
 
 	"github.com/iki-rumondor/go-p3k/internal/app/layers/interfaces"
 	"github.com/iki-rumondor/go-p3k/internal/app/structs/models"
@@ -167,14 +168,14 @@ func (s *TransactionService) CreateMemberActivity(userUuid, activityUuid, filena
 		return response.SERVICE_INTERR
 	}
 
-	if !utils.IsToday(activity.Date) {
-		if utils.BeforeDate(activity.Date) {
-			return response.BADREQ_ERR("Kegiatan belum dimulai")
-		}
+	now := time.Now().UnixMilli()
 
-		if utils.AfterDate(activity.Date) {
-			return response.BADREQ_ERR("Kegiatan sudah selesai")
-		}
+	if now < activity.StartTime {
+		return response.BADREQ_ERR("Kegiatan belum dimulai")
+	}
+
+	if now > activity.EndTime {
+		return response.BADREQ_ERR("Kegiatan sudah selesai")
 	}
 
 	model := models.MemberActivity{

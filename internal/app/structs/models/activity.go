@@ -19,7 +19,8 @@ type Activity struct {
 	ImageName     string            `gorm:"not_null;"`
 	CreatedUserID uint              `gorm:"not_null"`
 	UpdatedUserID uint              `gorm:"not_null"`
-	Date          int64             `gorm:"not_null"`
+	StartTime     int64             `gorm:"not_null"`
+	EndTime       int64             `gorm:"not_null"`
 	CreatedAt     int64             `gorm:"autoCreateTime:milli"`
 	UpdatedAt     int64             `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
 	CreatedUser   *User             `gorm:"foreignKey:CreatedUserID"`

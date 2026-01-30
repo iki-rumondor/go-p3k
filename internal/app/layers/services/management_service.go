@@ -268,11 +268,16 @@ func (s *ManagementService) CreateActivity(userUuid, imageName string, req *requ
 		return response.UNAUTH_ERR("Akses dibatasi")
 	}
 
+	if req.StartTime > req.EndTime {
+		return response.BADREQ_ERR("Waktu kegiatan tidak valid")
+	}
+
 	model := models.Activity{
 		Title:       req.Title,
 		Description: req.Description,
 		Location:    req.Location,
-		Date:        req.Date,
+		StartTime:   req.StartTime,
+		EndTime:     req.EndTime,
 		Group:       req.Group,
 		ImageName:   imageName,
 	}
@@ -300,7 +305,8 @@ func (s *ManagementService) UpdateActivity(userUuid, uuid, imageName string, req
 		Title:       req.Title,
 		Description: req.Description,
 		Location:    req.Location,
-		Date:        req.Date,
+		StartTime:   req.StartTime,
+		EndTime:     req.EndTime,
 		Group:       req.Group,
 		ImageName:   imageName,
 	}

@@ -97,7 +97,8 @@ type Activity struct {
 	Description    string          `json:"description"`
 	ImageName      string          `json:"image_name"`
 	Location       string          `json:"location"`
-	Date           int64           `json:"date"`
+	StartTime      int64           `json:"start_time"`
+	EndTime        int64           `json:"end_time"`
 	CreatedAt      int64           `json:"created_at"`
 	UpdatedAt      int64           `json:"updated_at"`
 	CreatedUser    *User           `json:"created_user"`
