@@ -18,8 +18,8 @@ func NewFetchService(repo interfaces.FetchInterface) *FetchService {
 	}
 }
 
-func (s *FetchService) GetCitizens() (*[]response.Citizen, error) {
-	data, err := s.Repo.GetCitizens()
+func (s *FetchService) GetCitizens(regionId string) (*[]response.Citizen, error) {
+	data, err := s.Repo.GetCitizensWithRegion(regionId)
 	if err != nil {
 		return nil, response.SERVICE_INTERR
 	}

@@ -79,8 +79,8 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.PUT("/citizens/:uuid", handlers.ManagementHandler.UpdateCitizen)
 		admin.DELETE("/citizens/:uuid", handlers.ManagementHandler.DeleteCitizen)
 
-		admin.GET("/regions", newest.GetAllRegions)
-		admin.GET("/regions/:id", newest.GetRegionByID)
+		public.GET("/regions", newest.GetAllRegions)
+		public.GET("/regions/:id", newest.GetRegionByID)
 		admin.POST("/regions", newest.CreateRegion)
 		admin.PUT("/regions/:id", newest.UpdateRegion)
 		admin.DELETE("/regions/:id", newest.DeleteRegion)

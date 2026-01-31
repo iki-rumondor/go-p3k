@@ -45,7 +45,8 @@ func (h *FetchHandler) GetGuestByUuid(c *gin.Context) {
 }
 
 func (h *FetchHandler) GetCitizens(c *gin.Context) {
-	resp, err := h.Service.GetCitizens()
+	region := c.Query("region")
+	resp, err := h.Service.GetCitizens(region)
 	if err != nil {
 		utils.HandleError(c, err)
 		return

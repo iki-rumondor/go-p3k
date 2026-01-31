@@ -7,6 +7,7 @@ type FetchInterface interface {
 	GetGuestByUuid(uuid string) (*models.Guest, error)
 	GetGuestByUser(userUuid string) (*models.Guest, error)
 
+	GetCitizensWithRegion(regionId string) (*[]models.Citizen, error)
 	GetCitizens() (*[]models.Citizen, error)
 	GetCitizenByUuid(uuid string) (*models.Citizen, error)
 

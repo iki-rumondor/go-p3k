@@ -204,6 +204,19 @@ func (r *FetchRepo) GetCitizens() (*[]models.Citizen, error) {
 	return &data, nil
 }
 
+func (r *FetchRepo) GetCitizensWithRegion(regionId string) (*[]models.Citizen, error) {
+	var data []models.Citizen
+	query := r.db.Preload("User").Preload("Region")
+	if regionId != "" {
+		query = query.Where("region_id = ?", regionId)
+	}
+	
+	if err := query.Find(&data).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
 func (r *FetchRepo) GetCitizenByUuid(uuid string) (*models.Citizen, error) {
 	var data models.Citizen
 	if err := r.db.Preload("User").Preload("Region").First(&data, "uuid = ?", uuid).Error; err != nil {
@@ -257,7 +270,7 @@ func (r *FetchRepo) GetActivities(limit int, group string) (*[]models.Activity, 
 func (r *FetchRepo) GetActivitiesWithDate(limit int, group, startDate, endDate string) (*[]models.Activity, error) {
 	var data []models.Activity
 	query := r.db.Preload("CreatedUser").Preload("UpdatedUser").Preload("Members.Member").Limit(limit)
-	if  group != "" {
+	if group != "" {
 		query = query.Where("`group` = ?", group)
 	}
 
