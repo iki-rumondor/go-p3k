@@ -467,7 +467,7 @@ func (s *FetchService) GetMemberByUuid(uuid string) (*response.Member, error) {
 	return &resp, nil
 }
 
-func (s *FetchService) GetActivities(limit, group string) (*[]response.Activity, error) {
+func (s *FetchService) GetActivities(limit, group, startDate, endDate string) (*[]response.Activity, error) {
 	var limitNumber = -1
 	if limit != "" {
 		result, err := strconv.Atoi(limit)
@@ -476,7 +476,7 @@ func (s *FetchService) GetActivities(limit, group string) (*[]response.Activity,
 		}
 	}
 
-	data, err := s.Repo.GetActivities(limitNumber, group)
+	data, err := s.Repo.GetActivitiesWithDate(limitNumber, group, startDate, endDate)
 	if err != nil {
 		return nil, response.SERVICE_INTERR
 	}

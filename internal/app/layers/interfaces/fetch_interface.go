@@ -30,6 +30,7 @@ type FetchInterface interface {
 	GetMemberByUuid(uuid string) (*models.Member, error)
 	GetMemberByUserUuid(uuid string) (*models.Member, error)
 
+	GetActivitiesWithDate(limit int, group, startDate, endDate string) (*[]models.Activity, error)
 	GetActivities(limit int, group string) (*[]models.Activity, error)
 	GetActivityByUuid(uuid string) (*models.Activity, error)
 

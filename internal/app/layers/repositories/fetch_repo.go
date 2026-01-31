@@ -254,6 +254,27 @@ func (r *FetchRepo) GetActivities(limit int, group string) (*[]models.Activity, 
 	return &data, nil
 }
 
+func (r *FetchRepo) GetActivitiesWithDate(limit int, group, startDate, endDate string) (*[]models.Activity, error) {
+	var data []models.Activity
+	query := r.db.Preload("CreatedUser").Preload("UpdatedUser").Preload("Members.Member").Limit(limit)
+	if  group != "" {
+		query = query.Where("`group` = ?", group)
+	}
+
+	if startDate != "" {
+		query = query.Where("start_time >= ?", startDate)
+	}
+
+	if endDate != "" {
+		query = query.Where("end_time <= ?", endDate)
+	}
+
+	if err := query.Find(&data).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
 func (r *FetchRepo) GetActivityByUuid(uuid string) (*models.Activity, error) {
 	var data models.Activity
 	if err := r.db.Preload("CreatedUser").Preload("UpdatedUser").Preload("Members.Member").First(&data, "uuid = ?", uuid).Error; err != nil {

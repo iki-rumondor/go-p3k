@@ -217,7 +217,9 @@ func (h *FetchHandler) GetMemberByUuid(c *gin.Context) {
 func (h *FetchHandler) GetActivities(c *gin.Context) {
 	limit := c.Query("limit")
 	group := c.Query("group")
-	resp, err := h.Service.GetActivities(limit, group)
+	startDate := c.Query("start_date")
+	endDate := c.Query("end_date")
+	resp, err := h.Service.GetActivities(limit, group, startDate, endDate)
 	if err != nil {
 		utils.HandleError(c, err)
 		return
