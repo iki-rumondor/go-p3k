@@ -3,10 +3,16 @@ package config
 import (
 	"fmt"
 	"os"
+	"sync"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+)
+
+var (
+	db   *gorm.DB
+	once sync.Once
 )
 
 func NewMysqlDB() (*gorm.DB, error) {
@@ -43,4 +49,15 @@ func NewMysqlDB() (*gorm.DB, error) {
 		return nil, err
 	}
 	return gormDB, nil
+}
+
+func GetDB() *gorm.DB {
+	once.Do(func() {
+		var err error
+		db, err = NewMysqlDB()
+		if err != nil {
+			panic(err)
+		}
+	})
+	return db
 }

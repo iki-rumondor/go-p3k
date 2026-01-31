@@ -198,7 +198,7 @@ func (r *FetchRepo) GetProductTransactionsByShop(userUuid string, isAccept bool)
 
 func (r *FetchRepo) GetCitizens() (*[]models.Citizen, error) {
 	var data []models.Citizen
-	if err := r.db.Preload("User").Find(&data).Error; err != nil {
+	if err := r.db.Preload("User").Preload("Region").Find(&data).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
@@ -206,7 +206,7 @@ func (r *FetchRepo) GetCitizens() (*[]models.Citizen, error) {
 
 func (r *FetchRepo) GetCitizenByUuid(uuid string) (*models.Citizen, error) {
 	var data models.Citizen
-	if err := r.db.Preload("User").First(&data, "uuid = ?", uuid).Error; err != nil {
+	if err := r.db.Preload("User").Preload("Region").First(&data, "uuid = ?", uuid).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil

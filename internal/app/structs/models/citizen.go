@@ -15,7 +15,9 @@ type Citizen struct {
 	CreatedAt   int64  `gorm:"autoCreateTime:milli"`
 	UpdatedAt   int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
 	UserID      uint   `gorm:"not_null"`
+	RegionID    uint   `gorm:"not_null"`
 	User        *User
+	Region      *Region
 }
 
 func (m *Citizen) BeforeCreate(tx *gorm.DB) error {

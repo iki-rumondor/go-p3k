@@ -54,6 +54,7 @@ type Citizen struct {
 	Nik         string `json:"nik" valid:"required~field nik tidak ditemukan"`
 	Address     string `json:"address" valid:"required~field alamat tidak ditemukan"`
 	PhoneNumber string `json:"phone_number" valid:"required~field nomor handphone tidak ditemukan"`
+	RegionId    string `json:"region_id" valid:"required~field id daerah tidak ditemukan"`
 }
 
 type Member struct {

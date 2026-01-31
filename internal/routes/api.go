@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/iki-rumondor/go-p3k/internal/app/layers/newest"
 	"github.com/iki-rumondor/go-p3k/internal/config"
 )
 
@@ -77,6 +78,12 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.POST("/citizens", handlers.ManagementHandler.CreateCitizen)
 		admin.PUT("/citizens/:uuid", handlers.ManagementHandler.UpdateCitizen)
 		admin.DELETE("/citizens/:uuid", handlers.ManagementHandler.DeleteCitizen)
+
+		admin.GET("/regions", newest.GetAllRegions)
+		admin.GET("/regions/:id", newest.GetRegionByID)
+		admin.POST("/regions", newest.CreateRegion)
+		admin.PUT("/regions/:id", newest.UpdateRegion)
+		admin.DELETE("/regions/:id", newest.DeleteRegion)
 
 		admin.GET("/categories/:uuid", handlers.FetchHandler.GetCategoryByUuid)
 		admin.POST("/categories", handlers.ManagementHandler.CreateCategory)

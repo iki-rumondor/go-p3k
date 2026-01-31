@@ -144,11 +144,20 @@ func (s *ManagementService) CreateCitizen(req *request.Citizen) error {
 	if unique := s.Repo.CheckUniqueNik(req.Nik); !unique {
 		return response.BADREQ_ERR("Nik yang digunakan sudah terdafatar")
 	}
+
+	regionID64, err := strconv.ParseUint(req.RegionId, 10, 64)
+	if err != nil {
+		return response.BADREQ_ERR("Id daerah tidak valid")
+	}
+
+	regionID := uint(regionID64)
+
 	model := models.Citizen{
 		Name:        req.Name,
 		Nik:         req.Nik,
 		Address:     req.Address,
 		PhoneNumber: req.PhoneNumber,
+		RegionID:    regionID,
 		User: &models.User{
 			Name:     req.Name,
 			Username: req.Nik,
@@ -171,11 +180,19 @@ func (s *ManagementService) CreateCitizen(req *request.Citizen) error {
 
 func (s *ManagementService) UpdateCitizen(uuid string, req *request.Citizen) error {
 
+	regionID64, err := strconv.ParseUint(req.RegionId, 10, 64)
+	if err != nil {
+		return response.BADREQ_ERR("Id daerah tidak valid")
+	}
+
+	regionID := uint(regionID64)
+
 	model := models.Citizen{
 		Name:        req.Name,
 		Nik:         req.Nik,
 		Address:     req.Address,
 		PhoneNumber: req.PhoneNumber,
+		RegionID:    regionID,
 	}
 
 	if err := s.Repo.UpdateCitizen(uuid, &model); err != nil {

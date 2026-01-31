@@ -38,6 +38,10 @@ func (s *FetchService) GetCitizens() (*[]response.Citizen, error) {
 				Uuid:     item.User.Uuid,
 				Username: item.User.Username,
 			},
+			Region: &response.Region{
+				Uuid: item.Region.Uuid,
+				Name: item.Region.Name,
+			},
 		})
 	}
 
@@ -61,6 +65,10 @@ func (s *FetchService) GetCitizenByUuid(uuid string) (*response.Citizen, error) 
 		User: &response.User{
 			Uuid:     item.User.Uuid,
 			Username: item.User.Username,
+		},
+		Region: &response.Region{
+			Uuid: item.Region.Uuid,
+			Name: item.Region.Name,
 		},
 	}
 
