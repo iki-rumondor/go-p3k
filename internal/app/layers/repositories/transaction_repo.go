@@ -84,24 +84,6 @@ func (r *TransactionRepo) BuyProduct(userUuid string, model *models.ProductTrans
 
 	model.UserID = user.ID
 
-	return r.db.Create(model).Error
-}
-
-func (r *TransactionRepo) DeleteProductTransaction(userUuid, transactionUuid string) error {
-	var user models.User
-	if err := r.db.First(&user, "uuid = ?", userUuid).Error; err != nil {
-		return err
-	}
-
-	var transaction models.ProductTransaction
-	if err := r.db.First(&transaction, "uuid = ? AND user_id = ?", transactionUuid, user.ID).Error; err != nil {
-		return err
-	}
-
-	return r.db.Delete(&transaction).Error
-}
-
-func (r *TransactionRepo) AcceptProductTransaction(model *models.ProductTransaction) error {
 	var product models.Product
 	if err := r.db.First(&product, "id = ?", model.ProductID).Error; err != nil {
 		return err
@@ -116,9 +98,55 @@ func (r *TransactionRepo) AcceptProductTransaction(model *models.ProductTransact
 			return err
 		}
 
+		return tx.Create(model).Error
+	})
+}
+
+func (r *TransactionRepo) DeleteProductTransaction(userUuid, transactionUuid string) error {
+	var user models.User
+	if err := r.db.First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return err
+	}
+
+	var transaction models.ProductTransaction
+	if err := r.db.Preload("Product").First(&transaction, "uuid = ? AND user_id = ?", transactionUuid, user.ID).Error; err != nil {
+		return err
+	}
+
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		updatedProduct := models.Product{
+			ID: transaction.ProductID,
+		}
+
+		if err := tx.Model(&updatedProduct).Update("stock", transaction.Product.Stock+transaction.Quantity).Error; err != nil {
+			return err
+		}
+
+		return tx.Delete(&transaction).Error
+	})
+}
+
+func (r *TransactionRepo) AcceptProductTransaction(model *models.ProductTransaction) error {
+	return r.db.Updates(model).Error
+}
+
+func (r *TransactionRepo) UnacceptProductTransaction(model *models.ProductTransaction) error {
+	var product models.Product
+	if err := r.db.First(&product, "id = ?", model.ProductID).Error; err != nil {
+		return err
+	}
+
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		updatedProduct := models.Product{
+			ID: product.ID,
+		}
+
+		if err := tx.Model(&updatedProduct).Update("stock", product.Stock+model.Quantity).Error; err != nil {
+			return err
+		}
+
 		return tx.Updates(model).Error
 	})
-
 }
 
 func (r *TransactionRepo) UpdateModel(modelPointer interface{}) error {

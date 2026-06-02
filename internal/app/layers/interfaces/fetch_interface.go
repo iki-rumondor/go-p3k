@@ -41,6 +41,9 @@ type FetchInterface interface {
 
 	CountGuestsInactive() (int64, error)
 	CountShopsInactive() (int64, error)
+	CountShops() (int64, error)
+	CountGuests() (int64, error)
+	CountProducts() (int64, error)
 
 	CountShopProducts(userUuid string) (int64, error)
 	CountShopUnprocessTransactions(userUuid string) (int64, error)

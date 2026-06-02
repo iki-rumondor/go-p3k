@@ -88,10 +88,6 @@ func (s *TransactionService) AcceptProductTransaction(userUuid, transactionUuid 
 		return response.NOTFOUND_ERR("Transaksi sudah direspon sebelumnya")
 	}
 
-	if transaction.Quantity > transaction.Product.Stock {
-		return response.BADREQ_ERR("Stok tidak mencukupi")
-	}
-
 	model := models.ProductTransaction{
 		ID:         transaction.ID,
 		ProductID:  transaction.ProductID,
@@ -127,7 +123,39 @@ func (s *TransactionService) UnacceptProductTransaction(userUuid, transactionUui
 
 	model := models.ProductTransaction{
 		ID:         transaction.ID,
+		ProductID:  transaction.ProductID,
+		Quantity:   transaction.Quantity,
 		IsResponse: true,
+		IsAccept:   false,
+	}
+
+	if err := s.Repo.UnacceptProductTransaction(&model); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *TransactionService) ConfirmProductTransaction(userUuid, transactionUuid string) error {
+	transaction, err := s.Repo.GetOwnerProductTransactionByUuid(userUuid, transactionUuid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Transaksi tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	if transaction.IsResponse {
+		return response.BADREQ_ERR("Transaksi sudah direspon sebelumnya")
+	}
+
+	if transaction.IsConfirm {
+		return response.BADREQ_ERR("Transaksi sudah dikonfirmasi sebelumnya")
+	}
+
+	model := models.ProductTransaction{
+		ID:        transaction.ID,
+		IsConfirm: true,
 	}
 
 	if err := s.Repo.UpdateModel(&model); err != nil {

@@ -37,6 +37,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		public.GET("/files/attendances/:filename", handlers.FetchHandler.GetAttendanceImage)
 		public.GET("/shops", handlers.FetchHandler.GetShops)
 		public.GET("/files/shops/:filename", handlers.FetchHandler.GetShopImage)
+		public.GET("/files/qris/:filename", handlers.FetchHandler.GetQrisImage)
 	}
 
 	user := router.Group("api").Use(IsValidJWT()).Use(SetUserUuid())
@@ -100,6 +101,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.GET("/files/identities/:filename", handlers.FetchHandler.GetIdentityImage)
 
 		admin.GET("/dashboard/admin", handlers.FetchHandler.GetAdminDashboard)
+		admin.PATCH("/users/reset-password/:uuid", handlers.AuthHandler.ResetPassword)
 		admin.GET("/member-activities", handlers.FetchHandler.GetAllMemberActivities)
 		admin.PATCH("/member-activities/:uuid/accept-attendance", handlers.ManagementHandler.UpdatePresence)
 	}
@@ -107,6 +109,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 	umkm := router.Group("api").Use(IsValidJWT()).Use(IsRole("UMKM")).Use(SetUserUuid())
 	{
 		umkm.PUT("/shops/:uuid", handlers.ManagementHandler.UpdateShop)
+		umkm.PATCH("/shops/qris", handlers.ManagementHandler.UploadQris)
 		umkm.GET("/shops/user", handlers.FetchHandler.GetShopByUser)
 		umkm.GET("/dashboard/shop", handlers.FetchHandler.GetShopDashboard)
 
@@ -120,6 +123,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		umkm.GET("/transactions/:uuid", handlers.FetchHandler.GetProductTransactionByUuid)
 		umkm.PATCH("/transactions/:transactionUuid/accept", handlers.TransactionHandler.AcceptProductTransaction)
 		umkm.PATCH("/transactions/:transactionUuid/unaccept", handlers.TransactionHandler.UnacceptProductTransaction)
+		umkm.PATCH("/transactions/:transactionUuid/confirm", handlers.TransactionHandler.ConfirmProductTransaction)
 	}
 
 	member := router.Group("api").Use(IsValidJWT()).Use(IsRole("MEMBER")).Use(SetUserUuid())

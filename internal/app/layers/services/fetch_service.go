@@ -183,6 +183,7 @@ func (s *FetchService) GetShops(limit string) (*[]response.Shop, error) {
 			PhoneNumber:   item.PhoneNumber,
 			ShopImage:     item.ShopImage,
 			IdentityImage: item.IdentityImage,
+			QrisImage:     item.QrisImage,
 			CreatedAt:     item.CreatedAt,
 			UpdatedAt:     item.UpdatedAt,
 			User: &response.User{
@@ -208,6 +209,7 @@ func (s *FetchService) GetShopByUuid(uuid string) (*response.Shop, error) {
 		Owner:       item.Owner,
 		Address:     item.Address,
 		PhoneNumber: item.PhoneNumber,
+		QrisImage:   item.QrisImage,
 		CreatedAt:   item.CreatedAt,
 		UpdatedAt:   item.UpdatedAt,
 		User: &response.User{
@@ -336,11 +338,21 @@ func (s *FetchService) GetProductTransactions(userUuid string) (*[]response.Prod
 			Quantity:   item.Quantity,
 			IsResponse: item.IsResponse,
 			IsAccept:   item.IsAccept,
+			IsConfirm:  item.IsConfirm,
 			ProofFile:  item.ProofFile,
 			CreatedAt:  item.CreatedAt,
 			UpdatedAt:  item.UpdatedAt,
 			Product: &response.Product{
-				Name: item.Product.Name,
+				Name:      item.Product.Name,
+				Price:     item.Product.Price,
+				Unit:      item.Product.Unit,
+				ImageName: item.Product.Image,
+				Shop: &response.Shop{
+					Uuid:        item.Product.Shop.Uuid,
+					Name:        item.Product.Shop.Name,
+					QrisImage:   item.Product.Shop.QrisImage,
+					PhoneNumber: item.Product.Shop.PhoneNumber,
+				},
 			},
 		})
 	}
@@ -369,6 +381,7 @@ func (s *FetchService) GetProductTransactionByUuid(userUuid, uuid string) (*resp
 		Quantity:   item.Quantity,
 		IsResponse: item.IsResponse,
 		IsAccept:   item.IsAccept,
+		IsConfirm:  item.IsConfirm,
 		ProofFile:  item.ProofFile,
 		CreatedAt:  item.CreatedAt,
 		UpdatedAt:  item.UpdatedAt,
@@ -404,6 +417,7 @@ func (s *FetchService) GetProductTransactionsByShop(userUuid string, isAccept bo
 			Revenue:    item.Revenue,
 			IsResponse: item.IsResponse,
 			IsAccept:   item.IsAccept,
+			IsConfirm:  item.IsConfirm,
 			CreatedAt:  item.CreatedAt,
 			UpdatedAt:  item.UpdatedAt,
 			Product: &response.Product{
@@ -620,9 +634,27 @@ func (s *FetchService) GetAdminDashboard() (*response.AdminDashboard, error) {
 		return nil, response.SERVICE_INTERR
 	}
 
+	shopsTotal, err := s.Repo.CountShops()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	guestsTotal, err := s.Repo.CountGuests()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	productsTotal, err := s.Repo.CountProducts()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
 	resp := response.AdminDashboard{
 		GuestsInactive: guestsInactive,
 		ShopsInactive:  shopsInactive,
+		ShopsTotal:     shopsTotal,
+		GuestsTotal:    guestsTotal,
+		ProductsTotal:  productsTotal,
 	}
 
 	return &resp, nil
@@ -659,6 +691,7 @@ func (s *FetchService) GetShopByUser(userUuid string) (*response.Shop, error) {
 		Owner:       shop.Owner,
 		Address:     shop.Address,
 		PhoneNumber: shop.PhoneNumber,
+		QrisImage:   shop.QrisImage,
 	}
 
 	return &resp, nil

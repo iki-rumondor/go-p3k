@@ -201,3 +201,17 @@ func (h *AuthHandler) UpdatePassword(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Password berhasil diubah"))
 }
+
+func (h *AuthHandler) ResetPassword(c *gin.Context) {
+	uuid := c.Param("uuid")
+	newPassword := utils.GenerateRandomString(8)
+
+	if err := h.Service.ResetPassword(uuid, newPassword); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(map[string]string{
+		"new_password": newPassword,
+	}))
+}

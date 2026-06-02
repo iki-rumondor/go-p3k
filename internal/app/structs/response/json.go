@@ -34,6 +34,7 @@ type Shop struct {
 	PhoneNumber   string `json:"phone_number"`
 	ShopImage     string `json:"shop_image"`
 	IdentityImage string `json:"identity_image"`
+	QrisImage     string `json:"qris_image"`
 	CreatedAt     int64  `json:"created_at"`
 	UpdatedAt     int64  `json:"updated_at"`
 	User          *User  `json:"user"`
@@ -58,6 +59,7 @@ type ProductTransaction struct {
 	Quantity   int64    `json:"quantity"`
 	IsResponse bool     `json:"is_response"`
 	IsAccept   bool     `json:"is_accept"`
+	IsConfirm  bool     `json:"is_confirm"`
 	Revenue    int64    `json:"revenue"`
 	ProofFile  string   `json:"proof_file"`
 	CreatedAt  int64    `json:"created_at"`
@@ -126,6 +128,9 @@ type MemberActivity struct {
 type AdminDashboard struct {
 	GuestsInactive int64 `json:"guests_inactive"`
 	ShopsInactive  int64 `json:"shops_inactive"`
+	ShopsTotal     int64 `json:"shops_total"`
+	GuestsTotal    int64 `json:"guests_total"`
+	ProductsTotal  int64 `json:"products_total"`
 }
 
 type ShopDashboard struct {

@@ -154,7 +154,7 @@ func (r *FetchRepo) GetProductTransactions(userUuid string) (*[]models.ProductTr
 	}
 
 	var data []models.ProductTransaction
-	if err := r.db.Preload("Product").Find(&data, "user_id = ?", user.ID).Error; err != nil {
+	if err := r.db.Preload("Product.Shop").Find(&data, "user_id = ?", user.ID).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
@@ -361,6 +361,30 @@ func (r *FetchRepo) CountGuestsInactive() (int64, error) {
 func (r *FetchRepo) CountShopsInactive() (int64, error) {
 	var count int64
 	if err := r.db.Joins("User").Model(&models.Shop{}).Where("User.active = ?", false).Count(&count).Error; err != nil {
+		return count, err
+	}
+	return count, nil
+}
+
+func (r *FetchRepo) CountShops() (int64, error) {
+	var count int64
+	if err := r.db.Model(&models.Shop{}).Count(&count).Error; err != nil {
+		return count, err
+	}
+	return count, nil
+}
+
+func (r *FetchRepo) CountGuests() (int64, error) {
+	var count int64
+	if err := r.db.Model(&models.Guest{}).Count(&count).Error; err != nil {
+		return count, err
+	}
+	return count, nil
+}
+
+func (r *FetchRepo) CountProducts() (int64, error) {
+	var count int64
+	if err := r.db.Model(&models.Product{}).Count(&count).Error; err != nil {
 		return count, err
 	}
 	return count, nil

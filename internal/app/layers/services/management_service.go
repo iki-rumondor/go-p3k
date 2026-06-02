@@ -483,3 +483,24 @@ func (s *ManagementService) UpdateGuest(uuid string, req *request.UpdateGuest) e
 
 	return nil
 }
+
+func (s *ManagementService) UploadQris(userUuid string, filename string) error {
+	shop, err := s.Repo.GetShopByUserUuid(userUuid)
+	if err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	if shop.QrisImage != "" {
+		oldPath := filepath.Join("internal/files/qris", shop.QrisImage)
+		if err := os.Remove(oldPath); err != nil {
+			log.Println("Gagal menghapus QRIS lama:", err.Error())
+		}
+	}
+
+	shop.QrisImage = filename
+	if err := s.Repo.UpdateShopModel(shop); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}

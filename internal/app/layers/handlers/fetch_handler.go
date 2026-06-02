@@ -394,3 +394,10 @@ func (h *FetchHandler) GetAttendanceImage(c *gin.Context) {
 	pathFile := filepath.Join(folder, filename)
 	c.File(pathFile)
 }
+
+func (h *FetchHandler) GetQrisImage(c *gin.Context) {
+	filename := c.Param("filename")
+	folder := "internal/files/qris"
+	pathFile := filepath.Join(folder, filename)
+	c.File(pathFile)
+}

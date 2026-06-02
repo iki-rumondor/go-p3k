@@ -14,6 +14,7 @@ type Shop struct {
 	PhoneNumber   string `gorm:"not_null"`
 	ShopImage     string `gorm:"not_null"`
 	IdentityImage string `gorm:"not_null"`
+	QrisImage     string `gorm:"size:255"`
 	CreatedAt     int64  `gorm:"autoCreateTime:milli"`
 	UpdatedAt     int64  `gorm:"autoCreateTime:milli;autoUpdateTime:milli"`
 	UserID        uint   `gorm:"not_null"`

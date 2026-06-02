@@ -32,4 +32,7 @@ type ManagementInterface interface {
 
 	UpdateShop(uuid string, model *models.Shop) error
 	UpdateGuest(uuid string, model *models.Guest) error
+
+	GetShopByUserUuid(userUuid string) (*models.Shop, error)
+	UpdateShopModel(model *models.Shop) error
 }

@@ -81,6 +81,17 @@ func (h *TransactionHandler) UnacceptProductTransaction(c *gin.Context) {
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Transaksi produk berhasil ditolak"))
 }
 
+func (h *TransactionHandler) ConfirmProductTransaction(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	transactionUuid := c.Param("transactionUuid")
+	if err := h.Service.ConfirmProductTransaction(userUuid, transactionUuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Transaksi produk berhasil dikonfirmasi dan sedang diproses"))
+}
+
 func (h *TransactionHandler) SetTransactionProof(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {

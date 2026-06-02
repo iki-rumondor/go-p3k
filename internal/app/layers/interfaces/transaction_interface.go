@@ -12,6 +12,7 @@ type TransactionInterface interface {
 
 	BuyProduct(userUuid string, model *models.ProductTransaction) error
 	AcceptProductTransaction(model *models.ProductTransaction) error
+	UnacceptProductTransaction(model *models.ProductTransaction) error
 	DeleteProductTransaction(userUuid, transactionUuid string) error
 
 	UpdateModel(modelPointer interface{}) error

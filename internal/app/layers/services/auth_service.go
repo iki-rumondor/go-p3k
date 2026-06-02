@@ -186,3 +186,16 @@ func (s *AuthService) UpdatePassword(userUuid string, req *request.UpdatePasswor
 	return nil
 
 }
+
+func (s *AuthService) ResetPassword(userUuid string, newPassword string) error {
+	model := models.User{
+		Password: newPassword,
+	}
+
+	if err := s.Repo.UpdateUser(userUuid, &model); err != nil {
+		log.Println(err.Error())
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}

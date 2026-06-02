@@ -307,3 +307,15 @@ func (r *ManagementRepo) UpdateGuest(uuid string, model *models.Guest) error {
 	}
 	return r.db.Updates(&model).Error
 }
+
+func (r *ManagementRepo) GetShopByUserUuid(userUuid string) (*models.Shop, error) {
+	var user models.User
+	if err := r.db.Preload("Shop").First(&user, "uuid = ?", userUuid).Error; err != nil {
+		return nil, err
+	}
+	return user.Shop, nil
+}
+
+func (r *ManagementRepo) UpdateShopModel(model *models.Shop) error {
+	return r.db.Updates(model).Error
+}
