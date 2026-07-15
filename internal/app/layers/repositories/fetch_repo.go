@@ -459,3 +459,45 @@ func (r *FetchRepo) CountActivities() (int64, error) {
 	}
 	return count, nil
 }
+
+func (r *FetchRepo) GetTutorials() (*[]models.Tutorial, error) {
+	var tutorials []models.Tutorial
+	if err := r.db.Order("created_at desc").Find(&tutorials).Error; err != nil {
+		return nil, err
+	}
+	return &tutorials, nil
+}
+
+func (r *FetchRepo) GetTutorialByUuid(uuid string) (*models.Tutorial, error) {
+	var tutorial models.Tutorial
+	if err := r.db.First(&tutorial, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+	return &tutorial, nil
+}
+
+func (r *FetchRepo) GetSystemSetting(key string) (*models.SystemSetting, error) {
+	var setting models.SystemSetting
+	if err := r.db.First(&setting, "`key` = ?", key).Error; err != nil {
+		return nil, err
+	}
+	return &setting, nil
+}
+
+func (r *FetchRepo) GetAllTransactions() (*[]models.ProductTransaction, error) {
+	var transactions []models.ProductTransaction
+	if err := r.db.Preload("Product.Shop").Preload("User").Order("created_at desc").Find(&transactions).Error; err != nil {
+		return nil, err
+	}
+	return &transactions, nil
+}
+
+func (r *FetchRepo) GetTransactionByUuid(uuid string) (*models.ProductTransaction, error) {
+	var transaction models.ProductTransaction
+	if err := r.db.Preload("Product.Shop").Preload("User.Role").Preload("User.Guest").First(&transaction, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+	return &transaction, nil
+}
+
+

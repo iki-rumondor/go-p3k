@@ -522,3 +522,95 @@ func (h *ManagementHandler) UpdateGuest(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Data Pembeli Berhasil Diperbarui"))
 }
+
+func (h *ManagementHandler) CreateTutorial(c *gin.Context) {
+	var body request.Tutorial
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if err := h.Service.CreateTutorial(&body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Tutorial Berhasil Ditambahkan"))
+}
+
+func (h *ManagementHandler) UpdateTutorial(c *gin.Context) {
+	var body request.Tutorial
+	if err := c.BindJSON(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(&body); err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	uuid := c.Param("uuid")
+	if err := h.Service.UpdateTutorial(uuid, &body); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Tutorial Berhasil Diperbarui"))
+}
+
+func (h *ManagementHandler) DeleteTutorial(c *gin.Context) {
+	uuid := c.Param("uuid")
+	if err := h.Service.DeleteTutorial(uuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Tutorial Berhasil Dihapus"))
+}
+
+func (h *ManagementHandler) UploadAdminQris(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		utils.HandleError(c, response.BADREQ_ERR(err.Error()))
+		return
+	}
+
+	if status := utils.CheckTypeFile(file, []string{"jpg", "png", "jpeg"}); !status {
+		utils.HandleError(c, response.BADREQ_ERR("Tipe file tidak valid, gunakan tipe jpg, png, atau jpeg"))
+		return
+	}
+
+	if moreThan := utils.CheckFileSize(file, 1); moreThan {
+		utils.HandleError(c, response.BADREQ_ERR("File yang diupload lebih dari 1MB"))
+		return
+	}
+
+	qrisFolder := "internal/files/qris"
+	filename := utils.RandomFileName(file)
+	pathFile := filepath.Join(qrisFolder, filename)
+
+	if err := utils.SaveUploadedFile(file, pathFile); err != nil {
+		if err := os.Remove(pathFile); err != nil {
+			log.Println(err.Error())
+		}
+		utils.HandleError(c, response.HANDLER_INTERR)
+		return
+	}
+
+	if err := h.Service.UpdateSystemSetting("admin_qris_image", filename); err != nil {
+		if err := os.Remove(pathFile); err != nil {
+			log.Println(err.Error())
+		}
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("QRIS Admin Berhasil Diunggah"))
+}
+

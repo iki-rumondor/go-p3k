@@ -319,3 +319,42 @@ func (r *ManagementRepo) GetShopByUserUuid(userUuid string) (*models.Shop, error
 func (r *ManagementRepo) UpdateShopModel(model *models.Shop) error {
 	return r.db.Updates(model).Error
 }
+
+func (r *ManagementRepo) CreateTutorial(model *models.Tutorial) error {
+	return r.db.Create(model).Error
+}
+
+func (r *ManagementRepo) UpdateTutorial(uuid string, model *models.Tutorial) error {
+	var tutorial models.Tutorial
+	if err := r.db.First(&tutorial, "uuid = ?", uuid).Error; err != nil {
+		return err
+	}
+	model.ID = tutorial.ID
+	return r.db.Updates(model).Error
+}
+
+func (r *ManagementRepo) DeleteTutorial(uuid string) error {
+	var tutorial models.Tutorial
+	if err := r.db.First(&tutorial, "uuid = ?", uuid).Error; err != nil {
+		return err
+	}
+	return r.db.Delete(&tutorial).Error
+}
+
+func (r *ManagementRepo) UpdateSystemSetting(key string, value string) error {
+	var setting models.SystemSetting
+	err := r.db.First(&setting, "`key` = ?", key).Error
+	if err != nil {
+		// If not found, create new
+		if err == gorm.ErrRecordNotFound {
+			newSetting := models.SystemSetting{
+				Key:   key,
+				Value: value,
+			}
+			return r.db.Create(&newSetting).Error
+		}
+		return err
+	}
+	return r.db.Model(&setting).Update("value", value).Error
+}
+

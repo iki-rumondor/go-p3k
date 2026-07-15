@@ -20,5 +20,7 @@ func GetAllModels() []Model {
 		{Model: models.Member{}},
 		{Model: models.Activity{}},
 		{Model: models.MemberActivity{}},
+		{Model: models.SystemSetting{}},
+		{Model: models.Tutorial{}},
 	}
 }

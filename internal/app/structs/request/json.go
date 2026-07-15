@@ -79,3 +79,9 @@ type UpdatePassword struct {
 type AcceptPresence struct {
 	Status bool `json:"status"`
 }
+
+type Tutorial struct {
+	Title   string `json:"title" valid:"required~field judul tidak ditemukan"`
+	Content string `json:"content" valid:"required~field konten tidak ditemukan"`
+}
+

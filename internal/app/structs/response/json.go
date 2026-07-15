@@ -55,17 +55,21 @@ type Product struct {
 }
 
 type ProductTransaction struct {
-	Uuid       string   `json:"uuid"`
-	Quantity   int64    `json:"quantity"`
-	IsResponse bool     `json:"is_response"`
-	IsAccept   bool     `json:"is_accept"`
-	IsConfirm  bool     `json:"is_confirm"`
-	Revenue    int64    `json:"revenue"`
-	ProofFile  string   `json:"proof_file"`
-	CreatedAt  int64    `json:"created_at"`
-	UpdatedAt  int64    `json:"updated_at"`
-	User       *User    `json:"user"`
-	Product    *Product `json:"product"`
+	Uuid            string   `json:"uuid"`
+	Quantity        int64    `json:"quantity"`
+	IsResponse      bool     `json:"is_response"`
+	IsAccept        bool     `json:"is_accept"`
+	IsConfirm       bool     `json:"is_confirm"`
+	Revenue         int64    `json:"revenue"`
+	ProofFile       string   `json:"proof_file"`
+	PaymentVerified bool     `json:"payment_verified"`
+	IsDelivered     bool     `json:"is_delivered"`
+	IsDisbursed     bool     `json:"is_disbursed"`
+	DeliveredAt     int64    `json:"delivered_at"`
+	CreatedAt       int64    `json:"created_at"`
+	UpdatedAt       int64    `json:"updated_at"`
+	User            *User    `json:"user"`
+	Product         *Product `json:"product"`
 }
 
 type Region struct {
@@ -157,3 +161,17 @@ type MemberActivities struct {
 	IsImportant bool        `json:"is_important"`
 	Activities  *[]Activity `json:"activities"`
 }
+
+type Tutorial struct {
+	Uuid      string `json:"uuid"`
+	Title     string `json:"title"`
+	Content   string `json:"content"`
+	CreatedAt int64  `json:"created_at"`
+	UpdatedAt int64  `json:"updated_at"`
+}
+
+type SystemSetting struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+

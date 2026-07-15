@@ -52,4 +52,10 @@ type FetchInterface interface {
 	CountUserUnprocessTransactions(userUuid string) (int64, error)
 
 	CountActivities() (int64, error)
+
+	GetTutorials() (*[]models.Tutorial, error)
+	GetTutorialByUuid(uuid string) (*models.Tutorial, error)
+	GetSystemSetting(key string) (*models.SystemSetting, error)
+	GetAllTransactions() (*[]models.ProductTransaction, error)
+	GetTransactionByUuid(uuid string) (*models.ProductTransaction, error)
 }

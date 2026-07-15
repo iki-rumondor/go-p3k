@@ -170,7 +170,7 @@ func (h *FetchHandler) GetProductTransactions(c *gin.Context) {
 
 func (h *FetchHandler) GetProductTransactionByUuid(c *gin.Context) {
 	userUuid := c.GetString("uuid")
-	uuid := c.Param("uuid")
+	uuid := c.Param("transactionUuid")
 	resp, err := h.Service.GetProductTransactionByUuid(userUuid, uuid)
 	if err != nil {
 		utils.HandleError(c, err)
@@ -401,3 +401,57 @@ func (h *FetchHandler) GetQrisImage(c *gin.Context) {
 	pathFile := filepath.Join(folder, filename)
 	c.File(pathFile)
 }
+
+func (h *FetchHandler) GetTutorials(c *gin.Context) {
+	resp, err := h.Service.GetTutorials()
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetTutorialByUuid(c *gin.Context) {
+	uuid := c.Param("uuid")
+	resp, err := h.Service.GetTutorialByUuid(uuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetAdminQris(c *gin.Context) {
+	setting, err := h.Service.GetSystemSetting("admin_qris_image")
+	if err != nil {
+		utils.HandleError(c, response.NOTFOUND_ERR("QRIS Admin belum diunggah"))
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(setting))
+}
+
+func (h *FetchHandler) GetAdminTransactions(c *gin.Context) {
+	resp, err := h.Service.GetAllTransactions()
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+func (h *FetchHandler) GetAdminTransactionByUuid(c *gin.Context) {
+	uuid := c.Param("transactionUuid")
+	resp, err := h.Service.GetTransactionByUuid(uuid)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.DATA_RES(resp))
+}
+
+

@@ -8,6 +8,7 @@ import (
 	"github.com/iki-rumondor/go-p3k/internal/config"
 	"github.com/iki-rumondor/go-p3k/internal/migrate"
 	"github.com/iki-rumondor/go-p3k/internal/routes"
+	"github.com/iki-rumondor/go-p3k/internal/scheduler"
 )
 
 func main() {
@@ -21,6 +22,8 @@ func main() {
 		migrate.ReadTerminal(gormDB, os.Args)
 		return
 	}
+
+	scheduler.StartScheduler(gormDB)
 
 	handlers := config.GetAppHandlers(gormDB)
 

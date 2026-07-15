@@ -38,6 +38,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		public.GET("/shops", handlers.FetchHandler.GetShops)
 		public.GET("/files/shops/:filename", handlers.FetchHandler.GetShopImage)
 		public.GET("/files/qris/:filename", handlers.FetchHandler.GetQrisImage)
+		public.GET("/public/admin/qris", handlers.FetchHandler.GetAdminQris)
 	}
 
 	user := router.Group("api").Use(IsValidJWT()).Use(SetUserUuid())
@@ -47,7 +48,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 		user.PATCH("/products/buy", handlers.TransactionHandler.BuyProduct)
 		user.GET("/transactions", handlers.FetchHandler.GetProductTransactions)
-		user.DELETE("/transactions/:uuid", handlers.TransactionHandler.DeleteProductTransaction)
+		user.DELETE("/transactions/:transactionUuid", handlers.TransactionHandler.DeleteProductTransaction)
 
 		user.POST("/activities", handlers.ManagementHandler.CreateActivity)
 		user.PUT("/activities/:uuid", handlers.ManagementHandler.UpdateActivity)
@@ -68,6 +69,10 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 		user.GET("/dashboard/guest", handlers.FetchHandler.GetGuestDashboard)
 		user.PUT("/guests/:uuid", handlers.ManagementHandler.UpdateGuest)
+
+		user.GET("/tutorials", handlers.FetchHandler.GetTutorials)
+		user.GET("/tutorials/:uuid", handlers.FetchHandler.GetTutorialByUuid)
+		user.PATCH("/transactions/:transactionUuid/confirm-receipt", handlers.TransactionHandler.ConfirmReceipt)
 	}
 
 	admin := router.Group("api").Use(IsValidJWT()).Use(IsRole("ADMIN"))
@@ -104,6 +109,17 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.PATCH("/users/reset-password/:uuid", handlers.AuthHandler.ResetPassword)
 		admin.GET("/member-activities", handlers.FetchHandler.GetAllMemberActivities)
 		admin.PATCH("/member-activities/:uuid/accept-attendance", handlers.ManagementHandler.UpdatePresence)
+
+		admin.POST("/tutorials", handlers.ManagementHandler.CreateTutorial)
+		admin.PUT("/tutorials/:uuid", handlers.ManagementHandler.UpdateTutorial)
+		admin.DELETE("/tutorials/:uuid", handlers.ManagementHandler.DeleteTutorial)
+		admin.PATCH("/settings/qris", handlers.ManagementHandler.UploadAdminQris)
+
+		admin.GET("/admin/transactions", handlers.FetchHandler.GetAdminTransactions)
+		admin.GET("/admin/transactions/:transactionUuid", handlers.FetchHandler.GetAdminTransactionByUuid)
+		admin.PATCH("/admin/transactions/:transactionUuid/verify-payment", handlers.TransactionHandler.VerifyPayment)
+		admin.PATCH("/admin/transactions/:transactionUuid/reject-payment", handlers.TransactionHandler.RejectPayment)
+		admin.PATCH("/admin/transactions/:transactionUuid/disburse", handlers.TransactionHandler.Disburse)
 	}
 
 	umkm := router.Group("api").Use(IsValidJWT()).Use(IsRole("UMKM")).Use(SetUserUuid())
@@ -120,10 +136,11 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		umkm.DELETE("/products/:uuid", handlers.ManagementHandler.DeleteProduct)
 
 		umkm.GET("/shops/transactions", handlers.FetchHandler.GetProductTransactionsByShop)
-		umkm.GET("/transactions/:uuid", handlers.FetchHandler.GetProductTransactionByUuid)
+		umkm.GET("/transactions/:transactionUuid", handlers.FetchHandler.GetProductTransactionByUuid)
 		umkm.PATCH("/transactions/:transactionUuid/accept", handlers.TransactionHandler.AcceptProductTransaction)
 		umkm.PATCH("/transactions/:transactionUuid/unaccept", handlers.TransactionHandler.UnacceptProductTransaction)
 		umkm.PATCH("/transactions/:transactionUuid/confirm", handlers.TransactionHandler.ConfirmProductTransaction)
+		umkm.PATCH("/transactions/:transactionUuid/confirm-delivery", handlers.TransactionHandler.ConfirmDelivery)
 	}
 
 	member := router.Group("api").Use(IsValidJWT()).Use(IsRole("MEMBER")).Use(SetUserUuid())

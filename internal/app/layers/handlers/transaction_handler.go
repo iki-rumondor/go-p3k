@@ -48,7 +48,7 @@ func (h *TransactionHandler) BuyProduct(c *gin.Context) {
 func (h *TransactionHandler) DeleteProductTransaction(c *gin.Context) {
 
 	userUuid := c.GetString("uuid")
-	uuid := c.Param("uuid")
+	uuid := c.Param("transactionUuid")
 	if err := h.Service.DeleteProductTransaction(userUuid, uuid); err != nil {
 		utils.HandleError(c, err)
 		return
@@ -175,3 +175,59 @@ func (h *TransactionHandler) CreateMemberActivity(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SUCCESS_RES("Presensi Kehadiran Kegiatan Berhasil Ditambahkan"))
 }
+
+func (h *TransactionHandler) VerifyPayment(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	transactionUuid := c.Param("transactionUuid")
+	if err := h.Service.VerifyPayment(userUuid, transactionUuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Bukti pembayaran berhasil diverifikasi"))
+}
+
+func (h *TransactionHandler) RejectPayment(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	transactionUuid := c.Param("transactionUuid")
+	if err := h.Service.RejectPayment(userUuid, transactionUuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Pembayaran ditolak dan transaksi dibatalkan"))
+}
+
+func (h *TransactionHandler) ConfirmDelivery(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	transactionUuid := c.Param("transactionUuid")
+	if err := h.Service.ConfirmDelivery(userUuid, transactionUuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Status pengiriman berhasil diperbarui"))
+}
+
+func (h *TransactionHandler) ConfirmReceipt(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	transactionUuid := c.Param("transactionUuid")
+	if err := h.Service.ConfirmReceipt(userUuid, transactionUuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Konfirmasi penerimaan barang berhasil"))
+}
+
+func (h *TransactionHandler) Disburse(c *gin.Context) {
+	userUuid := c.GetString("uuid")
+	transactionUuid := c.Param("transactionUuid")
+	if err := h.Service.Disburse(userUuid, transactionUuid); err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Dana transaksi berhasil disalurkan ke penjual"))
+}
+

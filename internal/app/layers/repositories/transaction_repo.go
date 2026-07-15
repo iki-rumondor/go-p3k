@@ -175,3 +175,12 @@ func (r *TransactionRepo) UpdateTransaction(userUuid, uuid string, model *models
 func (r *TransactionRepo) CreateModel(pointerModel interface{}) error {
 	return r.db.Create(pointerModel).Error
 }
+
+func (r *TransactionRepo) GetTransactionByUuid(uuid string) (*models.ProductTransaction, error) {
+	var transaction models.ProductTransaction
+	if err := r.db.Preload("Product.Shop").Preload("User").First(&transaction, "uuid = ?", uuid).Error; err != nil {
+		return nil, err
+	}
+	return &transaction, nil
+}
+

@@ -19,4 +19,5 @@ type TransactionInterface interface {
 	UpdateTransaction(userUuid, uuid string, model *models.ProductTransaction) error
 
 	CreateModel(pointerModel interface{}) error
+	GetTransactionByUuid(uuid string) (*models.ProductTransaction, error)
 }

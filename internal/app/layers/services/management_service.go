@@ -504,3 +504,52 @@ func (s *ManagementService) UploadQris(userUuid string, filename string) error {
 
 	return nil
 }
+
+func (s *ManagementService) CreateTutorial(req *request.Tutorial) error {
+	model := models.Tutorial{
+		Title:   req.Title,
+		Content: req.Content,
+	}
+
+	if err := s.Repo.CreateTutorial(&model); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *ManagementService) UpdateTutorial(uuid string, req *request.Tutorial) error {
+	model := models.Tutorial{
+		Title:   req.Title,
+		Content: req.Content,
+	}
+
+	if err := s.Repo.UpdateTutorial(uuid, &model); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Tutorial tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *ManagementService) DeleteTutorial(uuid string) error {
+	if err := s.Repo.DeleteTutorial(uuid); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Tutorial tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *ManagementService) UpdateSystemSetting(key string, value string) error {
+	if err := s.Repo.UpdateSystemSetting(key, value); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+

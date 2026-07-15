@@ -35,4 +35,9 @@ type ManagementInterface interface {
 
 	GetShopByUserUuid(userUuid string) (*models.Shop, error)
 	UpdateShopModel(model *models.Shop) error
+
+	CreateTutorial(model *models.Tutorial) error
+	UpdateTutorial(uuid string, model *models.Tutorial) error
+	DeleteTutorial(uuid string) error
+	UpdateSystemSetting(key string, value string) error
 }

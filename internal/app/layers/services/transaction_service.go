@@ -219,3 +219,167 @@ func (s *TransactionService) CreateMemberActivity(userUuid, activityUuid, filena
 
 	return nil
 }
+
+func (s *TransactionService) VerifyPayment(userUuid string, transactionUuid string) error {
+	transaction, err := s.Repo.GetTransactionByUuid(transactionUuid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Transaksi tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	if transaction.PaymentVerified {
+		return response.BADREQ_ERR("Pembayaran transaksi sudah diverifikasi sebelumnya")
+	}
+
+	if transaction.ProofFile == "" {
+		return response.BADREQ_ERR("Pembeli belum mengunggah bukti pembayaran")
+	}
+
+	model := models.ProductTransaction{
+		ID:              transaction.ID,
+		PaymentVerified: true,
+		IsConfirm:       true,
+	}
+
+	if err := s.Repo.UpdateModel(&model); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *TransactionService) RejectPayment(userUuid string, transactionUuid string) error {
+	transaction, err := s.Repo.GetTransactionByUuid(transactionUuid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Transaksi tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	if transaction.PaymentVerified {
+		return response.BADREQ_ERR("Pembayaran sudah diverifikasi, tidak dapat menolak")
+	}
+
+	model := models.ProductTransaction{
+		ID:         transaction.ID,
+		ProductID:  transaction.ProductID,
+		Quantity:   transaction.Quantity,
+		IsResponse: true,
+		IsAccept:   false,
+	}
+
+	if err := s.Repo.UnacceptProductTransaction(&model); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *TransactionService) ConfirmDelivery(userUuid string, transactionUuid string) error {
+	transaction, err := s.Repo.GetOwnerProductTransactionByUuid(userUuid, transactionUuid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Transaksi tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	if !transaction.PaymentVerified {
+		return response.BADREQ_ERR("Pembayaran transaksi belum diverifikasi oleh admin")
+	}
+
+	if transaction.IsDelivered {
+		return response.BADREQ_ERR("Barang sudah dikonfirmasi terkirim sebelumnya")
+	}
+
+	model := models.ProductTransaction{
+		ID:          transaction.ID,
+		IsDelivered: true,
+		DeliveredAt: time.Now().UnixMilli(),
+	}
+
+	if err := s.Repo.UpdateModel(&model); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *TransactionService) ConfirmReceipt(userUuid string, transactionUuid string) error {
+	transaction, err := s.Repo.GetTransactionByUuid(transactionUuid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Transaksi tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	user, err := s.Repo.GetUserByUuid(userUuid)
+	if err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	if transaction.UserID != user.ID {
+		return response.BADREQ_ERR("Anda tidak memiliki akses ke transaksi ini")
+	}
+
+	if !transaction.PaymentVerified {
+		return response.BADREQ_ERR("Pembayaran transaksi belum diverifikasi oleh admin")
+	}
+
+	if transaction.IsDelivered {
+		return response.BADREQ_ERR("Barang sudah diterima/dikonfirmasi sebelumnya")
+	}
+
+	model := models.ProductTransaction{
+		ID:          transaction.ID,
+		IsDelivered: true,
+		DeliveredAt: time.Now().UnixMilli(),
+	}
+
+	if err := s.Repo.UpdateModel(&model); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+
+func (s *TransactionService) Disburse(userUuid string, transactionUuid string) error {
+	transaction, err := s.Repo.GetTransactionByUuid(transactionUuid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Transaksi tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	if !transaction.PaymentVerified {
+		return response.BADREQ_ERR("Pembayaran transaksi belum diverifikasi")
+	}
+
+	if !transaction.IsDelivered {
+		return response.BADREQ_ERR("Barang belum dikirim/diterima oleh pembeli")
+	}
+
+	if transaction.IsDisbursed {
+		return response.BADREQ_ERR("Dana transaksi sudah disalurkan sebelumnya")
+	}
+
+	model := models.ProductTransaction{
+		ID:          transaction.ID,
+		IsDisbursed: true,
+		IsResponse:  true,
+		IsAccept:    true,
+		Revenue:     transaction.Quantity * transaction.Product.Price,
+	}
+
+	if err := s.Repo.UpdateModel(&model); err != nil {
+		return response.SERVICE_INTERR
+	}
+
+	return nil
+}
+

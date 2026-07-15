@@ -816,3 +816,148 @@ func (s *FetchService) GetAllMemberActivities() (*[]response.MemberActivity, err
 
 	return &resp, nil
 }
+
+func (s *FetchService) GetTutorials() (*[]response.Tutorial, error) {
+	data, err := s.Repo.GetTutorials()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var resp []response.Tutorial
+	for _, item := range *data {
+		resp = append(resp, response.Tutorial{
+			Uuid:      item.Uuid,
+			Title:     item.Title,
+			Content:   item.Content,
+			CreatedAt: item.CreatedAt,
+			UpdatedAt: item.UpdatedAt,
+		})
+	}
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetTutorialByUuid(uuid string) (*response.Tutorial, error) {
+	item, err := s.Repo.GetTutorialByUuid(uuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	resp := response.Tutorial{
+		Uuid:      item.Uuid,
+		Title:     item.Title,
+		Content:   item.Content,
+		CreatedAt: item.CreatedAt,
+		UpdatedAt: item.UpdatedAt,
+	}
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetSystemSetting(key string) (*response.SystemSetting, error) {
+	item, err := s.Repo.GetSystemSetting(key)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	resp := response.SystemSetting{
+		Key:   item.Key,
+		Value: item.Value,
+	}
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetAllTransactions() (*[]response.ProductTransaction, error) {
+	data, err := s.Repo.GetAllTransactions()
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var resp []response.ProductTransaction
+	for _, item := range *data {
+		resp = append(resp, response.ProductTransaction{
+			Uuid:            item.Uuid,
+			Quantity:        item.Quantity,
+			IsResponse:      item.IsResponse,
+			IsAccept:        item.IsAccept,
+			IsConfirm:       item.IsConfirm,
+			Revenue:         item.Revenue,
+			ProofFile:       item.ProofFile,
+			PaymentVerified: item.PaymentVerified,
+			IsDelivered:     item.IsDelivered,
+			IsDisbursed:     item.IsDisbursed,
+			DeliveredAt:     item.DeliveredAt,
+			CreatedAt:       item.CreatedAt,
+			UpdatedAt:       item.UpdatedAt,
+			Product: &response.Product{
+				Name:      item.Product.Name,
+				Price:     item.Product.Price,
+				Unit:      item.Product.Unit,
+				ImageName: item.Product.Image,
+				Shop: &response.Shop{
+					Uuid: item.Product.Shop.Uuid,
+					Name: item.Product.Shop.Name,
+				},
+			},
+			User: &response.User{
+				Uuid:     item.User.Uuid,
+				Name:     item.User.Name,
+				Username: item.User.Username,
+			},
+		})
+	}
+
+	return &resp, nil
+}
+
+func (s *FetchService) GetTransactionByUuid(uuid string) (*response.ProductTransaction, error) {
+	item, err := s.Repo.GetTransactionByUuid(uuid)
+	if err != nil {
+		return nil, response.SERVICE_INTERR
+	}
+
+	var phoneNumber string
+	if item.User.Role.Name == "GUEST" {
+		phoneNumber = item.User.Guest.PhoneNumber
+	} else if item.User.Role.Name == "CITIZEN" {
+		phoneNumber = "123"
+	}
+
+	resp := response.ProductTransaction{
+		Uuid:            item.Uuid,
+		Quantity:        item.Quantity,
+		IsResponse:      item.IsResponse,
+		IsAccept:        item.IsAccept,
+		IsConfirm:       item.IsConfirm,
+		Revenue:         item.Revenue,
+		ProofFile:       item.ProofFile,
+		PaymentVerified: item.PaymentVerified,
+		IsDelivered:     item.IsDelivered,
+		IsDisbursed:     item.IsDisbursed,
+		DeliveredAt:     item.DeliveredAt,
+		CreatedAt:       item.CreatedAt,
+		UpdatedAt:       item.UpdatedAt,
+		Product: &response.Product{
+			Name:      item.Product.Name,
+			Price:     item.Product.Price,
+			Unit:      item.Product.Unit,
+			ImageName: item.Product.Image,
+			Shop: &response.Shop{
+				Uuid: item.Product.Shop.Uuid,
+				Name: item.Product.Shop.Name,
+			},
+		},
+		User: &response.User{
+			Uuid:        item.User.Uuid,
+			Name:        item.User.Name,
+			Username:    item.User.Username,
+			RoleName:    item.User.Role.Name,
+			PhoneNumber: phoneNumber,
+		},
+	}
+
+	return &resp, nil
+}
+
+
