@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/iki-rumondor/go-p3k/internal/app/structs/models"
-	"github.com/iki-rumondor/go-p3k/internal/config"
+	"github.com/iki-rumondor/go-p3k/internal/migrate/seeders"
 	"gorm.io/gorm"
 )
 
@@ -37,15 +36,7 @@ func freshDatabase(db *gorm.DB) error {
 		}
 	}
 
-	for _, role := range config.SYSTEM_ROLES {
-		db.Create(&models.Role{
-			Name: role,
-		})
-	}
-
-	db.Create(&config.ADMIN_USER)
-
-	return nil
+	return seeders.Run(db)
 }
 
 func migrateDatabase(db *gorm.DB) error {

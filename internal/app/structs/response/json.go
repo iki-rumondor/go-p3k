@@ -62,6 +62,7 @@ type ProductTransaction struct {
 	IsConfirm       bool     `json:"is_confirm"`
 	Revenue         int64    `json:"revenue"`
 	ProofFile       string   `json:"proof_file"`
+	DeliveryProof   string   `json:"delivery_proof"`
 	PaymentVerified bool     `json:"payment_verified"`
 	IsDelivered     bool     `json:"is_delivered"`
 	IsDisbursed     bool     `json:"is_disbursed"`

@@ -28,39 +28,53 @@ func StartScheduler(db *gorm.DB) {
 }
 
 func autoCancelUnpaidTransactions(db *gorm.DB) {
-	var transactions []models.ProductTransaction
-	tenMinutesAgo := time.Now().Add(-10 * time.Minute).UnixMilli()
-
-	// Query transactions where payment is not verified, not responded yet, no proof uploaded, and older than 10 mins
-	err := db.Preload("Product").Where("payment_verified = ? AND is_response = ? AND proof_file = ? AND created_at < ?", false, false, "", tenMinutesAgo).Find(&transactions).Error
+	// 1. Cancel transactions where seller has not responded within 10 minutes from created_at
+	tenMinutesAgoCreated := time.Now().Add(-10 * time.Minute).UnixMilli()
+	var unconfirmed []models.ProductTransaction
+	err := db.Preload("Product").Where("is_response = ? AND created_at < ?", false, tenMinutesAgoCreated).Find(&unconfirmed).Error
 	if err != nil {
-		log.Println("Scheduler error autoCancelUnpaidTransactions:", err.Error())
-		return
+		log.Println("Scheduler error autoCancelUnpaidTransactions (unconfirmed):", err.Error())
+	} else {
+		for _, tx := range unconfirmed {
+			cancelTransaction(db, tx, "otomatis dibatalkan karena penjual tidak merespon dalam 10 menit")
+		}
 	}
 
-	for _, tx := range transactions {
-		err := db.Transaction(func(dbTx *gorm.DB) error {
-			// Mark as rejected/cancelled
-			if err := dbTx.Model(&tx).Updates(map[string]interface{}{
-				"is_response": true,
-				"is_accept":   false,
-			}).Error; err != nil {
+	// 2. Cancel transactions where seller accepted, but buyer hasn't uploaded payment proof within 10 minutes from updated_at
+	tenMinutesAgoUpdated := time.Now().Add(-10 * time.Minute).UnixMilli()
+	var unpaid []models.ProductTransaction
+	err = db.Preload("Product").Where("is_response = ? AND is_accept = ? AND proof_file = ? AND payment_verified = ? AND updated_at < ?", true, true, "", false, tenMinutesAgoUpdated).Find(&unpaid).Error
+	if err != nil {
+		log.Println("Scheduler error autoCancelUnpaidTransactions (unpaid):", err.Error())
+	} else {
+		for _, tx := range unpaid {
+			cancelTransaction(db, tx, "otomatis dibatalkan karena pembeli tidak membayar dalam 10 menit setelah disetujui penjual")
+		}
+	}
+}
+
+func cancelTransaction(db *gorm.DB, tx models.ProductTransaction, reason string) {
+	err := db.Transaction(func(dbTx *gorm.DB) error {
+		// Mark as rejected/cancelled
+		if err := dbTx.Model(&tx).Updates(map[string]interface{}{
+			"is_response": true,
+			"is_accept":   false,
+		}).Error; err != nil {
+			return err
+		}
+
+		// Restore stock
+		if tx.Product != nil {
+			if err := dbTx.Model(&models.Product{ID: tx.ProductID}).Update("stock", tx.Product.Stock+tx.Quantity).Error; err != nil {
 				return err
 			}
-
-			// Restore stock
-			if tx.Product != nil {
-				if err := dbTx.Model(&models.Product{ID: tx.ProductID}).Update("stock", tx.Product.Stock+tx.Quantity).Error; err != nil {
-					return err
-				}
-			}
-
-			log.Printf("Scheduler: Transaksi %s otomatis dibatalkan karena tidak dibayar dalam 10 menit. Stok produk kembali ditambahkan.\n", tx.Uuid)
-			return nil
-		})
-		if err != nil {
-			log.Println("Scheduler error executing tx cancel:", err.Error())
 		}
+
+		log.Printf("Scheduler: Transaksi %s %s. Stok produk kembali ditambahkan.\n", tx.Uuid, reason)
+		return nil
+	})
+	if err != nil {
+		log.Println("Scheduler error executing tx cancel:", err.Error())
 	}
 }
 

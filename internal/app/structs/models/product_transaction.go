@@ -17,6 +17,7 @@ type ProductTransaction struct {
 	IsAccept        bool   `gorm:"not_null"`
 	IsConfirm       bool   `gorm:"not_null;default:false"`
 	ProofFile       string `gorm:"not_null"`
+	DeliveryProof   string `gorm:"size:255"`
 	Revenue         int64  `gorm:"not_null"`
 	PaymentVerified bool   `gorm:"default:false"`
 	IsDelivered     bool   `gorm:"default:false"`
@@ -40,6 +41,14 @@ func (m *ProductTransaction) BeforeDelete(tx *gorm.DB) error {
 	pathFile := filepath.Join(folder, m.ProofFile)
 	if err := os.Remove(pathFile); err != nil {
 		log.Println(err.Error())
+	}
+
+	if m.DeliveryProof != "" {
+		delFolder := "internal/files/delivery_proofs"
+		delPathFile := filepath.Join(delFolder, m.DeliveryProof)
+		if err := os.Remove(delPathFile); err != nil {
+			log.Println(err.Error())
+		}
 	}
 	return nil
 }

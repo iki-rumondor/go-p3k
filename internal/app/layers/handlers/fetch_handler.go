@@ -388,6 +388,13 @@ func (h *FetchHandler) GetTransactionProofImage(c *gin.Context) {
 	c.File(pathFile)
 }
 
+func (h *FetchHandler) GetDeliveryProofImage(c *gin.Context) {
+	filename := c.Param("filename")
+	folder := "internal/files/delivery_proofs"
+	pathFile := filepath.Join(folder, filename)
+	c.File(pathFile)
+}
+
 func (h *FetchHandler) GetAttendanceImage(c *gin.Context) {
 	filename := c.Param("filename")
 	folder := "internal/files/attendances"

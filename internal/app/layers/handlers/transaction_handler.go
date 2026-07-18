@@ -199,14 +199,45 @@ func (h *TransactionHandler) RejectPayment(c *gin.Context) {
 }
 
 func (h *TransactionHandler) ConfirmDelivery(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		utils.HandleError(c, response.BADREQ_ERR("Foto bukti pengiriman wajib diunggah"))
+		return
+	}
+
+	if status := utils.CheckTypeFile(file, []string{"jpg", "png", "jpeg"}); !status {
+		utils.HandleError(c, response.BADREQ_ERR("Tipe file tidak valid, gunakan tipe jpg, png, atau jpeg"))
+		return
+	}
+
+	if moreThan := utils.CheckFileSize(file, 1); moreThan {
+		utils.HandleError(c, response.BADREQ_ERR("File yang diupload lebih dari 1MB"))
+		return
+	}
+
+	deliveryProofFolder := "internal/files/delivery_proofs"
+	filename := utils.RandomFileName(file)
+	pathFile := filepath.Join(deliveryProofFolder, filename)
+
+	if err := os.MkdirAll(deliveryProofFolder, os.ModePerm); err != nil {
+		utils.HandleError(c, response.HANDLER_INTERR)
+		return
+	}
+
+	if err := utils.SaveUploadedFile(file, pathFile); err != nil {
+		utils.HandleError(c, response.HANDLER_INTERR)
+		return
+	}
+
 	userUuid := c.GetString("uuid")
 	transactionUuid := c.Param("transactionUuid")
-	if err := h.Service.ConfirmDelivery(userUuid, transactionUuid); err != nil {
+	if err := h.Service.ConfirmDelivery(userUuid, transactionUuid, filename); err != nil {
+		_ = os.Remove(pathFile)
 		utils.HandleError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.SUCCESS_RES("Status pengiriman berhasil diperbarui"))
+	c.JSON(http.StatusOK, response.SUCCESS_RES("Status pengiriman dan bukti pengiriman berhasil diperbarui"))
 }
 
 func (h *TransactionHandler) ConfirmReceipt(c *gin.Context) {

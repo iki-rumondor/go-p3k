@@ -334,14 +334,15 @@ func (s *FetchService) GetProductTransactions(userUuid string) (*[]response.Prod
 	var resp []response.ProductTransaction
 	for _, item := range *data {
 		resp = append(resp, response.ProductTransaction{
-			Uuid:       item.Uuid,
-			Quantity:   item.Quantity,
-			IsResponse: item.IsResponse,
-			IsAccept:   item.IsAccept,
-			IsConfirm:  item.IsConfirm,
-			ProofFile:  item.ProofFile,
-			CreatedAt:  item.CreatedAt,
-			UpdatedAt:  item.UpdatedAt,
+			Uuid:          item.Uuid,
+			Quantity:      item.Quantity,
+			IsResponse:    item.IsResponse,
+			IsAccept:      item.IsAccept,
+			IsConfirm:     item.IsConfirm,
+			ProofFile:     item.ProofFile,
+			DeliveryProof: item.DeliveryProof,
+			CreatedAt:     item.CreatedAt,
+			UpdatedAt:     item.UpdatedAt,
 			Product: &response.Product{
 				Name:      item.Product.Name,
 				Price:     item.Product.Price,
@@ -377,14 +378,15 @@ func (s *FetchService) GetProductTransactionByUuid(userUuid, uuid string) (*resp
 	}
 
 	var resp = response.ProductTransaction{
-		Uuid:       item.Uuid,
-		Quantity:   item.Quantity,
-		IsResponse: item.IsResponse,
-		IsAccept:   item.IsAccept,
-		IsConfirm:  item.IsConfirm,
-		ProofFile:  item.ProofFile,
-		CreatedAt:  item.CreatedAt,
-		UpdatedAt:  item.UpdatedAt,
+		Uuid:          item.Uuid,
+		Quantity:      item.Quantity,
+		IsResponse:    item.IsResponse,
+		IsAccept:      item.IsAccept,
+		IsConfirm:     item.IsConfirm,
+		ProofFile:     item.ProofFile,
+		DeliveryProof: item.DeliveryProof,
+		CreatedAt:     item.CreatedAt,
+		UpdatedAt:     item.UpdatedAt,
 		Product: &response.Product{
 			Name:      item.Product.Name,
 			Stock:     item.Product.Stock,
@@ -884,6 +886,7 @@ func (s *FetchService) GetAllTransactions() (*[]response.ProductTransaction, err
 			IsConfirm:       item.IsConfirm,
 			Revenue:         item.Revenue,
 			ProofFile:       item.ProofFile,
+			DeliveryProof:   item.DeliveryProof,
 			PaymentVerified: item.PaymentVerified,
 			IsDelivered:     item.IsDelivered,
 			IsDisbursed:     item.IsDisbursed,
@@ -932,6 +935,7 @@ func (s *FetchService) GetTransactionByUuid(uuid string) (*response.ProductTrans
 		IsConfirm:       item.IsConfirm,
 		Revenue:         item.Revenue,
 		ProofFile:       item.ProofFile,
+		DeliveryProof:   item.DeliveryProof,
 		PaymentVerified: item.PaymentVerified,
 		IsDelivered:     item.IsDelivered,
 		IsDisbursed:     item.IsDisbursed,

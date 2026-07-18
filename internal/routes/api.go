@@ -64,6 +64,7 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 
 		user.PATCH("/transactions/:transactionUuid/proof", handlers.TransactionHandler.SetTransactionProof)
 		user.GET("/files/transaction_proofs/:filename", handlers.FetchHandler.GetTransactionProofImage)
+		user.GET("/files/delivery_proofs/:filename", handlers.FetchHandler.GetDeliveryProofImage)
 
 		user.PATCH("/users/password", handlers.AuthHandler.UpdatePassword)
 
@@ -109,6 +110,12 @@ func StartServer(handlers *config.Handlers) *gin.Engine {
 		admin.PATCH("/users/reset-password/:uuid", handlers.AuthHandler.ResetPassword)
 		admin.GET("/member-activities", handlers.FetchHandler.GetAllMemberActivities)
 		admin.PATCH("/member-activities/:uuid/accept-attendance", handlers.ManagementHandler.UpdatePresence)
+
+		admin.GET("/admin/tutorials", handlers.FetchHandler.GetTutorials)
+		admin.GET("/admin/tutorials/:uuid", handlers.FetchHandler.GetTutorialByUuid)
+		admin.POST("/admin/tutorials", handlers.ManagementHandler.CreateTutorial)
+		admin.PUT("/admin/tutorials/:uuid", handlers.ManagementHandler.UpdateTutorial)
+		admin.DELETE("/admin/tutorials/:uuid", handlers.ManagementHandler.DeleteTutorial)
 
 		admin.POST("/tutorials", handlers.ManagementHandler.CreateTutorial)
 		admin.PUT("/tutorials/:uuid", handlers.ManagementHandler.UpdateTutorial)

@@ -278,7 +278,7 @@ func (s *TransactionService) RejectPayment(userUuid string, transactionUuid stri
 	return nil
 }
 
-func (s *TransactionService) ConfirmDelivery(userUuid string, transactionUuid string) error {
+func (s *TransactionService) ConfirmDelivery(userUuid string, transactionUuid string, filename string) error {
 	transaction, err := s.Repo.GetOwnerProductTransactionByUuid(userUuid, transactionUuid)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -296,9 +296,10 @@ func (s *TransactionService) ConfirmDelivery(userUuid string, transactionUuid st
 	}
 
 	model := models.ProductTransaction{
-		ID:          transaction.ID,
-		IsDelivered: true,
-		DeliveredAt: time.Now().UnixMilli(),
+		ID:            transaction.ID,
+		IsDelivered:   true,
+		DeliveredAt:   time.Now().UnixMilli(),
+		DeliveryProof: filename,
 	}
 
 	if err := s.Repo.UpdateModel(&model); err != nil {
