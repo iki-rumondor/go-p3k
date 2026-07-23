@@ -431,7 +431,7 @@ func (r *FetchRepo) CountUserSuccessTransactions(userUuid string) (int64, error)
 		return count, err
 	}
 
-	if err := r.db.Model(&models.ProductTransaction{}).Where("user_id = ? AND is_accept = ?", user.ID, true).Count(&count).Error; err != nil {
+	if err := r.db.Model(&models.ProductTransaction{}).Where("user_id = ? AND is_disbursed = ?", user.ID, true).Count(&count).Error; err != nil {
 		return count, err
 	}
 	return count, nil

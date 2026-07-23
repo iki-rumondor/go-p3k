@@ -166,8 +166,24 @@ func (s *TransactionService) ConfirmProductTransaction(userUuid, transactionUuid
 }
 
 func (s *TransactionService) SetTransactionProof(userUuid, transactionUuid, filename string) error {
-	if isHas := s.Repo.CheckProductTransactionIsResponse(transactionUuid); isHas {
-		return response.BADREQ_ERR("Transaksi produk sudah diresponse")
+	transaction, err := s.Repo.GetTransactionByUuid(transactionUuid)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return response.NOTFOUND_ERR("Transaksi tidak ditemukan")
+		}
+		return response.SERVICE_INTERR
+	}
+
+	if !transaction.IsResponse {
+		return response.BADREQ_ERR("Transaksi belum disetujui oleh penjual")
+	}
+
+	if !transaction.IsAccept {
+		return response.BADREQ_ERR("Transaksi telah ditolak oleh penjual")
+	}
+
+	if transaction.PaymentVerified {
+		return response.BADREQ_ERR("Pembayaran transaksi sudah diverifikasi sebelumnya")
 	}
 
 	model := models.ProductTransaction{
